@@ -14,7 +14,6 @@ const config = {
   fee: 0.002,
   margin: 1.00001
 };
-let rising;
 let reports = []
 let buyCountdown = 0
 let currentTime = 0
@@ -102,7 +101,6 @@ function updateInfo() {
       'endTime': period[6]
     })
   })
-  rising = ema(priceHistory, 1, 'close') > ema(priceHistory, 2, 'close')
   dataObject.currentPriceObject = currentPriceRaw.data
   dataObject.priceHistory = priceHistory
   wallet[config.asset] = balancesRaw.free[config.asset]
@@ -113,13 +111,20 @@ function updateInfo() {
   dataObject.reports = reports.slice(reports.length-5, 5)
 }
 
+function rising() {
+  let diff1 = ema(priceHistory, 1, 'close') - ema(priceHistory, 1, 'open')
+  let diff2 = ema(priceHistory, 2, 'close') - ema(priceHistory, 2, 'open')
+  let diff3 = ema(priceHistory, 3, 'close') - ema(priceHistory, 3, 'open')
+  return diff1 > 0 && diff1 > diff2 && diff2 < diff3
+}
+
 async function trade() {
   if (timeToBuy()) {
     await newBuyOrder()
     newSellOrder()
   } else if (buyCountdown > 0) { 
     console.log(`Ticks til buy: ${buyCountdown}`) 
-  } else if (rising === false) { console.log('Not rising') }
+  } else if (rising() === false) { console.log('Not rising') }
   else {
     if (wallet[config.base] < config.allocation) { console.log(`Insufficient base balance: ${wallet[config.base]}`) }
     if (wallet[config.asset] < config.allocation / currentPrice) { console.log('Insufficient asset balance') }
@@ -127,7 +132,7 @@ async function trade() {
 }
 
 function timeToBuy() {
-  return (rising 
+  return (rising()
     && wallet[config.base] >= config.allocation 
     && wallet[config.asset] >= config.allocation / currentPrice 
     && buyCountdown <= 0)
