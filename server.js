@@ -118,7 +118,7 @@ function rising() {
   // let diff3 = ema(priceHistory, 3, 'close') - ema(priceHistory, 3, 'open')
   // return diff1 > 0 && diff1 > diff2 && diff2 < diff3
   return ema(priceHistory, 1, 'close') > ema(priceHistory, 1, 'open')
-      && ema(priceHistory, 2, 'close') < ema(priceHistory, 2, 'open')
+      // && ema(priceHistory, 2, 'close') > ema(priceHistory, 2, 'open')
 }
 
 async function trade() {
