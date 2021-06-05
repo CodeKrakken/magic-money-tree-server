@@ -112,10 +112,13 @@ function updateInfo() {
 }
 
 function rising() {
-  let diff1 = ema(priceHistory, 1, 'close') - ema(priceHistory, 1, 'open')
-  let diff2 = ema(priceHistory, 2, 'close') - ema(priceHistory, 2, 'open')
-  let diff3 = ema(priceHistory, 3, 'close') - ema(priceHistory, 3, 'open')
-  return diff1 > 0 && diff1 > diff2 && diff2 < diff3
+  // let diff1 = ema(priceHistory, 1, 'close') - ema(priceHistory, 1, 'open')
+  // console.log(`${ema(priceHistory, 1, 'close')} - ${ema(priceHistory, 1, 'open')} = ${diff1}`)
+  // let diff2 = ema(priceHistory, 2, 'close') - ema(priceHistory, 2, 'open')
+  // let diff3 = ema(priceHistory, 3, 'close') - ema(priceHistory, 3, 'open')
+  // return diff1 > 0 && diff1 > diff2 && diff2 < diff3
+  return ema(priceHistory, 1, 'close') > ema(priceHistory, 1, 'open')
+      && ema(priceHistory, 2, 'close') < ema(priceHistory, 2, 'open')
 }
 
 async function trade() {
