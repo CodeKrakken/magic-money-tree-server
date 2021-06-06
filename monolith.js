@@ -31,6 +31,7 @@ let soldPrice = 0
 let market = `${config.asset}/${config.base}`
 let buying
 let ema1 = 0
+let ema2 = 0
 let ema3 = 0
 let ema5 = 0
 let tradeReport = ''
@@ -62,7 +63,7 @@ async function getTick() {
     console.log(`Tick @ ${new Date(currentTime).toLocaleString()}\n`)
     console.log('Current price: ' + currentPrice)
     console.log('Bought price: ' + process.env.BOUGHT_PRICE + '\n')
-    console.log(`EMA (1) - ${ema1}\nEMA (3) - ${ema3}\nEMA (5) - ${ema5}\n\n`)
+    console.log(`EMA (1) - ${ema1}\nEMA (2) - ${ema2}\nEMA (3) - ${ema3}\nEMA (5) - ${ema5}\n\n`)
     console.log(tradeReport + '\n')
     console.log(`Wallet\n\n${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)} ${config.base}\n\n`)
     tradeReport = ''
@@ -118,6 +119,7 @@ function updateInfo() {
   dataObject.currentPriceObject = currentPriceRaw.data
   dataObject.priceHistory = priceHistory
   ema1 = ema(priceHistory, 1, 'close')
+  ema2 = ema(priceHistory, 2, 'close')
   ema3 = ema(priceHistory, 3, 'close')
   ema5 = ema(priceHistory, 5, 'close')
 
@@ -133,11 +135,11 @@ function updateInfo() {
 }
 
 function rising() {
-  return ema1 > ema5
+  return ema1 > ema5 && ema1 < ema3 && ema3 > ema5
 }
 
 function falling() {
-  return ema1 < ema3
+  return ema1 < ema2
 }
 
 async function trade() {
@@ -151,10 +153,6 @@ async function trade() {
     soldPrice = currentPrice
   } else {
     tradeReport = `Holding - price is ${rising() ? '' : 'not '}rising.`
-    console.log('Time to sell? ' + timeToSell())
-    console.log('Falling? ' + !rising())
-    console.log('Selling? ' + !buying)
-    console.log('Price has increased? ' + (currentPrice > process.env.BOUGHT_PRICE))
   }
 }
 
@@ -166,7 +164,7 @@ function timeToBuy() {
 
 function timeToSell() {
   return (
-    falling() && !buying && currentPrice > process.env.BOUGHT_PRICE
+    falling() && !buying // && currentPrice > process.env.BOUGHT_PRICE
   )
 }
 
