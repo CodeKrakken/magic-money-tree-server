@@ -32,8 +32,8 @@ let oldOrders = []
 let market = `${config.asset}/${config.base}`
 let buying
 let ema1 = 0
-let ema2 = 0
 let ema3 = 0
+let ema5 = 0
 let tradeReport = ''
 let oldBaseVolume = 0
 const timeObject = new Date
@@ -117,7 +117,7 @@ function updateInfo() {
   ema1 = ema(priceHistory, 1, 'close')
   ema8 = ema(priceHistory, 8, 'close')
   ema3 = ema(priceHistory, 3, 'close')
-  ema21 = ema(priceHistory, 21, 'close')
+  ema5 = ema(priceHistory, 5, 'close')
   ema2 = ema(priceHistory, 2, 'close')
 
 
@@ -134,8 +134,6 @@ function updateInfo() {
 
 function readout() {
   console.log(`${market} - Tick @ ${new Date(currentTime).toLocaleString()}\n`)
-  console.log(
-    currentPrice > boughtPrice ? `Current price: ${n(currentPrice, 5)}\nBought price:  ${n(boughtPrice, 5)}\n` : `Bought price:  ${n(boughtPrice, 5)}\nCurrent price: ${n(currentPrice, 5)}\n`)
   const emaArray = emaReadout()
   emaArray.forEach(ema => {
     console.log(`${ema[0]} - ${n(ema[1], 5)}`)
@@ -148,10 +146,12 @@ function readout() {
 function emaReadout() {
   let emaArray = Object.entries(
     {
-      'ema1': ema1, 
-      'ema2': ema2, 
-      'ema3': ema3,
-      // 'ema21': ema21
+      '   ema1': ema1, 
+      '   ema3': ema3, 
+      '   ema5': ema5,
+      '   ema2': ema2,
+      '   paid': boughtPrice,
+      'current': currentPrice
     }
   )
   emaArray = emaArray.sort((a, b) => b[1] - a[1])
@@ -159,8 +159,8 @@ function emaReadout() {
 }
 
 function rising() {
-  return ema1 > ema2
-      && ema2 < ema3
+  return ema1 > ema3
+      && ema3 > ema5
       // && ema3 > ema8 
       // && ema8 > ema21
 }
@@ -191,7 +191,7 @@ function timeToBuy() {
 
 function timeToSell() {
   return (
-    falling() && !buying && wallet[config.asset] * currentPrice > oldBaseVolume * (1 + config.fee)
+    falling() && !buying && wallet[config.asset] * currentPrice > oldBaseVolume * (1 + config.fee) 
   )
 }
 
