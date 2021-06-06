@@ -60,12 +60,7 @@ async function getTick() {
     await updateInfo()
     await parseOrders()
     await trade()
-    console.log(`Tick @ ${new Date(currentTime).toLocaleString()}\n`)
-    console.log('Current price: ' + currentPrice)
-    console.log('Bought price: ' + process.env.BOUGHT_PRICE + '\n')
-    console.log(`EMA (1) - ${ema1}\nEMA (2) - ${ema2}\nEMA (3) - ${ema3}\nEMA (5) - ${ema5}\n\n`)
-    console.log(tradeReport + '\n')
-    console.log(`Wallet\n\n${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)} ${config.base}\n\n`)
+    await readout()
     tradeReport = ''
     // res.send(dataObject)
   } catch (error) {
@@ -134,6 +129,31 @@ function updateInfo() {
   buying = wallet[config.asset] * currentPrice < wallet[config.base]
 }
 
+function readout() {
+  console.log(`Tick @ ${new Date(currentTime).toLocaleString()}\n`)
+  console.log('Current price: ' + n(currentPrice, 5))
+  console.log('Bought price: ' + n(process.env.BOUGHT_PRICE, 5) + '\n')
+  const emaArray = emaReadout()
+  emaArray.forEach(ema => {
+    console.log(`${ema[0]} - ${ema[1]}`)
+  })
+  console.log(tradeReport + '\n')
+  console.log(`Wallet\n\n${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)} ${config.base}\n\n`)
+}
+
+function emaReadout() {
+  let emaArray = Object.entries(
+    {
+      'ema1': ema1, 
+      'ema2': ema2, 
+      'ema3': ema3,
+      'ema5': ema5
+    }
+  )
+  emaArray = emaArray.sort((a, b) => b[1] - a[1])
+  return emaArray // `EMA (1) - ${n(ema1, 5)}\nEMA (2) - ${n(ema2, 5)}\nEMA (3) - ${n(ema3, 5)}\nEMA (5) - ${n(ema5, 5)}\n\n`
+}
+
 function rising() {
   return ema1 > ema5 && ema1 < ema3 && ema3 > ema5
 }
@@ -187,8 +207,8 @@ async function newSellOrder() {
     const oldAssetVolume = wallet[config.asset]
     const assetVolume = config.allocation / currentPrice
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
-    wallet[config.baseVolume] += oldAssetVolume * currentPrice
-    wallet[config.assetVolume] -= oldAssetVolume
+    wallet[config.base] += oldAssetVolume * currentPrice
+    wallet[config.asset] -= oldAssetVolume
     tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${config.asset * currentPrice})`
   } catch (error) {
     console.log(error.message)
