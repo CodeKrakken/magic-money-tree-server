@@ -25,16 +25,17 @@ let currentPriceRaw
 let currentPrice
 let priceHistory = []
 let balancesRaw
+let boughtPrice = 0
+let soldPrice = 0
 let orders = []
 let oldOrders = []
-let soldPrice = 0
 let market = `${config.asset}/${config.base}`
 let buying
 let ema1 = 0
 let ema2 = 0
 let ema3 = 0
-let ema5 = 0
 let tradeReport = ''
+let oldBaseVolume = 0
 const timeObject = new Date
 const symbol = `${config.asset}${config.base}`
 const ccxt = require('ccxt');
@@ -114,9 +115,11 @@ function updateInfo() {
   dataObject.currentPriceObject = currentPriceRaw.data
   dataObject.priceHistory = priceHistory
   ema1 = ema(priceHistory, 1, 'close')
-  ema2 = ema(priceHistory, 2, 'close')
+  ema8 = ema(priceHistory, 8, 'close')
   ema3 = ema(priceHistory, 3, 'close')
-  ema5 = ema(priceHistory, 5, 'close')
+  ema21 = ema(priceHistory, 21, 'close')
+  ema2 = ema(priceHistory, 2, 'close')
+
 
   // Comment out next 2 lines for emulation mode
   // wallet[config.asset] = balancesRaw.free[config.asset]
@@ -130,15 +133,16 @@ function updateInfo() {
 }
 
 function readout() {
-  console.log(`Tick @ ${new Date(currentTime).toLocaleString()}\n`)
-  console.log('Current price: ' + n(currentPrice, 5))
-  console.log('Bought price: ' + n(process.env.BOUGHT_PRICE, 5) + '\n')
+  console.log(`${market} - Tick @ ${new Date(currentTime).toLocaleString()}\n`)
+  console.log(
+    currentPrice > boughtPrice ? `Current price: ${n(currentPrice, 5)}\nBought price:  ${n(boughtPrice, 5)}\n` : `Bought price:  ${n(boughtPrice, 5)}\nCurrent price: ${n(currentPrice, 5)}\n`)
   const emaArray = emaReadout()
   emaArray.forEach(ema => {
-    console.log(`${ema[0]} - ${ema[1]}`)
+    console.log(`${ema[0]} - ${n(ema[1], 5)}`)
   })
+  console.log('\n')
   console.log(tradeReport + '\n')
-  console.log(`Wallet\n\n${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)} ${config.base}\n\n`)
+  console.log(`Wallet\n\n  ${n(wallet[config.base], 2)} ${config.base} \n+   ${n(wallet[config.asset], 2)} ${config.asset}\n= ${n(wallet[config.base] + (wallet[config.asset] * currentPrice), 2)} ${config.base}\n\n`)
 }
 
 function emaReadout() {
@@ -147,15 +151,18 @@ function emaReadout() {
       'ema1': ema1, 
       'ema2': ema2, 
       'ema3': ema3,
-      'ema5': ema5
+      // 'ema21': ema21
     }
   )
   emaArray = emaArray.sort((a, b) => b[1] - a[1])
-  return emaArray // `EMA (1) - ${n(ema1, 5)}\nEMA (2) - ${n(ema2, 5)}\nEMA (3) - ${n(ema3, 5)}\nEMA (5) - ${n(ema5, 5)}\n\n`
+  return emaArray 
 }
 
 function rising() {
-  return ema1 > ema5 && ema1 < ema3 && ema3 > ema5
+  return ema1 > ema2
+      && ema2 < ema3
+      // && ema3 > ema8 
+      // && ema8 > ema21
 }
 
 function falling() {
@@ -166,7 +173,7 @@ async function trade() {
   if (timeToBuy()) {
     await newBuyOrder()
     buying = false
-    process.env.BOUGHT_PRICE = currentPrice
+    boughtPrice = currentPrice
   } else if (timeToSell()) {
     await newSellOrder()
     buying = true
@@ -184,19 +191,19 @@ function timeToBuy() {
 
 function timeToSell() {
   return (
-    falling() && !buying // && currentPrice > process.env.BOUGHT_PRICE
+    falling() && !buying && wallet[config.asset] * currentPrice > oldBaseVolume * (1 + config.fee)
   )
 }
 
 async function newBuyOrder() {
   try { 
     currentPrice = parseFloat(currentPrice)
-    const oldBaseVolume = wallet[config.base]
+    oldBaseVolume = wallet[config.base]
     // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
     wallet[config.asset] += oldBaseVolume / currentPrice
-    wallet[config.base] -= oldBaseVolume
+    wallet[config.base] -= oldBaseVolume * (1 + config.fee)
     // buyCountdown = 10
-    tradeReport = `\nBought ${n(wallet[config.assetVolume], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
+    tradeReport = `\nBought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
   } catch(error) {
     console.log(error.message)
   }
@@ -208,8 +215,8 @@ async function newSellOrder() {
     const assetVolume = config.allocation / currentPrice
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
     wallet[config.base] += oldAssetVolume * currentPrice
-    wallet[config.asset] -= oldAssetVolume
-    tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${config.asset * currentPrice})`
+    wallet[config.asset] -= oldAssetVolume * (1 + config.fee)
+    tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
   } catch (error) {
     console.log(error.message)
   }
