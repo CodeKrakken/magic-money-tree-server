@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const axios = require('axios')
 const config = {
-  asset: 'ETH',
+  asset: 'DOGE',
   base: 'USDT',
   tickInterval: 1 * 2000,
   fee: 0.002
@@ -16,18 +16,24 @@ let buyCountdown = 0
 let currentTime = 0
 let dataObject = {}
 let wallet = {}
+
+// Uncomment next 2 lines for emulation mode
+wallet[config.asset] = 0
+wallet[config.base] = 200
+
 let currentPriceRaw
 let currentPrice
 let priceHistory = []
 let balancesRaw
 let orders = []
 let oldOrders = []
-let boughtPrice = 0
 let soldPrice = 0
 let market = `${config.asset}/${config.base}`
-let buying = true
+let buying
 let ema1 = 0
-let ema2 = 0
+let ema3 = 0
+let ema5 = 0
+let tradeReport = ''
 const timeObject = new Date
 const symbol = `${config.asset}${config.base}`
 const ccxt = require('ccxt');
@@ -53,8 +59,13 @@ async function getTick() {
     await updateInfo()
     await parseOrders()
     await trade()
-    console.log(`\nTick @ ${new Date(currentTime).toLocaleString()}`)
-    console.log(`EMA (1) - ${ema1}\nEMA (2) - ${ema2}`)
+    console.log(`Tick @ ${new Date(currentTime).toLocaleString()}\n`)
+    console.log('Current price: ' + currentPrice)
+    console.log('Bought price: ' + process.env.BOUGHT_PRICE + '\n')
+    console.log(`EMA (1) - ${ema1}\nEMA (3) - ${ema3}\nEMA (5) - ${ema5}\n\n`)
+    console.log(tradeReport + '\n')
+    console.log(`Wallet\n\n${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)} ${config.base}\n\n`)
+    tradeReport = ''
     // res.send(dataObject)
   } catch (error) {
     console.log(error.message)
@@ -107,42 +118,55 @@ function updateInfo() {
   dataObject.currentPriceObject = currentPriceRaw.data
   dataObject.priceHistory = priceHistory
   ema1 = ema(priceHistory, 1, 'close')
-  ema2 = ema(priceHistory, 2, 'close')
-  wallet[config.asset] = balancesRaw.free[config.asset]
-  wallet[config.base] = balancesRaw.free[config.base]
+  ema3 = ema(priceHistory, 3, 'close')
+  ema5 = ema(priceHistory, 5, 'close')
+
+  // Comment out next 2 lines for emulation mode
+  // wallet[config.asset] = balancesRaw.free[config.asset]
+  // wallet[config.base] = balancesRaw.free[config.base]
+  
   dataObject.wallet = wallet
   dataObject.orders = orders
   dataObject.currentTime = currentTime
   dataObject.reports = reports.slice(reports.length-5, 5)
+  buying = wallet[config.asset] * currentPrice < wallet[config.base]
 }
 
 function rising() {
-  return ema1 > ema2
+  return ema1 > ema5
+}
+
+function falling() {
+  return ema1 < ema3
 }
 
 async function trade() {
   if (timeToBuy()) {
     await newBuyOrder()
     buying = false
-    boughtPrice = currentPrice
+    process.env.BOUGHT_PRICE = currentPrice
   } else if (timeToSell()) {
     await newSellOrder()
     buying = true
     soldPrice = currentPrice
   } else {
-    console.log(`Holding ${ buying ? `${wallet[config.base]} ${config.base}` : `${wallet[config.asset]} ${config.asset}`}`)
+    tradeReport = `Holding - price is ${rising() ? '' : 'not '}rising.`
+    console.log('Time to sell? ' + timeToSell())
+    console.log('Falling? ' + !rising())
+    console.log('Selling? ' + !buying)
+    console.log('Price has increased? ' + (currentPrice > process.env.BOUGHT_PRICE))
   }
 }
 
 function timeToBuy() {
   return (
-    rising() && buying && currentPrice < soldPrice
+    rising() && buying
   )
 }
 
 function timeToSell() {
   return (
-    !rising() && !buying && currentPrice > boughtPrice * (1 + config.fee)
+    falling() && !buying && currentPrice > process.env.BOUGHT_PRICE
   )
 }
 
@@ -150,11 +174,11 @@ async function newBuyOrder() {
   try { 
     currentPrice = parseFloat(currentPrice)
     const oldBaseVolume = wallet[config.base]
-    // console.log(`Creating limit buy order for ${n(assetVolume, 8)} ${config.asset} @ $${n(currentPrice, 8)}`)
-    await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+    // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+    wallet[config.asset] += oldBaseVolume / currentPrice
+    wallet[config.base] -= oldBaseVolume
     // buyCountdown = 10
-    console.log(`\nBought ${n(wallet[config.assetVolume], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`)
-    console.log(`Wallet\n------\n  ${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)}`)
+    tradeReport = `\nBought ${n(wallet[config.assetVolume], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
   } catch(error) {
     console.log(error.message)
   }
@@ -164,9 +188,10 @@ async function newSellOrder() {
   try {
     const oldAssetVolume = wallet[config.asset]
     const assetVolume = config.allocation / currentPrice
-    await binanceClient.createMarketSellOrder(market, oldAssetVolume)
-    console.log(`Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${config.asset * currentPrice})`)
-    console.log(`Wallet\n------\n  ${wallet[config.base]} ${config.base} \n+ ${wallet[config.asset]} ${config.asset}\n= ${wallet[config.base] + (wallet[config.asset] * currentPrice)}`)
+    // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
+    wallet[config.baseVolume] += oldAssetVolume * currentPrice
+    wallet[config.assetVolume] -= oldAssetVolume
+    tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${config.asset * currentPrice})`
   } catch (error) {
     console.log(error.message)
   }
