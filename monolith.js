@@ -9,7 +9,7 @@ const config = {
   asset: 'ETH',
   base: 'USDT',
   tickInterval: 1 * 2000,
-  fee: 0.0001
+  fee: 0.076
 };
 let reports = []
 let buyCountdown = 0
@@ -36,6 +36,8 @@ let ema3 = 0
 let ema5 = 0
 let tradeReport = ''
 let oldBaseVolume = 0
+let exchange
+let coinPairs
 const timeObject = new Date
 const symbol = `${config.asset}${config.base}`
 const ccxt = require('ccxt');
@@ -90,11 +92,12 @@ function parseOrders(key, value, array) {
 // Trading functions
 
 async function fetchInfo() {
+  exchange = await binanceClient.load_markets()
+  coinPairs = Object.keys(exchange)
   currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`)
   priceHistoryRaw = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=1m`)
   balancesRaw = await binanceClient.fetchBalance()
   orders = await binanceClient.fetchOpenOrders(market)
-  // exchange = await axios.get(`https://api.binance.com`)
 }
 
 function updateInfo() {
@@ -136,6 +139,8 @@ function updateInfo() {
 }
 
 function readout() {
+  // console.log(exchange)
+  console.log(coinPairs)
   console.log(`${market} - Tick @ ${new Date(currentTime).toLocaleString()}\n`)
   const emaArray = emaReadout()
   emaArray.forEach(ema => {
