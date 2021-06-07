@@ -11,7 +11,7 @@ const config = {
   allocation: 15,
   tickInterval: 1 * 2000,
   buyInterval: 1 * 10 * 1000,
-  fee: 0.002,
+  fee: 0.076,
   margin: 1.00001
 };
 let reports = []

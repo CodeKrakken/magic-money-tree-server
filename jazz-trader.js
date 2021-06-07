@@ -1,4 +1,4 @@
-// Trades whole stack of stock back and forth between two currencies by buying and selling according to EMAs
+// Picks the best pair every tick and moves full stack to it
 
 require('dotenv').config();
 const express = require('express');
@@ -38,6 +38,8 @@ let ema3 = 0
 let ema5 = 0
 let tradeReport = ''
 let oldBaseVolume = 0
+let exchangeInfo
+let coinPairs
 const timeObject = new Date
 const symbol = `${config.asset}${config.base}`
 const ccxt = require('ccxt');
@@ -92,13 +94,29 @@ function parseOrders(key, value, array) {
 // Trading functions
 
 async function fetchInfo() {
+  exchangeInfo = await binanceClient.load_markets()
   currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`)
   priceHistoryRaw = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=1m`)
   balancesRaw = await binanceClient.fetchBalance()
   orders = await binanceClient.fetchOpenOrders(market)
 }
 
+async function fetchPriceHistory(symbol, timeframe) {
+  let data = await binanceClient.fetch_ohlcv(symbol, timeframe)
+  return data
+}
+
+function allPriceHistory(timeframe) {
+  let allPriceHistory = []
+  coinPairs.forEach(coinPair => {
+    let history = fetchPriceHistory(coinPair, timeframe)
+    allPriceHistory.push({coinPair: history})
+  })
+  return allPriceHistory
+}
+
 function updateInfo() {
+  coinPairs = Object.keys(exchangeInfo)
   if (parseOrders('side', 'sell', oldOrders) > parseOrders('side', 'sell', orders)) {
     buyCountdown = 0
   }
@@ -137,6 +155,8 @@ function updateInfo() {
 }
 
 function readout() {
+  // console.log(exchange)
+  console.log(allPriceHistory('1m'))
   console.log(`${market} - Tick @ ${new Date(currentTime).toLocaleString()}\n`)
   const emaArray = emaReadout()
   emaArray.forEach(ema => {
