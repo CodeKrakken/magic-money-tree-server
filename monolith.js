@@ -206,7 +206,7 @@ async function newBuyOrder() {
     wallet[config.asset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[config.base] -= oldBaseVolume
     // buyCountdown = 10
-    tradeReport = `\n${new Date(currentTime).toLocaleString()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
+    tradeReport = `${new Date(currentTime).toLocaleString()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
     fs.appendFile('log.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  } catch(error) {
@@ -221,7 +221,7 @@ async function newSellOrder() {
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
     wallet[config.base] += oldAssetVolume * currentPrice * (1 - config.fee)
     wallet[config.asset] -= oldAssetVolume
-    tradeReport = `${new Date(currentTime).toLocaleString()} - Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
+    tradeReport = `${new Date(currentTime).toLocaleString()} - Sold   ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
     fs.appendFile('log.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  
