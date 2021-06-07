@@ -24,9 +24,12 @@ async function all(coinPairs, timeframe) {
   let allHistory = []
   for (let i = 0; i < coinPairs.length; i++) {
     let coinPair = coinPairs[i].replace('/', '')
+    console.log("Fetching price history for " + coinPair)
     let historyRaw = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${coinPair}&interval=1m`)
-    allHistory.push({coinPair: historyRaw})
-    console.log(allHistory)
+    allHistory.push({
+      symbol: coinPair,
+      history: historyRaw
+    })
   }
   console.log('iterated over pairs')
   return allHistory
