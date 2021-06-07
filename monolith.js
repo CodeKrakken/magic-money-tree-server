@@ -9,7 +9,7 @@ const config = {
   asset: 'ETH',
   base: 'USDT',
   tickInterval: 1 * 2000,
-  fee: 0.002
+  fee: 0.001
 };
 let reports = []
 let buyCountdown = 0
@@ -206,9 +206,10 @@ async function newBuyOrder() {
     wallet[config.asset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[config.base] -= oldBaseVolume
     // buyCountdown = 10
-    tradeReport = `\nBought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
-    fs.appendFile('log.txt', tradeReport)
-  } catch(error) {
+    tradeReport = `\n${new Date(currentTime).toLocaleString()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
+    fs.appendFile('log.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })  } catch(error) {
     console.log(error.message)
   }
 }
@@ -220,8 +221,10 @@ async function newSellOrder() {
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
     wallet[config.base] += oldAssetVolume * currentPrice * (1 - config.fee)
     wallet[config.asset] -= oldAssetVolume
-    tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
-    fs.appendFile('log.txt', tradeReport)
+    tradeReport = `${new Date(currentTime).toLocaleString()} - Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
+    fs.appendFile('log.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })  
   } catch (error) {
     console.log(error.message)
   }
