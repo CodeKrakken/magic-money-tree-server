@@ -9,7 +9,7 @@ const config = {
   asset: 'ETH',
   base: 'USDT',
   tickInterval: 1 * 2000,
-  fee: 0.001
+  fee: 0.0001
 };
 let reports = []
 let buyCountdown = 0
@@ -207,7 +207,7 @@ async function newBuyOrder() {
     wallet[config.base] -= oldBaseVolume
     // buyCountdown = 10
     tradeReport = `${new Date(currentTime).toLocaleString()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
-    fs.appendFile('log.txt', tradeReport, function(err) {
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  } catch(error) {
     console.log(error.message)
@@ -221,8 +221,8 @@ async function newSellOrder() {
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
     wallet[config.base] += oldAssetVolume * currentPrice * (1 - config.fee)
     wallet[config.asset] -= oldAssetVolume
-    tradeReport = `${new Date(currentTime).toLocaleString()} - Sold   ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice})`
-    fs.appendFile('log.txt', tradeReport, function(err) {
+    tradeReport = `${new Date(currentTime).toLocaleString()} - Sold   ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  
   } catch (error) {
