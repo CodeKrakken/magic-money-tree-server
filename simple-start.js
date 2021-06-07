@@ -8,7 +8,7 @@ const binanceClient = new ccxt.binance({
   // 'enableRateLimit': true,
 });
 
-// console.log(binanceClient)
+console.log(binanceClient)
 
 
 
@@ -45,8 +45,6 @@ async function run() {
   const coinPairs = Object.keys(exchangeInfo).filter(pair => pair.includes(config.base))
   console.log('getting markets')
   const markets = await binanceClient.fetch_markets()
-  console.log(markets)
-  console.log(exchangeInfo)
   console.log('getting price history')
   const allPriceHistory = await all(coinPairs, '1m')
   console.log('Got price history')
