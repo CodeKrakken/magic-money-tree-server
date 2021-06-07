@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const axios = require('axios')
 const config = {
-  asset: 'DOGE',
+  asset: 'ETH',
   base: 'USDT',
   tickInterval: 1 * 2000,
   fee: 0.002
@@ -44,6 +44,9 @@ const binanceClient = new ccxt.binance({
   secret: process.env.API_SECRET,
   // 'enableRateLimit': true,
 });
+
+var fs = require('fs')
+
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -200,10 +203,11 @@ async function newBuyOrder() {
     currentPrice = parseFloat(currentPrice)
     oldBaseVolume = wallet[config.base]
     // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
-    wallet[config.asset] += oldBaseVolume / currentPrice
-    wallet[config.base] -= oldBaseVolume * (1 + config.fee)
+    wallet[config.asset] += oldBaseVolume * (1 - config.fee) / currentPrice
+    wallet[config.base] -= oldBaseVolume
     // buyCountdown = 10
     tradeReport = `\nBought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})`
+    fs.appendFile('log.txt', tradeReport)
   } catch(error) {
     console.log(error.message)
   }
@@ -214,9 +218,10 @@ async function newSellOrder() {
     const oldAssetVolume = wallet[config.asset]
     const assetVolume = config.allocation / currentPrice
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
-    wallet[config.base] += oldAssetVolume * currentPrice
-    wallet[config.asset] -= oldAssetVolume * (1 + config.fee)
+    wallet[config.base] += oldAssetVolume * currentPrice * (1 - config.fee)
+    wallet[config.asset] -= oldAssetVolume
     tradeReport = `Sold ${n(oldAssetVolume, 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${wallet[config.asset] * currentPrice})`
+    fs.appendFile('log.txt', tradeReport)
   } catch (error) {
     console.log(error.message)
   }
