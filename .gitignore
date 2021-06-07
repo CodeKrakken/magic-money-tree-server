@@ -2,4 +2,4 @@
 npm-debug.log
 .DS_Store
 /*.env
-log.txt
+trade-history.txt
