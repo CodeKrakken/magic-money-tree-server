@@ -26,15 +26,17 @@ const config = {
 };
 
 const market = `${config.asset}/${config.base}`
-const symbol = `${config.asset}${config.base}`
+// const symbol = `${config.asset}${config.base}`
 
 async function run() {
   await setupDB()
   await fetch()
   let n = exchangeHistory.length
   for (let i = 0; i < n; i++) {
+    console.log(`${i+1}/${n} Adding price history for ${exchangeHistory[i].symbol}`)
     await dbInsert(exchangeHistory[i])
-  }  
+  }
+  console.log('retrieving data from database')
   const data = await dbRetrieve()
   console.log(data)
 }
@@ -51,7 +53,7 @@ async function fetch() {
   let markets = await binance.load_markets()
   // const markets = await binance.fetch_markets()
   console.log("filtering markets")
-  markets = Object.keys(markets).filter(pair => (pair === market))
+  markets = Object.keys(markets).filter(pair => (pair.includes(config.asset) && pair.includes(config.base)))
   console.log('getting exchange history')
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
@@ -62,8 +64,8 @@ async function fetchAllHistory(markets, timeframe) {
   for (let i = 0; i < n; i++) {
     let sym = markets[i].replace('/', '')
     try {
-      console.log(`${i+1}/${n} Fetching price history for ${symbol}`)
-      let h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=${timeframe}`)
+      console.log(`${i+1}/${n} Fetching price history for ${sym}`)
+      let h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=${timeframe}`)
       allHistory.push({
         symbol: sym,
         history: h.data
@@ -80,7 +82,7 @@ async function dbInsert(data) {
 }
 
 async function dbRetrieve() {
-  const data = await collection.findOne();
+  const data = await collection.find();
   return data
 }
 
