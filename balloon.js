@@ -67,7 +67,7 @@ async function dbInsert(data) {
 }
 
 async function dbRetrieve() {
-  const data = await collection.find();
+  const data = await collection.findOne();
   return data
 }
 
