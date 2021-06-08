@@ -60,13 +60,13 @@ async function fetchAllHistory(markets, timeframe) {
   let allHistory = []
   let n = markets.length
   for (let i = 0; i < n; i++) {
-    let symbol = markets[i].replace('/', '')
+    let sym = markets[i].replace('/', '')
     try {
       console.log(`${i+1}/${n} Fetching price history for ${symbol}`)
-      let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=${timeframe}`)
+      let h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=${timeframe}`)
       allHistory.push({
-        'pair': symbol,
-        'prices': history.data
+        symbol: sym,
+        history: h.data
       })
     } catch(error) {
       console.log(error)
