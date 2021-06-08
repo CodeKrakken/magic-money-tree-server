@@ -67,7 +67,7 @@ async function dbInsert(data) {
 }
 
 async function dbRetrieve() {
-  const data = await collection.find();
+  const data = await collection.findOne();
   return data
 }
 
@@ -76,7 +76,7 @@ async function run() {
   await fetch()
   // await dbInsert(exchangeHistory)
   const data = await dbRetrieve()
-  // console.log(data)
+  console.log(data)
 }
 
 run();
