@@ -4,15 +4,15 @@ const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const dbName = "test";
 
 async function run() {
   try {
-    await client.connect();
+    await mongo.connect();
     console.log("Connected correctly to server");
-    const db = client.db(dbName);
+    const db = mongo.db(dbName);
     const col = db.collection("people");
     let personDocument = {
       "name": { "first": "Alan", "second": "Turing" },
@@ -27,7 +27,7 @@ async function run() {
   } catch (err) {
     console.log(err.stack);
   } finally {
-    await client.close();
+    await mongo.close();
   }
 }
 
