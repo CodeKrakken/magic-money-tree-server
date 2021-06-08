@@ -74,9 +74,9 @@ async function dbRetrieve() {
 async function run() {
   await setupDB()
   await fetch()
-  // await dbInsert(exchangeHistory)
+  await dbInsert(exchangeHistory)
   const data = await dbRetrieve()
-  // console.log(data)
+  console.log(data)
 }
 
 run();
