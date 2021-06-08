@@ -28,28 +28,22 @@ const config = {
 const market = `${config.asset}/${config.base}`
 const symbol = `${config.asset}${config.base}`
 
+async function run() {
+  await setupDB()
+  await fetch()
+  let n = exchangeHistory.length
+  for (let i = 0; i < n; i++) {
+    await dbInsert(exchangeHistory[i])
+  }  
+  const data = await dbRetrieve()
+  console.log(data)
+}
+
 async function setupDB() {
   await mongo.connect()
   console.log("Connected correctly to server");
   db = mongo.db(dbName);
   collection = db.collection("symbols")
-}
-
-async function fetchAllHistory(markets, timeframe) {
-  let allHistory = {}
-  let n = markets.length
-  for (let i = 0; i < n; i++) {
-    let symbol = markets[i].replace('/', '')
-    try {
-      console.log(`${i+1}/${n} Fetching price history for ${symbol}`)
-      let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=${timeframe}`)
-      allHistory[symbol] = history.data
-    } catch(error) {
-      console.log(error)
-    }
-  }
-  console.log('iterated over pairs')
-  return allHistory
 }
 
 async function fetch() {
@@ -62,6 +56,25 @@ async function fetch() {
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 
+async function fetchAllHistory(markets, timeframe) {
+  let allHistory = []
+  let n = markets.length
+  for (let i = 0; i < n; i++) {
+    let symbol = markets[i].replace('/', '')
+    try {
+      console.log(`${i+1}/${n} Fetching price history for ${symbol}`)
+      let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=${timeframe}`)
+      allHistory.push({
+        'pair': symbol,
+        'prices': history.data
+      })
+    } catch(error) {
+      console.log(error)
+    }
+  }
+  return allHistory
+}
+
 async function dbInsert(data) {
   const p = await collection.insertOne(data)
 }
@@ -69,14 +82,6 @@ async function dbInsert(data) {
 async function dbRetrieve() {
   const data = await collection.findOne();
   return data
-}
-
-async function run() {
-  await setupDB()
-  await fetch()
-  await dbInsert(exchangeHistory)
-  const data = await dbRetrieve()
-  console.log(data)
 }
 
 run();
