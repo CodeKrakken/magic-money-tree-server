@@ -28,7 +28,7 @@ async function drop() {
 }
 
 async function run() {
-  // await drop()
+  await drop()
   await setupDB()
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
@@ -48,7 +48,8 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).map(market => market = market.replace('/', ''))
+  markets = Object.keys(markets).filter(market => market === "DOGE/BUSD").map(market => market = market.replace('/', ''))
+  // console.log(markets)
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 
@@ -60,7 +61,9 @@ async function fillDatabase() {
     market = markets[i]
     console.log(`${i+1}/${n} Adding price history for ${market}`)
     marketObject = {}
-    marketObject[market] = exchangeHistory[market]
+    marketObject['history'] = exchangeHistory.data.history
+    marketObject['market'] = market
+    console.log(marketObject)
     await dbInsert(marketObject)
   }
 }
@@ -69,7 +72,7 @@ async function fetchAllHistory(markets, timeframe) {
   let allHistory = []
   let n = markets.length
   for (let i = 0; i < n; i++) {
-    let sym = markets[i].replace('/', '')
+    let sym = markets[i]
     try {
       console.log(`${i+1}/${n} Fetching price history for ${sym}`)
       let h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=${timeframe}`)
@@ -103,7 +106,7 @@ async function collateData(data) {
         'endTime': period[6]
       })
     })
-    symbols[symbol.symbol] = {
+    symbols['data'] = {
       'symbol': symbol.symbol,
       'history': periods
     }
