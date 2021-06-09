@@ -38,10 +38,10 @@ function rankSymbols(symbols) {
   outputArray = []
   symbols.forEach(symbol => {
     ema1 = ema(symbol.history, 1, 'close')
-    ema8 = ema(symbol.history, 8, 'close')
+    ema3 = ema(symbol.history, 3, 'close')
     outputArray.push({
       'symbol': symbol.pair,
-      'movement': ema1/ema8 - 1
+      'movement': ema1/ema3 - 1
     })
   })
   return outputArray.sort((a, b) => b.movement - a.movement)

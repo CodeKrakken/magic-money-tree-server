@@ -47,7 +47,7 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).filter(market => market.includes('DOGE')).map(market => market = market.replace('/', ''))
+  markets = Object.keys(markets).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 
@@ -79,7 +79,6 @@ async function fillDatabase() {
   for (let i = 0; i < n; i++) {
     market = markets[i]
     console.log(`${i+1}/${n} Adding price history for ${market}`)
-    console.log(exchangeHistory)
     marketObject = {}
     marketObject['history'] = exchangeHistory.data[market].history
     marketObject['pair'] = market
