@@ -22,14 +22,16 @@ const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
-  // await fetch()
-  // let n = exchangeHistory.length
-  // for (let i = 0; i < n; i++) {
-  //   console.log(`${i+1}/${n} Adding price history for ${exchangeHistory[i].symbol}`)
-  //   await dbInsert(exchangeHistory[i])
-  // }
-  
   // await dbDrop(collection)
+  await fetch()
+  exchangeHistory = await collateData(exchangeHistory)
+  console.log(exchangeHistory)
+  let n = exchangeHistory.length
+  for (let i = 0; i < n; i++) {
+    console.log(`${i+1}/${n} Adding price history for ${exchangeHistory[i].symbol}`)
+    await dbInsert(exchangeHistory[i])
+  }
+  
   const data = await dbRetrieve()
   console.log(data)
 }
@@ -45,7 +47,7 @@ async function fetch() {
   console.log("Fetching markets")
   let markets = await binance.load_markets()
   console.log("Filtering markets")
-  markets = Object.keys(markets)
+  markets = Object.keys(markets).filter(symbol => symbol === "DOGE/BUSD")
   console.log('Getting exchange history')
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
@@ -67,6 +69,25 @@ async function fetchAllHistory(markets, timeframe) {
     }
   }
   return allHistory
+}
+
+async function collateData(data) {
+  let symbols = {}
+  data.forEach(symbol => {
+    let periods = []
+    symbol.history.forEach(period => {
+      periods.push({
+        'startTime': period[0],
+        'open': period[1],
+        'high': period[2],
+        'low': period[3],
+        'close': period[4],
+        'endTime': period[6]
+      })
+    })
+    symbols[symbol.symbol] = periods
+  })
+  return symbols
 }
 
 async function dbInsert(data) {
