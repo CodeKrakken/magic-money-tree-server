@@ -18,6 +18,7 @@ async function run() {
   await setupDB()
   exchangeHistory = await dbRetrieve()
   rankedSymbols = rankSymbols(exchangeHistory)
+  console.log(rankedSymbols)
 }
 
 async function setupDB() {
@@ -34,15 +35,16 @@ async function dbRetrieve() {
 }
 
 function rankSymbols(symbols) {
-  outputObject = {}
+  outputArray = []
   symbols.forEach(symbol => {
     ema1 = ema(symbol.history, 1, 'close')
-    ema3 = ema(symbol.history, 3, 'close')
-    console.log(symbol.pair)
-    console.log(ema1)
-    console.log(ema3)
+    ema8 = ema(symbol.history, 8, 'close')
+    outputArray.push({
+      'symbol': symbol.pair,
+      'movement': ema1/ema8 - 1
+    })
   })
-
+  return outputArray.sort((a, b) => b.movement - a.movement)
 }
 
 function ema(rawData, time, parameter) {
