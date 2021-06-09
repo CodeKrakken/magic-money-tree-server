@@ -3,6 +3,7 @@
 require('dotenv').config();
 const axios = require('axios')
 const ccxt = require('ccxt');
+const fs = require('fs')
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -18,6 +19,7 @@ const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: 
 let db;
 let collection;
 let exchangeHistory;
+let markets;
 const dbName = "magic-money-tree";
 
 async function run() {
@@ -25,31 +27,37 @@ async function run() {
   // await dbDrop(collection)
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
-  console.log(exchangeHistory)
-  let n = exchangeHistory.length
-  for (let i = 0; i < n; i++) {
-    console.log(`${i+1}/${n} Adding price history for ${exchangeHistory[i].symbol}`)
-    await dbInsert(exchangeHistory[i])
-  }
-  
+  await fillDatabase()
   const data = await dbRetrieve()
-  console.log(data)
+  // fs.appendFile('exchange-data.txt', `${data}`, function(err) {
+  //   if (err) return console.log(err);
+  // })
 }
 
 async function setupDB() {
   await mongo.connect()
-  console.log("Connected correctly to server");
   db = mongo.db(dbName);
   collection = db.collection("symbols")
+  console.log("Set up database");
 }
 
 async function fetch() {
-  console.log("Fetching markets")
-  let markets = await binance.load_markets()
-  console.log("Filtering markets")
-  markets = Object.keys(markets).filter(symbol => symbol === "DOGE/BUSD")
-  console.log('Getting exchange history')
+  console.log("Fetching summary")
+  markets = await binance.load_markets()
+  console.log("Filtering summary (for testing)")
+  markets = Object.keys(markets).filter(symbol => symbol === "DOGE/BUSD").map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets, '1m')
+}
+
+async function fillDatabase() {
+  let n = markets.length
+  for (let i = 0; i < n; i++) {
+    market = markets[i]
+    console.log(`${i+1}/${n} Adding price history for ${market}`)
+    marketObject = {}
+    marketObject[market] = exchangeHistory[market]
+    await dbInsert(marketObject)
+  }
 }
 
 async function fetchAllHistory(markets, timeframe) {
