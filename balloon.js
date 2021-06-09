@@ -8,7 +8,6 @@ const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.n
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db;
 let collection;
-let rankedSymbols = []
 let exchangeHistory
 let ema1
 let ema3
@@ -17,8 +16,9 @@ const dbName = "magic-money-tree";
 async function run() {
   await setupDB()
   exchangeHistory = await dbRetrieve()
-  rankedSymbols = rankSymbols(exchangeHistory)
-  console.log(rankedSymbols)
+  rankedByMovement = rankMovement(exchangeHistory)
+  console.log(rankedByMovement)
+  rankedByVolume = rankVolume(exchangeHistory)
 }
 
 async function setupDB() {
@@ -34,7 +34,7 @@ async function dbRetrieve() {
   return data
 }
 
-function rankSymbols(symbols) {
+function rankMovement(symbols) {
   outputArray = []
   symbols.forEach(symbol => {
     ema1 = ema(symbol.history, 1, 'close')
@@ -45,6 +45,10 @@ function rankSymbols(symbols) {
     })
   })
   return outputArray.sort((a, b) => b.movement - a.movement)
+}
+
+function rankVolume(symbols) {
+  // console.log(symbols)
 }
 
 function ema(rawData, time, parameter) {

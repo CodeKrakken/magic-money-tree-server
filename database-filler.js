@@ -3,7 +3,6 @@
 require('dotenv').config();
 const axios = require('axios')
 const ccxt = require('ccxt');
-const fs = require('fs')
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -33,7 +32,7 @@ async function run() {
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
   await fillDatabase()
-  const data = await dbRetrieve()
+  run()
 }
 
 async function setupDB() {
@@ -126,3 +125,4 @@ async function dbDrop(col) {
 }
 
 run();
+// let timer = setInterval(run, 1000)
