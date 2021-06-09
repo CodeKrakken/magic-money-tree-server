@@ -22,16 +22,19 @@ let exchangeHistory;
 let markets;
 const dbName = "magic-money-tree";
 
-async function run() {
+async function drop() {
   await setupDB()
-  // await dbDrop(collection)
+  await dbDrop(collection)
+}
+
+async function run() {
+  await drop()
+  await setupDB()
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
   await fillDatabase()
   const data = await dbRetrieve()
-  // fs.appendFile('exchange-data.txt', `${data}`, function(err) {
-  //   if (err) return console.log(err);
-  // })
+  console.log(data)
 }
 
 async function setupDB() {
@@ -45,9 +48,11 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).filter(symbol => symbol === "DOGE/BUSD").map(market => market = market.replace('/', ''))
+  markets = Object.keys(markets).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
+
+// YOYOWBTC, YOYOWETH, YOYOWBNB, BSVUSDC, BSVPAX, BSVTUSD not working - filter out?
 
 async function fillDatabase() {
   let n = markets.length
@@ -74,6 +79,9 @@ async function fetchAllHistory(markets, timeframe) {
       })
     } catch(error) {
       console.log(error)
+      console.log(markets)
+      markets.splice(i, 1)
+      console.log(markets)
     }
   }
   return allHistory
@@ -93,7 +101,10 @@ async function collateData(data) {
         'endTime': period[6]
       })
     })
-    symbols[symbol.symbol] = periods
+    symbols[symbol.symbol] = {
+      'symbol': symbol.symbol,
+      'history': periods
+    }
   })
   return symbols
 }

@@ -15,9 +15,9 @@ const dbName = "magic-money-tree";
 async function run() {
   await setupDB()
   exchangeHistory = await dbRetrieve()
-  exchangeHistory = await collateData(exchangeHistory)
-  // rankedSymbols = rankSymbols(exchangeHistory)
   console.log(exchangeHistory)
+  // rankedSymbols = rankSymbols(exchangeHistory)
+  // console.log(exchangeHistory)
 }
 
 async function setupDB() {
@@ -31,25 +31,6 @@ async function dbRetrieve() {
   console.log('Retrieving data from database')
   const data = await collection.find().toArray();
   return data
-}
-
-async function collateData(data) {
-  let symbols = {}
-  data.forEach(symbol => {
-    let periods = []
-    symbol.history.forEach(period => {
-      periods.push({
-        'startTime': period[0],
-        'open': period[1],
-        'high': period[2],
-        'low': period[3],
-        'close': period[4],
-        'endTime': period[6]
-      })
-    })
-    symbols[symbol] = periods
-  })
-  return symbols
 }
 
 function rankSymbols(symbols) {
