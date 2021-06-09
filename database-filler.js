@@ -28,7 +28,7 @@ async function drop() {
 }
 
 async function run() {
-  await drop()
+  // await drop()
   await setupDB()
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
@@ -81,6 +81,8 @@ async function fetchAllHistory(markets, timeframe) {
       console.log(error)
       console.log(markets)
       markets.splice(i, 1)
+      i--
+      n--
       console.log(markets)
     }
   }
