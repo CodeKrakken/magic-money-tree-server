@@ -10,6 +10,8 @@ let db;
 let collection;
 let rankedSymbols = []
 let exchangeHistory
+let ema1
+let ema3
 const dbName = "magic-money-tree";
 
 async function run() {
@@ -34,8 +36,9 @@ async function dbRetrieve() {
 function rankSymbols(symbols) {
   outputObject = {}
   symbols.forEach(symbol => {
-    const ema1 = ema(symbol.history, 1, 'close')
-    const ema3 = ema(symbol.history, 3, 'close')
+    ema1 = ema(symbol.history, 1, 'close')
+    ema3 = ema(symbol.history, 3, 'close')
+    console.log(symbol.pair)
     console.log(ema1)
     console.log(ema3)
   })

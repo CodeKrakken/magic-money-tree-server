@@ -34,7 +34,6 @@ async function run() {
   exchangeHistory = await collateData(exchangeHistory)
   await fillDatabase()
   const data = await dbRetrieve()
-  console.log(data)
 }
 
 async function setupDB() {
@@ -48,52 +47,51 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).filter(market => market === "DOGE/BUSD").map(market => market = market.replace('/', ''))
-  // console.log(markets)
+  markets = Object.keys(markets).filter(market => market.includes('DOGE')).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 
-// YOYOWBTC, YOYOWETH, YOYOWBNB, BSVUSDC, BSVPAX, BSVTUSD not working - filter out?
-
-async function fillDatabase() {
-  let n = markets.length
-  for (let i = 0; i < n; i++) {
-    market = markets[i]
-    console.log(`${i+1}/${n} Adding price history for ${market}`)
-    marketObject = {}
-    marketObject['history'] = exchangeHistory.data.history
-    marketObject['market'] = market
-    console.log(marketObject)
-    await dbInsert(marketObject)
-  }
-}
-
 async function fetchAllHistory(markets, timeframe) {
+  let h
   let allHistory = []
   let n = markets.length
   for (let i = 0; i < n; i++) {
     let sym = markets[i]
     try {
       console.log(`${i+1}/${n} Fetching price history for ${sym}`)
-      let h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=${timeframe}`)
+      h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=${timeframe}`)
       allHistory.push({
         symbol: sym,
         history: h.data
       })
     } catch(error) {
       console.log(error)
-      console.log(markets)
       markets.splice(i, 1)
       i--
       n--
-      console.log(markets)
     }
   }
   return allHistory
 }
 
+async function fillDatabase() {
+  let n = markets.length
+  for (let i = 0; i < n; i++) {
+    market = markets[i]
+    console.log(`${i+1}/${n} Adding price history for ${market}`)
+    console.log(exchangeHistory)
+    marketObject = {}
+    marketObject['history'] = exchangeHistory.data[market].history
+    marketObject['pair'] = market
+    await dbInsert(marketObject)
+  }
+}
+
+
 async function collateData(data) {
-  let symbols = {}
+  let symbols = {
+    data: {}
+  }
   data.forEach(symbol => {
     let periods = []
     symbol.history.forEach(period => {
@@ -106,7 +104,7 @@ async function collateData(data) {
         'endTime': period[6]
       })
     })
-    symbols['data'] = {
+    symbols['data'][symbol.symbol] = {
       'symbol': symbol.symbol,
       'history': periods
     }
