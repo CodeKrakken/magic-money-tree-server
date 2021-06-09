@@ -21,13 +21,7 @@ let exchangeHistory;
 let markets;
 const dbName = "magic-money-tree";
 
-async function drop() {
-  await setupDB()
-  await dbDrop(collection)
-}
-
 async function run() {
-  await drop()
   await setupDB()
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
@@ -46,7 +40,7 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).map(market => market = market.replace('/', ''))
+  markets = Object.keys(markets).filter(market => market.includes('DOGE')).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 
@@ -58,7 +52,7 @@ async function fetchAllHistory(markets, timeframe) {
     let sym = markets[i]
     try {
       console.log(`${i+1}/${n} Fetching price history for ${sym}`)
-      h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=${timeframe}`)
+      h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=1m`)
       allHistory.push({
         symbol: sym,
         history: h.data
@@ -85,7 +79,6 @@ async function fillDatabase() {
   }
 }
 
-
 async function collateData(data) {
   let symbols = {
     data: {}
@@ -111,18 +104,13 @@ async function collateData(data) {
 }
 
 async function dbInsert(data) {
-  const p = await collection.insertOne(data)
-}
+  console.log(data)
+  const query = { pair: data.pair };
+  const options = {
+    upsert: true,
+  };
+  const result = await collection.replaceOne(query, data, options);
 
-async function dbRetrieve() {
-  console.log('Retrieving data from database')
-  const data = await collection.find().toArray();
-  return data
-}
-
-async function dbDrop(col) {
-  const p = await col.drop()
 }
 
 run();
-// let timer = setInterval(run, 1000)
