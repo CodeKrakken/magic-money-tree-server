@@ -37,8 +37,9 @@ async function run() {
     await dbInsert(exchangeHistory[i])
   }
   console.log('Retrieving data from database')
+  // await dbDrop(collection)
   const data = await dbRetrieve()
-  console.log(data)
+  console.log(data[0].history[0])
 }
 
 async function setupDB() {
@@ -53,7 +54,7 @@ async function fetch() {
   let markets = await binance.load_markets()
   // const markets = await binance.fetch_markets()
   console.log("Filtering markets")
-  markets = Object.keys(markets).filter(pair => (pair.includes(config.asset) && pair.includes(config.base)))
+  markets = Object.keys(markets) // .filter(pair => (pair.includes(config.asset) && pair.includes(config.base)))
   console.log('Getting exchange history')
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
@@ -82,8 +83,12 @@ async function dbInsert(data) {
 }
 
 async function dbRetrieve() {
-  const data = await collection.find();
+  const data = await collection.find().toArray();
   return data
+}
+
+async function dbDrop(col) {
+  const p = await col.drop()
 }
 
 run();
