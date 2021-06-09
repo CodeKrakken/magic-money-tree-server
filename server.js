@@ -1,3 +1,5 @@
+// Trades small amounts with buy and sell limit orders created at the same time to prevent a loss. Timer countdown between buys to prevent money getting stuck on devalued stock
+
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
