@@ -36,7 +36,7 @@ async function run() {
     console.log(`${i+1}/${n} Adding price history for ${exchangeHistory[i].symbol}`)
     await dbInsert(exchangeHistory[i])
   }
-  console.log('retrieving data from database')
+  console.log('Retrieving data from database')
   const data = await dbRetrieve()
   console.log(data)
 }
@@ -49,12 +49,12 @@ async function setupDB() {
 }
 
 async function fetch() {
-  console.log("fetching markets")
+  console.log("Fetching markets")
   let markets = await binance.load_markets()
   // const markets = await binance.fetch_markets()
-  console.log("filtering markets")
+  console.log("Filtering markets")
   markets = Object.keys(markets).filter(pair => (pair.includes(config.asset) && pair.includes(config.base)))
-  console.log('getting exchange history')
+  console.log('Getting exchange history')
   exchangeHistory = await fetchAllHistory(markets, '1m')
 }
 

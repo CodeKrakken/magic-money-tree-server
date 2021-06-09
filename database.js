@@ -13,7 +13,7 @@ async function run() {
     await mongo.connect();
     console.log("Connected correctly to server");
     const db = mongo.db(dbName);
-    const col = db.collection("people");
+    db.col = db.collection("people");
     let personDocument = {
       "name": { "first": "Alan", "second": "Turing" },
       "birth": new Date(1912, 5, 23),
@@ -21,8 +21,8 @@ async function run() {
       "contribs": ["Turing machine", "Turing test", "Turingery"],
       "views": 1250000
     }
-    const p = await col.insertOne(personDocument);
-    const myDoc = await col.findOne();
+    const p = await db.col.insertOne(personDocument);
+    const myDoc = await db.col.find().toArray();
     console.log(myDoc)
   } catch (err) {
     console.log(err.stack);
