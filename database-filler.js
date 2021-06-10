@@ -3,7 +3,6 @@
 require('dotenv').config();
 const axios = require('axios')
 const ccxt = require('ccxt');
-const fs = require('fs');
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -24,7 +23,7 @@ const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
-  await mainProgram()
+  await fetch()
 }
 
 async function setupDB() {
@@ -33,26 +32,20 @@ async function setupDB() {
   collection = db.collection("symbols")
   console.log("Set up database");
 }
-
-async function mainProgram() {
-  await fetch()
-  // exchangeHistory = await collateData(exchangeHistory)
-  // await fillDatabase()
-  mainProgram()
-}
  
 async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   markets = Object.keys(markets).filter(market => goodMarket(market)).map(market => market = market.replace('/', ''))
-  exchangeHistory = await fetchAllHistory(markets)
+  exchangeHistory = await fetchAndInsert(markets)
+  fetch()
 }
 
 function goodMarket(market) {
   return markets[market].active
 }
 
-async function fetchAllHistory(markets) {
+async function fetchAndInsert(markets) {
   let h
   let n = markets.length
   for (let i = 0; i < n; i++) {
@@ -75,19 +68,6 @@ async function fetchAllHistory(markets) {
       await dbInsert(marketObject)
     }
   }
-}
-
-async function fillDatabase() {
-  let n = markets.length
-  for (let i = 0; i < n; i++) {
-    market = markets[i]
-    console.log(`${i+1}/${n} Adding price history for ${market}`)
-    marketObject = {}
-    marketObject['history'] = exchangeHistory.data[market].history
-    marketObject['pair'] = market
-    await dbInsert(marketObject)
-  }
-  console.log('Database filled.')
 }
 
 async function collateData(data) {

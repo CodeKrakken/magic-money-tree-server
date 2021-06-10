@@ -15,13 +15,17 @@ const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
+  await mainProgram()
+}
+
+async function mainProgram() {
   exchangeHistory = await dbRetrieve()
-  rankedByMovement = rankMovement(exchangeHistory)
+  rankedByMovement = await rankMovement(exchangeHistory)
   let prettyTime = new Date(exchangeHistory[0]['history'][499]['endTime']).toLocaleString()
   console.log(`Movement chart at ${prettyTime}`)
   console.log(rankedByMovement)
-  rankedByVolume = rankVolume(exchangeHistory)
-  // const timer = setInterval(run, )
+  mainProgram()
+  // rankedByVolume = rankVolume(exchangeHistory)
 }
 
 async function setupDB() {
@@ -33,7 +37,7 @@ async function setupDB() {
 
 async function dbRetrieve() {
   console.log('Retrieving data from database')
-  const data = await collection.find().toArray();
+  data = await collection.find().toArray();
   return data
 }
 
