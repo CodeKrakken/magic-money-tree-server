@@ -3,6 +3,7 @@
 require('dotenv').config();
 const axios = require('axios')
 const ccxt = require('ccxt');
+const fs = require('fs');
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -24,10 +25,14 @@ const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
+  await mainProgram()
+}
+
+async function mainProgram() {
   await fetch()
   exchangeHistory = await collateData(exchangeHistory)
   await fillDatabase()
-  // run()
+  mainProgram()
 }
 
 async function setupDB() {
@@ -40,8 +45,9 @@ async function setupDB() {
 async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
-  console.log("Filtering summary (for testing)")
-  markets = Object.keys(markets).filter(market => market.includes('')).map(market => market = market.replace('/', ''))
+  console.log(markets)
+  // markets = Object.keys(markets).filter(market => markets[market].symbol.includes("DOGE"))
+  markets = Object.keys(markets).filter(market => markets[market].active === true).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets)
 }
 
@@ -62,6 +68,9 @@ async function fetchAllHistory(markets) {
           history: h.data
         })
       } else {
+        fs.appendFile('weird-markets.txt', `${markets[i]} - fetchTime: ${fetchTime} first entry: ${h.data[0][0]} = ${fetchTime - h.data[0][0]}\n\n`, function(err) {
+          if (err) return console.log(err);
+        })
         markets.splice(i, 1)
         i--
         n--
@@ -87,6 +96,7 @@ async function fillDatabase() {
     marketObject['pair'] = market
     await dbInsert(marketObject)
   }
+  console.log('Database filled.')
 }
 
 async function collateData(data) {

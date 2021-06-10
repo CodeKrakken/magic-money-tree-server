@@ -19,6 +19,7 @@ async function run() {
   rankedByMovement = rankMovement(exchangeHistory)
   console.log(rankedByMovement)
   rankedByVolume = rankVolume(exchangeHistory)
+  // const timer = setInterval(run, )
 }
 
 async function setupDB() {
