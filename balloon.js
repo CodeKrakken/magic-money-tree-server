@@ -17,6 +17,8 @@ async function run() {
   await setupDB()
   exchangeHistory = await dbRetrieve()
   rankedByMovement = rankMovement(exchangeHistory)
+  let prettyTime = new Date(exchangeHistory[0]['history'][499]['endTime']).toLocaleString()
+  console.log(`Movement chart at ${prettyTime}`)
   console.log(rankedByMovement)
   rankedByVolume = rankVolume(exchangeHistory)
   // const timer = setInterval(run, )
@@ -42,7 +44,9 @@ function rankMovement(symbols) {
     ema3 = ema(symbol.history, 3, 'close')
     outputArray.push({
       'symbol': symbol.pair,
-      'movement': ema1/ema3 - 1
+      'movement': ema1/ema3 - 1,
+      'ema1': ema1,
+      'ema3': ema3
     })
   })
   return outputArray.sort((a, b) => b.movement - a.movement)

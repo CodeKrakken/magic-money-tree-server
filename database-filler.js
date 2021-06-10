@@ -20,19 +20,11 @@ let db;
 let collection;
 let exchangeHistory;
 let markets;
-let fetchTime;
 const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
   await mainProgram()
-}
-
-async function mainProgram() {
-  await fetch()
-  exchangeHistory = await collateData(exchangeHistory)
-  await fillDatabase()
-  mainProgram()
 }
 
 async function setupDB() {
@@ -42,39 +34,47 @@ async function setupDB() {
   console.log("Set up database");
 }
 
+async function mainProgram() {
+  await fetch()
+  // exchangeHistory = await collateData(exchangeHistory)
+  // await fillDatabase()
+  mainProgram()
+}
+ 
 async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
-  // console.log(markets)
   markets = Object.keys(markets).filter(market => goodMarket(market)).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets)
 }
 
 function goodMarket(market) {
-  return markets[market].active && market.includes("DOGE")
+  return markets[market].active
 }
 
 async function fetchAllHistory(markets) {
   let h
-  let allHistory = []
   let n = markets.length
   for (let i = 0; i < n; i++) {
     let sym = markets[i]
     try {
-      console.log(`${i+1}/${n} Fetching price history for ${sym}`)
+      console.log(`Fetching price history for ${sym} ${i+1}/${n}`)
       h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=1m`)
-      allHistory.push({
-        symbol: sym,
-        history: h.data
-      })
     } catch(error) {
-      console.log(error)
       markets.splice(i, 1)
       i--
       n--
     }
+    if (markets.includes(sym)) {
+      console.log(`  Adding price history for ${sym}`)
+      marketObject = {
+        history: h.data,
+        symbol: sym
+      }
+      marketObject = await collateData(marketObject)
+      await dbInsert(marketObject)
+    }
   }
-  return allHistory
 }
 
 async function fillDatabase() {
@@ -91,27 +91,22 @@ async function fillDatabase() {
 }
 
 async function collateData(data) {
-  let symbols = {
-    data: {}
-  }
-  data.forEach(symbol => {
-    let periods = []
-    symbol.history.forEach(period => {
-      periods.push({
-        'startTime': period[0],
-        'open': period[1],
-        'high': period[2],
-        'low': period[3],
-        'close': period[4],
-        'endTime': period[6]
-      })
+  let periods = []
+  data.history.forEach(period => {
+    periods.push({
+      'startTime': period[0],
+      'open': period[1],
+      'high': period[2],
+      'low': period[3],
+      'close': period[4],
+      'endTime': period[6]
     })
-    symbols['data'][symbol.symbol] = {
-      'symbol': symbol.symbol,
-      'history': periods
-    }
   })
-  return symbols
+  outputObject = {
+    'pair': data.symbol,
+    'history': periods
+  }
+  return outputObject
 }
 
 async function dbInsert(data) {
