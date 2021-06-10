@@ -45,9 +45,9 @@ async function setupDB() {
 async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
-  console.log(markets)
-  // markets = Object.keys(markets).filter(market => markets[market].symbol.includes("DOGE"))
-  markets = Object.keys(markets).filter(market => markets[market].active === true).map(market => market = market.replace('/', ''))
+  // console.log(markets)
+  markets = Object.keys(markets).filter(market => market.includes("DOGE")).map(market => market = market.replace('/', ''))
+  // markets = Object.keys(markets).filter(market => markets[market].active === true)
   exchangeHistory = await fetchAllHistory(markets)
 }
 
