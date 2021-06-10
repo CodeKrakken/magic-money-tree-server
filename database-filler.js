@@ -63,21 +63,10 @@ async function fetchAllHistory(markets) {
     try {
       console.log(`${i+1}/${n} Fetching price history for ${sym}`)
       h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=1m`)
-      let d = new Date();
-      fetchTime = d.getTime()
-      if (fetchTime - h.data[0][0] < 30000000) {
-        allHistory.push({
-          symbol: sym,
-          history: h.data
-        })
-      } else {
-        fs.appendFile('weird-markets.txt', `${markets[i]} - fetchTime: ${fetchTime} first entry: ${h.data[0][0]} = ${fetchTime - h.data[0][0]}\n\n`, function(err) {
-          if (err) return console.log(err);
-        })
-        markets.splice(i, 1)
-        i--
-        n--
-      }
+      allHistory.push({
+        symbol: sym,
+        history: h.data
+      })
     } catch(error) {
       console.log(error)
       markets.splice(i, 1)
@@ -85,7 +74,6 @@ async function fetchAllHistory(markets) {
       n--
     }
   }
-
   return allHistory
 }
 
