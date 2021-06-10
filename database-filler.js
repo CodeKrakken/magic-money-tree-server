@@ -46,9 +46,12 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   // console.log(markets)
-  markets = Object.keys(markets).filter(market => market.includes("DOGE")).map(market => market = market.replace('/', ''))
-  // markets = Object.keys(markets).filter(market => markets[market].active === true)
+  markets = Object.keys(markets).filter(market => goodMarket(market)).map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAllHistory(markets)
+}
+
+function goodMarket(market) {
+  return markets[market].active && market.includes("DOGE")
 }
 
 async function fetchAllHistory(markets) {
