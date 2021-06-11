@@ -63,7 +63,7 @@ async function fetchAndInsert(symbols) {
       n--
     }
     try {
-      if (symbols.includes(sym) && sufficientVolume(i)) {
+      if (symbols.includes(sym) && await sufficientVolume(i)) {
         console.log(`  Adding price history for ${sym}`)
         symbolObject = {
           history: h.data,
@@ -71,6 +71,8 @@ async function fetchAndInsert(symbols) {
         }
         symbolObject = await collateData(symbolObject)
         await dbInsert(symbolObject)
+      } else {
+        console.log('Insufficient volume')
       }
     } catch (error) {
       console.log(error.message)
@@ -88,12 +90,15 @@ async function sufficientVolume(i) {
     let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
     let totalVolume = parseFloat(twentyFourHour.data.volume)
     volumeDollarValue = totalVolume * dollarPrice
-    console.log(volumeDollarValue)
   } else {
     fs.appendFile('missing-pairs.txt', dollarSymbol + '\n', function(err) {
       if (err) return console.log(err);
     })
+    volumeDollarValue = 0
+    console.log('No dollar comparison available')
+    return false
   }
+  return volumeDollarValue >= 50000000
 }
 
 async function collateData(data) {
