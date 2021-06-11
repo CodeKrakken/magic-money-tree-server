@@ -19,6 +19,7 @@ let db;
 let collection;
 let exchangeHistory;
 let markets;
+let symbols;
 const dbName = "magic-money-tree";
 
 async function run() {
@@ -36,8 +37,9 @@ async function setupDB() {
 async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
-  markets = Object.keys(markets).filter(market => goodMarket(market)).map(market => market = market.replace('/', ''))
-  exchangeHistory = await fetchAndInsert(markets)
+  markets = Object.keys(markets).filter(market => goodMarket(market))
+  symbols = markets.map(market => market = market.replace('/', ''))
+  exchangeHistory = await fetchAndInsert(symbols)
   fetch()
 }
 
@@ -45,35 +47,45 @@ function goodMarket(market) {
   return markets[market].active
 }
 
-async function fetchAndInsert(markets) {
+async function fetchAndInsert(symbols) {
   let h
-  let n = markets.length
+  let n = symbols.length
   for (let i = 0; i < n; i++) {
-    let sym = markets[i]
+    let sym = symbols[i]
     try {
       console.log(`Fetching price history for ${sym} ${i+1}/${n}`)
       h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=1m`)
     } catch(error) {
+      symbols.splice(i, 1)
       markets.splice(i, 1)
       i--
       n--
     }
     try {
       let last = h.data.length-1
-      if (markets.includes(sym) && h.data[last][5] > 100) {
+      if (symbols.includes(sym) && sufficientVolume(h.data, sym, i)) {
         console.log(`  Adding price history for ${sym}`)
-        marketObject = {
+        symbolObject = {
           history: h.data,
           symbol: sym
         }
-        marketObject = await collateData(marketObject)
-        await dbInsert(marketObject)
+        symbolObject = await collateData(symbolObject)
+        await dbInsert(symbolObject)
       }
     } catch (error) {
       console.log(h.data.length)
     }
-    
   }
+}
+
+async function sufficientVolume(data, sym, i) {
+  let totalVolume = 0
+  data.forEach(datum => {
+    totalVolume += parseFloat(datum[5])
+  })
+  console.log(totalVolume)
+  console.log(sym)
+  console.log(markets[i])
 }
 
 async function collateData(data) {
