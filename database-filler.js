@@ -10,6 +10,7 @@ const binance = new ccxt.binance({
   // 'enableRateLimit': true,
 });
 
+const fs = require('fs');
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
@@ -84,11 +85,23 @@ async function sufficientVolume(data, sym, i) {
   })
   let market = markets[i]
   let asset = market.substring(0, market.indexOf('/'))
-  let base = market.substring(market.indexOf('/')+1)
-  console.log(totalVolume)
-  console.log(sym)
-  console.log(asset)
-  console.log(base)
+  let newMarket = `${asset}/USDT`
+  let newSymbol = `${asset}USDT`
+  if (markets.includes(newMarket)) {
+    let dollarPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${newSymbol}`)
+    let dollarPrice = dollarPriceRaw.data.price
+    volumeDollarValue = totalVolume * dollarPrice
+    console.log(volumeDollarValue)
+  } else {
+    fs.appendFile('missing-pairs.txt', newSymbol + '\n', function(err) {
+      if (err) return console.log(err);
+    })
+  }
+  
+  // console.log(totalVolume)
+  // console.log(sym)
+  // console.log(asset)
+  // console.log(base)
 }
 
 async function collateData(data) {
