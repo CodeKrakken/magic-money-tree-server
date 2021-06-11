@@ -35,7 +35,9 @@ async function setupDB() {
 }
 
 async function dbRetrieve() {
-  console.log('Retrieving data from database')
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  console.log(`${prettyTime} - Retrieving data from database`)
   data = await collection.find().toArray();
   return data
 }
@@ -50,6 +52,7 @@ function rankMovement(symbols) {
       'movement': ema1/ema3 - 1,
       'ema1': ema1,
       'ema3': ema3,
+      'volume': symbol.history[499].volume,
       'fetched': new Date(symbol.history[symbol.history.length-1].endTime + 1000).toLocaleString()
     })
   })

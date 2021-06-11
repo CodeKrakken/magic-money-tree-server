@@ -58,7 +58,7 @@ async function fetchAndInsert(markets) {
       i--
       n--
     }
-    if (markets.includes(sym)) {
+    if (markets.includes(sym) && h.data[499][5] > 100) {
       console.log(`  Adding price history for ${sym}`)
       marketObject = {
         history: h.data,
@@ -66,6 +66,10 @@ async function fetchAndInsert(markets) {
       }
       marketObject = await collateData(marketObject)
       await dbInsert(marketObject)
+    } else {
+      markets.splice(i, 1)
+      i--
+      n--
     }
   }
 }
@@ -79,6 +83,7 @@ async function collateData(data) {
       'high': period[2],
       'low': period[3],
       'close': period[4],
+      'volume': period[5],
       'endTime': period[6]
     })
   })
