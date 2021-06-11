@@ -63,7 +63,7 @@ async function fetchAndInsert(symbols) {
       n--
     }
     try {
-      if (symbols.includes(sym) && sufficientVolume(h.data, sym, i)) {
+      if (symbols.includes(sym) && sufficientVolume(i)) {
         console.log(`  Adding price history for ${sym}`)
         symbolObject = {
           history: h.data,
@@ -78,18 +78,15 @@ async function fetchAndInsert(symbols) {
   }
 }
 
-async function sufficientVolume(data, sym, i) {
-  let totalVolume = 0
-  data.forEach(datum => {
-    totalVolume += parseFloat(datum[5])
-  })
+async function sufficientVolume(i) {
   let market = markets[i]
   let asset = market.substring(0, market.indexOf('/'))
   let newMarket = `${asset}/USDT`
   let newSymbol = `${asset}USDT`
   if (markets.includes(newMarket)) {
-    let dollarPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${newSymbol}`)
-    let dollarPrice = dollarPriceRaw.data.price
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${newSymbol}`)
+    let dollarPrice = twentyFourHour.data.weightedAveragePrice
+    let totalVolume = twentyFourHour.data.volume
     volumeDollarValue = totalVolume * dollarPrice
     console.log(volumeDollarValue)
   } else {
