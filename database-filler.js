@@ -73,7 +73,7 @@ async function fetchAndInsert(symbols) {
         await dbInsert(symbolObject)
       }
     } catch (error) {
-      console.log(h.data.length)
+      console.log(error.message)
     }
   }
 }
@@ -82,23 +82,18 @@ async function sufficientVolume(i) {
   let market = markets[i]
   let asset = market.substring(0, market.indexOf('/'))
   let newMarket = `${asset}/USDT`
-  let newSymbol = `${asset}USDT`
+  let dollarSymbol = `${asset}USDT`
   if (markets.includes(newMarket)) {
-    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${newSymbol}`)
-    let dollarPrice = twentyFourHour.data.weightedAveragePrice
-    let totalVolume = twentyFourHour.data.volume
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${dollarSymbol}`)
+    let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
+    let totalVolume = parseFloat(twentyFourHour.data.volume)
     volumeDollarValue = totalVolume * dollarPrice
     console.log(volumeDollarValue)
   } else {
-    fs.appendFile('missing-pairs.txt', newSymbol + '\n', function(err) {
+    fs.appendFile('missing-pairs.txt', dollarSymbol + '\n', function(err) {
       if (err) return console.log(err);
     })
   }
-  
-  // console.log(totalVolume)
-  // console.log(sym)
-  // console.log(asset)
-  // console.log(base)
 }
 
 async function collateData(data) {
