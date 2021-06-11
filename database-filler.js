@@ -62,7 +62,6 @@ async function fetchAndInsert(symbols) {
       n--
     }
     try {
-      let last = h.data.length-1
       if (symbols.includes(sym) && sufficientVolume(h.data, sym, i)) {
         console.log(`  Adding price history for ${sym}`)
         symbolObject = {
@@ -83,9 +82,13 @@ async function sufficientVolume(data, sym, i) {
   data.forEach(datum => {
     totalVolume += parseFloat(datum[5])
   })
+  let market = markets[i]
+  let asset = market.substring(0, market.indexOf('/'))
+  let base = market.substring(market.indexOf('/')+1)
   console.log(totalVolume)
   console.log(sym)
-  console.log(markets[i])
+  console.log(asset)
+  console.log(base)
 }
 
 async function collateData(data) {
