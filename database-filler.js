@@ -58,19 +58,21 @@ async function fetchAndInsert(markets) {
       i--
       n--
     }
-    if (markets.includes(sym) && h.data[499][5] > 100) {
-      console.log(`  Adding price history for ${sym}`)
-      marketObject = {
-        history: h.data,
-        symbol: sym
+    try {
+      let last = h.data.length-1
+      if (markets.includes(sym) && h.data[last][5] > 100) {
+        console.log(`  Adding price history for ${sym}`)
+        marketObject = {
+          history: h.data,
+          symbol: sym
+        }
+        marketObject = await collateData(marketObject)
+        await dbInsert(marketObject)
       }
-      marketObject = await collateData(marketObject)
-      await dbInsert(marketObject)
-    } else {
-      markets.splice(i, 1)
-      i--
-      n--
+    } catch (error) {
+      console.log(h.data.length)
     }
+    
   }
 }
 
