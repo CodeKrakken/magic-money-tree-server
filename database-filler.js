@@ -21,6 +21,16 @@ let collection;
 let exchangeHistory;
 let markets;
 let symbols;
+let tallyObject = {
+  assets: {
+    unique: 0,
+    total: 0
+  },
+  bases: {
+    unique: 0,
+    total: 0
+  }
+}
 const dbName = "magic-money-tree";
 
 async function run() {
@@ -39,6 +49,7 @@ async function fetch() {
   console.log("Fetching summary")
   markets = await binance.load_markets()
   markets = Object.keys(markets).filter(market => goodMarket(market))
+  markets = filterByVolume()
   symbols = markets.map(market => market = market.replace('/', ''))
   exchangeHistory = await fetchAndInsert(symbols)
   fetch()
@@ -84,11 +95,22 @@ async function fetchAndInsert(symbols) {
       console.log(error.message)
     }
   }
+  fs.appendFile('coinpairs.txt', JSON.stringify(tallyObject), function(err) {
+    if (err) return console.log(err);
+  })
+}
+
+async function filterByVolume() {
+  markets.forEach(market => {
+    let response = await sufficientVolume(i)
+  })
 }
 
 async function sufficientVolume(i) {
   let market = markets[i]
   let asset = market.substring(0, market.indexOf('/'))
+  let base = market.substring(market.indexOf('/')+1)
+  await tally(asset, base)
   let newMarket = `${asset}/USDT`
   let dollarSymbol = `${asset}USDT`
   if (markets.includes(newMarket)) {
@@ -96,7 +118,6 @@ async function sufficientVolume(i) {
     let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
     let totalVolume = parseFloat(twentyFourHour.data.volume)
     volumeDollarValue = totalVolume * dollarPrice
-    console.log(volumeDollarValue)
     if (volumeDollarValue < 50000000) { return "Insufficient market volume"}
   } else {
     fs.appendFile('missing-pairs.txt', dollarSymbol + '\n', function(err) {
@@ -106,6 +127,23 @@ async function sufficientVolume(i) {
   }
 
   return `  Adding price history for ${symbols[i]}`
+}
+
+async function tally(asset, base) {
+  if (Object.keys(tallyObject.assets).includes(asset)) {
+    tallyObject.assets[asset] ++
+  } else {
+    tallyObject.assets[asset] = 1
+    tallyObject.assets.unique ++
+  }
+  if (Object.keys(tallyObject.bases).includes(base)) {
+    tallyObject.bases[base] ++
+  } else {
+    tallyObject.bases[base] = 1
+    tallyObject.bases.unique ++
+  }
+  tallyObject.assets.total ++
+  tallyObject.bases.total ++
 }
 
 async function collateData(data) {
