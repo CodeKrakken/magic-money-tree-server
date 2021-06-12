@@ -52,15 +52,10 @@ function rankMovement(symbols) {
       'movement': ema1/ema3 - 1,
       'ema1': ema1,
       'ema3': ema3,
-      'volume': symbol.history[symbol.history.length-1].volume,
       'fetched': new Date(symbol.history[symbol.history.length-1].endTime - 59000).toLocaleString()
     })
   })
   return outputArray.sort((a, b) => a.movement - b.movement)
-}
-
-function rankVolume(symbols) {
-  // console.log(symbols)
 }
 
 function ema(rawData, time, parameter) {
