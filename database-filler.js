@@ -365,8 +365,8 @@ async function getMarkets() {
   console.log('Fetching overview\n')
   let markets = await binance.load_markets()
   console.log(Object.keys(markets).length)
-  markets = markets.filter(market => market.active)
-  console.log(Object.keys(markets).length)
+  markets = Object.keys(markets).filter(market => market.active)
+  console.log(markets.length)
   return Object.keys(markets)
 }
 
