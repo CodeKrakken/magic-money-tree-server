@@ -6,6 +6,7 @@ const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const fs = require('fs');
 let db;
 let collection;
 const dbName = "magic-money-tree";
@@ -35,33 +36,15 @@ async function setupDB() {
  
 async function mainProgram() {
   let markets = await getMarkets()
-  markets = await filterByVolume(markets)
-  let symbols = markets.map(market => market = market.replace('/', ''))
-  await populateDatabase(symbols)
+  await populateDatabase(markets)
   console.log('Restarting process')
   mainProgram()
 }
 
 async function getMarkets() {
-  console.log('Fetching overview')
+  console.log('Fetching overview\n')
   let markets = await binance.load_markets()
   return Object.keys(markets)
-}
-
-async function filterByVolume(markets) {
-  console.log('Filtering out low volume markets')
-  let n = markets.length
-  for (let i = 0; i < n; i ++) {
-    console.log(`Checking ${i+1}/${n} - ${markets[i]}`)
-    let response = await checkVolume(markets, i)
-    if (response === "Insufficient market volume" || response === "No dollar comparison available") {
-      markets.splice(i, 1)
-      i--
-      n--
-    }
-    console.log(response)
-  }
-  return markets
 }
 
 async function checkVolume(markets, i) {
@@ -71,12 +54,12 @@ async function checkVolume(markets, i) {
   if (markets.includes(dollarMarket)) {
     let dollarSymbol = dollarMarket.replace('/', '')
     let volumeDollarValue = await fetchDollarVolume(dollarSymbol)
-    if (volumeDollarValue < 50000000) { return "Insufficient market volume"} 
+    if (volumeDollarValue < 50000000) { return "Insufficient volume"} 
     if (volumeDollarValue === 'Invalid market') { return 'No dollar comparison available' }
   } else {
     return 'No dollar comparison available'
   }
-  return 'Volume is sufficient'
+  return 'Sufficient volume'
 }
 
 async function fetchDollarVolume(symbol) {
@@ -89,29 +72,45 @@ async function fetchDollarVolume(symbol) {
   } catch (error) {
     return 'Invalid market'
   }
-  
 }
 
-async function populateDatabase(symbols) {
-  let n = symbols.length
+async function populateDatabase(markets) {
+  let symbols = markets.map(market => market = market.replace('/', ''))
+  let n = markets.length
+  let goodMarkets = []
   for (let i = 0; i < n; i ++) {
     let symbol = symbols[i]
-    console.log(`Fetching price history for ${i}/${n} - ${symbol}`)
-    let history = await fetchHistory(symbol)
-    if (history === "Fetch failed") {
-      console.log(history)
+    console.log(`Checking 24 hour volume of market ${i+1}/${n} - ${symbol}`)
+    let response = await checkVolume(markets, i)
+    if (response === "Insufficient volume" || response === "No dollar comparison available") {
+      markets.splice(i, 1)
       symbols.splice(i, 1)
-      i --
-      n --
+      i--
+      n--
+      console.log(response + '\n')
     } else {
-      let symbolObject = {
-        'history': history,
-        'symbol': symbol 
+      console.log(`Sufficient volume - fetching price history`)
+      let history = await fetchHistory(symbol)
+      if (history === "Fetch failed") {
+        console.log(history)
+        markets.splice(i, 1)
+        symbols.splice(i, 1)
+        i --
+        n --
+      } else {
+        let symbolObject = {
+          'history': history,
+          'symbol': symbol 
+        }
+        symbolObject = await collateData(symbolObject)
+        await dbInsert(symbolObject)
+        goodMarkets.push(symbolObject.symbol)
       }
-      symbolObject = await collateData(symbolObject)
-      await dbInsert(symbolObject)
     }
   }
+  fs.appendFile('goodMarkets.txt', `${goodMarkets}`, function(err) {
+    if (err) return console.log(err);
+  })
 }
 
 async function fetchHistory(symbol) {
@@ -124,7 +123,7 @@ async function fetchHistory(symbol) {
 }
 
 async function collateData(data) {
-  console.log(`Collating history of ${data.symbol}`)
+  console.log(`Collating history`)
   let history = []
   data.history.forEach(period => {
     history.push({
@@ -144,7 +143,7 @@ async function collateData(data) {
 }
 
 async function dbInsert(data) {
-  console.log(`Adding ${data.symbol} to database`)
+  console.log(`Adding to database\n`)
   const query = { symbol: data.symbol };
   const options = {
     upsert: true,
