@@ -22,8 +22,8 @@ async function mainProgram() {
   exchangeHistory = await dbRetrieve()
   rankedByMovement = await rankMovement(exchangeHistory)
   console.log(`Movement chart`)
-  console.log(rankedByMovement)
-  mainProgram()
+  await console.log(rankedByMovement)
+
 }
 
 async function setupDB() {
@@ -38,20 +38,22 @@ async function dbRetrieve() {
   let prettyTime = new Date(currentTime).toLocaleString()
   console.log(`${prettyTime} - Retrieving data from database`)
   data = await collection.find().toArray();
+  console.log(data)
   return data
 }
 
-function rankMovement(symbols) {
+function rankMovement(markets) {
   outputArray = []
-  symbols.forEach(symbol => {
-    ema1 = ema(symbol.history, 1, 'close')
-    ema3 = ema(symbol.history, 3, 'close')
+  markets.forEach(market => {
+    let marketName = `${market.asset}/${market.base}`
+    ema1 = ema(market.history, 1, 'close')
+    ema3 = ema(market.history, 3, 'close')
     outputArray.push({
-      'symbol': symbol.pair,
+      'market': marketName,
       'movement': ema1/ema3 - 1,
       'ema1': ema1,
       'ema3': ema3,
-      'fetched': new Date(symbol.history[symbol.history.length-1].endTime - 59000).toLocaleString()
+      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString()
     })
   })
   return outputArray.sort((a, b) => a.movement - b.movement)
