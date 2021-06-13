@@ -1,6 +1,15 @@
 // Fetch market data and store it in Mongo database
 
 require('dotenv').config();
+const username = process.env.MONGODB_USERNAME
+const password = process.env.MONGODB_PASSWORD
+const { MongoClient } = require('mongodb');
+const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+let db;
+let collection;
+const dbName = "magic-money-tree";
+
 const axios = require('axios')
 const ccxt = require('ccxt');
 
@@ -10,146 +19,115 @@ const binance = new ccxt.binance({
   // 'enableRateLimit': true,
 });
 
-const fs = require('fs');
-const username = process.env.MONGODB_USERNAME
-const password = process.env.MONGODB_PASSWORD
-const { MongoClient } = require('mongodb');
-const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-let db;
-let collection;
-let exchangeHistory;
-let markets;
-let symbols;
-let tallyObject = {
-  assets: {
-    unique: 0,
-    total: 0
-  },
-  bases: {
-    unique: 0,
-    total: 0
-  }
-}
-const dbName = "magic-money-tree";
 
 async function run() {
-  await setupDB()
-  await fetch()
+  console.log('Running');
+  await setupDB();
+  await mainProgram();
 }
 
 async function setupDB() {
+  console.log("Setting up database");
   await mongo.connect()
   db = mongo.db(dbName);
   collection = db.collection("symbols")
-  console.log("Set up database");
 }
  
-async function fetch() {
-  console.log("Fetching summary")
-  markets = await binance.load_markets()
-  markets = Object.keys(markets).filter(market => goodMarket(market))
-  markets = filterByVolume()
-  symbols = markets.map(market => market = market.replace('/', ''))
-  exchangeHistory = await fetchAndInsert(symbols)
-  fetch()
+async function mainProgram() {
+  let markets = await getMarkets()
+  markets = await filterByVolume(markets)
+  let symbols = markets.map(market => market = market.replace('/', ''))
+  await populateDatabase(symbols)
+  console.log('Restarting process')
+  mainProgram()
 }
 
-function goodMarket(market) {
-  return markets[market].active
+async function getMarkets() {
+  console.log('Fetching overview')
+  let markets = await binance.load_markets()
+  return Object.keys(markets)
 }
 
-async function fetchAndInsert(symbols) {
-  let h
-  let n = symbols.length
-  for (let i = 0; i < n; i++) {
-    let sym = symbols[i]
-    try {
-      console.log(`Fetching price history for ${sym} ${i+1}/${n}`)
-      h = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${sym}&interval=1m`)
-    } catch(error) {
-      symbols.splice(i, 1)
+async function filterByVolume(markets) {
+  console.log('Filtering out low volume markets')
+  let n = markets.length
+  for (let i = 0; i < n; i ++) {
+    console.log(`Checking ${i+1}/${n} - ${markets[i]}`)
+    let response = await checkVolume(markets, i)
+    if (response === "Insufficient market volume" || response === "No dollar comparison available") {
       markets.splice(i, 1)
       i--
       n--
     }
-    try {
-      if (symbols.includes(sym)) {
-        response = await sufficientVolume(i)
-        console.log(response)
-        if (response === `  Adding price history for ${sym}`) {
-          symbolObject = {
-            history: h.data,
-            symbol: sym
-          }
-          symbolObject = await collateData(symbolObject)
-          await dbInsert(symbolObject)
-        } else {
-          symbols.splice(i, 1)
-          markets.splice(i, 1)
-          i--
-          n--
-        }
-      }
-    } catch (error) {
-      console.log(error.message)
-    }
+    console.log(response)
   }
-  fs.appendFile('coinpairs.txt', JSON.stringify(tallyObject), function(err) {
-    if (err) return console.log(err);
-  })
+  return markets
 }
 
-async function filterByVolume() {
-  markets.forEach(market => {
-    let response = await sufficientVolume(i)
-  })
-}
-
-async function sufficientVolume(i) {
+async function checkVolume(markets, i) {
   let market = markets[i]
   let asset = market.substring(0, market.indexOf('/'))
-  let base = market.substring(market.indexOf('/')+1)
-  await tally(asset, base)
-  let newMarket = `${asset}/USDT`
-  let dollarSymbol = `${asset}USDT`
-  if (markets.includes(newMarket)) {
-    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${dollarSymbol}`)
-    let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
-    let totalVolume = parseFloat(twentyFourHour.data.volume)
-    volumeDollarValue = totalVolume * dollarPrice
-    if (volumeDollarValue < 50000000) { return "Insufficient market volume"}
+  let dollarMarket = `${asset}/USDT`
+  if (markets.includes(dollarMarket)) {
+    let dollarSymbol = dollarMarket.replace('/', '')
+    let volumeDollarValue = await fetchDollarVolume(dollarSymbol)
+    if (volumeDollarValue < 50000000) { return "Insufficient market volume"} 
+    if (volumeDollarValue === 'Invalid market') { return 'No dollar comparison available' }
   } else {
-    fs.appendFile('missing-pairs.txt', dollarSymbol + '\n', function(err) {
-      if (err) return console.log(err);
-    })
     return 'No dollar comparison available'
   }
-
-  return `  Adding price history for ${symbols[i]}`
+  return 'Volume is sufficient'
 }
 
-async function tally(asset, base) {
-  if (Object.keys(tallyObject.assets).includes(asset)) {
-    tallyObject.assets[asset] ++
-  } else {
-    tallyObject.assets[asset] = 1
-    tallyObject.assets.unique ++
+async function fetchDollarVolume(symbol) {
+  try {
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
+  let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
+  let totalVolume = parseFloat(twentyFourHour.data.volume)
+  volumeDollarValue = totalVolume * dollarPrice
+  return volumeDollarValue
+  } catch (error) {
+    return 'Invalid market'
   }
-  if (Object.keys(tallyObject.bases).includes(base)) {
-    tallyObject.bases[base] ++
-  } else {
-    tallyObject.bases[base] = 1
-    tallyObject.bases.unique ++
+  
+}
+
+async function populateDatabase(symbols) {
+  let n = symbols.length
+  for (let i = 0; i < n; i ++) {
+    let symbol = symbols[i]
+    console.log(`Fetching price history for ${i}/${n} - ${symbol}`)
+    let history = await fetchHistory(symbol)
+    if (history === "Fetch failed") {
+      console.log(history)
+      symbols.splice(i, 1)
+      i --
+      n --
+    } else {
+      let symbolObject = {
+        'history': history,
+        'symbol': symbol 
+      }
+      symbolObject = await collateData(symbolObject)
+      await dbInsert(symbolObject)
+    }
   }
-  tallyObject.assets.total ++
-  tallyObject.bases.total ++
+}
+
+async function fetchHistory(symbol) {
+  try {
+    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=1m`)
+    return history.data
+  } catch (error) {
+    return "Fetch failed"
+  }
 }
 
 async function collateData(data) {
-  let periods = []
+  console.log(`Collating history of ${data.symbol}`)
+  let history = []
   data.history.forEach(period => {
-    periods.push({
+    history.push({
       'startTime': period[0],
       'open': period[1],
       'high': period[2],
@@ -159,19 +137,19 @@ async function collateData(data) {
     })
   })
   outputObject = {
-    'pair': data.symbol,
-    'history': periods
+    'symbol': data.symbol,
+    'history': history
   }
   return outputObject
 }
 
 async function dbInsert(data) {
-  const query = { pair: data.pair };
+  console.log(`Adding ${data.symbol} to database`)
+  const query = { symbol: data.symbol };
   const options = {
     upsert: true,
   };
   const result = await collection.replaceOne(query, data, options);
-
 }
 
 run();

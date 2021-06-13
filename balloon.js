@@ -24,7 +24,6 @@ async function mainProgram() {
   console.log(`Movement chart`)
   console.log(rankedByMovement)
   mainProgram()
-  // rankedByVolume = rankVolume(exchangeHistory)
 }
 
 async function setupDB() {
