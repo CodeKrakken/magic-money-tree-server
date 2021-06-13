@@ -340,7 +340,6 @@ async function quickFill(markets) {
     console.log(`Fetching history for ${i+1}/${n} - ${symbol}`)
     let history = await fetchHistory(symbol)
     if (history === "Fetch failed") {
-      console.log(history)
       markets.splice(i, 1)
       symbols.splice(i, 1)
       i --
@@ -364,10 +363,12 @@ async function quickFill(markets) {
 async function getMarkets() {
   console.log('Fetching overview\n')
   let markets = await binance.load_markets()
-  console.log(Object.keys(markets).length)
-  markets = Object.keys(markets).filter(market => market.active)
-  console.log(markets.length)
-  return Object.keys(markets)
+  markets = Object.keys(markets).filter(market => goodMarket(market, markets))
+  return markets
+}
+
+function goodMarket(market, markets) {
+  return markets[market].active
 }
 
 async function checkVolume(markets, i) {
@@ -403,6 +404,9 @@ async function populateDatabase(markets) {
   let goodMarkets = []
   for (let i = 0; i < n; i ++) {
     let symbol = symbols[i]
+    let market = markets[i]
+    let asset = market.substring(0, market.indexOf('/'))
+    let base = market.substring(market.indexOf('/')+1)
     console.log(`Checking 24 hour volume of market ${i+1}/${n} - ${symbol}`)
     let response = await checkVolume(markets, i)
     if (response === "Insufficient volume" || response === "No dollar comparison available") {
@@ -415,7 +419,6 @@ async function populateDatabase(markets) {
       console.log(`Sufficient volume - fetching price history`)
       let history = await fetchHistory(symbol)
       if (history === "Fetch failed") {
-        console.log(history)
         markets.splice(i, 1)
         symbols.splice(i, 1)
         i --
@@ -423,7 +426,9 @@ async function populateDatabase(markets) {
       } else {
         let symbolObject = {
           'history': history,
-          'symbol': symbol
+          'symbol': symbol,
+          'asset': asset,
+          'base': base
         }
         symbolObject = await collateData(symbolObject)
         await dbInsert(symbolObject)
@@ -462,7 +467,7 @@ async function collateData(data) {
     'history': history,
     'asset': data.asset,
     'base': data.base,
-    'symbol': data.asset + data.base
+    'symbol': data.symbol
   }
   return outputObject
 }
