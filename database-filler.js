@@ -364,7 +364,10 @@ async function quickFill(markets) {
 async function getMarkets() {
   console.log('Fetching overview\n')
   let markets = await binance.load_markets()
-  return Object.keys(markets).filter
+  console.log(Object.keys(markets).length)
+  markets = markets.filter(market => market.active)
+  console.log(Object.keys(markets).length)
+  return Object.keys(markets)
 }
 
 async function checkVolume(markets, i) {
