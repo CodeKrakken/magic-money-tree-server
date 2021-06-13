@@ -334,6 +334,7 @@ async function quickFill(markets) {
     let market = markets[i]
     let asset = market.substring(0, market.indexOf('/'))
     let base = market.substring(market.indexOf('/')+1)
+    tally(asset, base)
     let symbol = market.replace('/', '')
     console.log(`Fetching history for ${i+1}/${n} - ${symbol}`)
     let history = await fetchHistory(symbol)
@@ -353,6 +354,9 @@ async function quickFill(markets) {
       await dbInsert(symbolObject)
     }
   }
+  fs.appendFile('coinpairs.txt', JSON.stringify(tallyObject), function(err) {
+    if (err) return console.log(err);
+  })
   quickFill(markets)
 }
 
@@ -464,7 +468,29 @@ async function dbInsert(data) {
   const options = {
     upsert: true,
   };
+  
   const result = await collection.replaceOne(query, data, options);
+}
+
+async function tally(asset, base) {
+  let tallyObject = { 
+    assets: {},
+    bases: {}
+  }
+  if (Object.keys(tallyObject.assets).includes(asset)) {
+    tallyObject.assets[asset] ++
+  } else {
+    tallyObject.assets[asset] = 1
+    tallyObject.assets.unique ++
+  }
+  if (Object.keys(tallyObject.bases).includes(base)) {
+    tallyObject.bases[base] ++
+  } else {
+    tallyObject.bases[base] = 1
+    tallyObject.bases.unique ++
+  }
+  tallyObject.assets.total ++
+  tallyObject.bases.total ++
 }
 
 // run();
