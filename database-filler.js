@@ -330,11 +330,12 @@ async function quickMain() {
 
 async function quickFill(markets) {
   let n = markets.length
+  let tallyObject = { assets: {}, bases: {} }
   for (let i = 0; i < n; i ++) {
     let market = markets[i]
     let asset = market.substring(0, market.indexOf('/'))
     let base = market.substring(market.indexOf('/')+1)
-    tally(asset, base)
+    tally(asset, base, tallyObject)
     let symbol = market.replace('/', '')
     console.log(`Fetching history for ${i+1}/${n} - ${symbol}`)
     let history = await fetchHistory(symbol)
@@ -363,7 +364,7 @@ async function quickFill(markets) {
 async function getMarkets() {
   console.log('Fetching overview\n')
   let markets = await binance.load_markets()
-  return Object.keys(markets)
+  return Object.keys(markets).filter
 }
 
 async function checkVolume(markets, i) {
@@ -419,17 +420,17 @@ async function populateDatabase(markets) {
       } else {
         let symbolObject = {
           'history': history,
-          'symbol': symbol 
+          'symbol': symbol
         }
         symbolObject = await collateData(symbolObject)
         await dbInsert(symbolObject)
-        // goodMarkets.push(symbolObject.symbol)
+        goodMarkets.push(symbolObject.symbol)
       }
     }
   }
-  // fs.appendFile('goodMarkets.txt', `${goodMarkets}`, function(err) {
-  //   if (err) return console.log(err);
-  // })
+  fs.appendFile('goodMarkets.txt', `${goodMarkets}`, function(err) {
+    if (err) return console.log(err);
+  })
 }
 
 async function fetchHistory(symbol) {
@@ -454,10 +455,11 @@ async function collateData(data) {
       'endTime': period[6]
     })
   })
-  outputObject = {
+  let outputObject = {
     'history': history,
     'asset': data.asset,
-    'base': data.base
+    'base': data.base,
+    'symbol': data.asset + data.base
   }
   return outputObject
 }
@@ -468,30 +470,29 @@ async function dbInsert(data) {
   const options = {
     upsert: true,
   };
-  
   const result = await collection.replaceOne(query, data, options);
 }
 
-async function tally(asset, base) {
-  let tallyObject = { 
-    assets: {},
-    bases: {}
+async function tally(asset, base, tallyObject) {
+  try{
+    if (Object.keys(tallyObject.assets).includes(asset)) {
+      tallyObject.assets[asset] ++
+    } else {
+      tallyObject.assets[asset] = 1
+      tallyObject.assets.unique ++
+    }
+    if (Object.keys(tallyObject.bases).includes(base)) {
+      tallyObject.bases[base] ++
+    } else {
+      tallyObject.bases[base] = 1
+      tallyObject.bases.unique ++
+    }
+    tallyObject.assets.total ++
+    tallyObject.bases.total ++
+  } catch (error) {
+    console.log(error.message)
   }
-  if (Object.keys(tallyObject.assets).includes(asset)) {
-    tallyObject.assets[asset] ++
-  } else {
-    tallyObject.assets[asset] = 1
-    tallyObject.assets.unique ++
-  }
-  if (Object.keys(tallyObject.bases).includes(base)) {
-    tallyObject.bases[base] ++
-  } else {
-    tallyObject.bases[base] = 1
-    tallyObject.bases.unique ++
-  }
-  tallyObject.assets.total ++
-  tallyObject.bases.total ++
 }
 
-// run();
-quickRun();
+run();
+// quickRun();

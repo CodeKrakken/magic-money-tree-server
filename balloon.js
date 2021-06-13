@@ -38,7 +38,6 @@ async function dbRetrieve() {
   let prettyTime = new Date(currentTime).toLocaleString()
   console.log(`${prettyTime} - Retrieving data from database`)
   data = await collection.find().toArray();
-  console.log(data)
   return data
 }
 
