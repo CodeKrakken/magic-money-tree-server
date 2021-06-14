@@ -24,7 +24,12 @@ const dbName = "magic-money-tree";
 
 async function run() {
   await setupDB()
-  await mainProgram()
+  let wallet = {
+    'USDT': 2000,
+    'currentAsset': '',
+    'currentBase': 'USDT'
+  }
+  await mainProgram(wallet)
 }
 
 async function setupDB() {
@@ -35,21 +40,17 @@ async function setupDB() {
   console.log(`Retrieving data from database`)
 }
 
-async function mainProgram() {
+async function mainProgram(wallet) {
   exchangeHistory = await dbRetrieve()
   rankedByMovement = await rankMovement(exchangeHistory)
   let currentTime = Date.now()
   console.log(`Movement chart at ${timeNow()}\n`)
   display(rankedByMovement)
   let currentMarket = rankedByMovement[0].market
-  let wallet = {
-    'USDT': 2000,
-    'currentAsset': '',
-    'currentBase': 'USDT'
-  }
+  
   await trade(currentMarket, wallet)
   
-  mainProgram()
+  mainProgram(wallet)
 }
 
 function timeNow() {
@@ -111,11 +112,11 @@ function extractData(dataArray, key) {
 }
 
 async function trade(currentMarket, wallet) {
+  console.log(wallet)
   wallet.currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
   wallet.currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
   wallet[wallet.currentAsset] = 0
   let currentSymbol = currentMarket.replace('/', '')
-  console.log(`Current Market: ${currentMarket}\n`)
   console.log(wallet)
   newBuyOrder(currentSymbol, wallet)
 }
@@ -130,7 +131,6 @@ async function newBuyOrder(symbol, wallet) {
     wallet[wallet.currentAsset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[wallet.currentBase] -= oldBaseVolume
     // buyCountdown = 10
-    console.log(wallet[wallet.currentAsset])
     tradeReport = `${timeNow()} - Bought ${n(wallet[wallet.currentAsset], 8)} ${wallet.currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
