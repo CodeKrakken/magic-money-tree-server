@@ -10,6 +10,8 @@ const config = {
   fee: 0.076
 }
 const axios = require('axios')
+const fs = require('fs')
+
 
 let db;
 let collection;
@@ -111,6 +113,7 @@ function extractData(dataArray, key) {
 async function trade(currentMarket, wallet) {
   wallet.currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
   wallet.currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
+  wallet[wallet.currentAsset] = 0
   let currentSymbol = currentMarket.replace('/', '')
   console.log(`Current Market: ${currentMarket}\n`)
   console.log(wallet)
@@ -127,15 +130,19 @@ async function newBuyOrder(symbol, wallet) {
     wallet[wallet.currentAsset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[wallet.currentBase] -= oldBaseVolume
     // buyCountdown = 10
-
-    tradeReport = `${timeNow()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+    console.log(wallet[wallet.currentAsset])
+    tradeReport = `${timeNow()} - Bought ${n(wallet[wallet.currentAsset], 8)} ${wallet.currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  
   } catch(error) {
-    console.log(error.message)
+    console.log(error)
   }
   console.log(tradeReport)
+}
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
 }
 
 run();
