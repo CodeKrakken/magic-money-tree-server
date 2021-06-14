@@ -23,14 +23,24 @@ async function run() {
   await mainProgram()
 }
 
+async function setupDB() {
+  await mongo.connect()
+  console.log("Connected correctly to server\n");
+  db = mongo.db(dbName);
+  collection = db.collection("symbols")
+  console.log(`Retrieving data from database`)
+}
+
 async function mainProgram() {
   exchangeHistory = await dbRetrieve()
   rankedByMovement = await rankMovement(exchangeHistory)
-  console.log(`Movement chart`)
-  await console.log(rankedByMovement)
-  let currentMarket = rankedByMovement[0]
-  console.log(currentMarket)
-  
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  console.log(`Movement chart at ${prettyTime}\n`)
+  display(rankedByMovement)
+  let currentMarket = rankedByMovement[0].market
+  console.log(`Current Market: ${currentMarket}\n`)
+
 
 
 
@@ -43,17 +53,8 @@ async function mainProgram() {
   mainProgram()
 }
 
-async function setupDB() {
-  await mongo.connect()
-  console.log("Connected correctly to server");
-  db = mongo.db(dbName);
-  collection = db.collection("symbols")
-}
 
 async function dbRetrieve() {
-  let currentTime = Date.now()
-  let prettyTime = new Date(currentTime).toLocaleString()
-  console.log(`${prettyTime} - Retrieving data from database`)
   data = await collection.find().toArray();
   return data
 }
@@ -73,6 +74,14 @@ function rankMovement(markets) {
     })
   })
   return outputArray.sort((a, b) => a.movement - b.movement)
+}
+
+function display(rankedByMovement) {
+  for (let i = 0; i < 10; i++) {
+    let market = rankedByMovement[i]
+    console.log(`${market.market} ... Movement: ${market.movement} ... (${market.fetched})`)
+  }
+  console.log('\n')
 }
 
 function ema(rawData, time, parameter) {
