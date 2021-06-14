@@ -112,12 +112,11 @@ function extractData(dataArray, key) {
 }
 
 async function trade(currentMarket, wallet) {
-  console.log(wallet)
   wallet.currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
   wallet.currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
   wallet[wallet.currentAsset] = 0
   let currentSymbol = currentMarket.replace('/', '')
-  console.log(wallet)
+  // if ()
   newBuyOrder(currentSymbol, wallet)
 }
 
@@ -128,17 +127,19 @@ async function newBuyOrder(symbol, wallet) {
     let currentPrice = parseFloat(currentPriceRaw.data.price)
     let oldBaseVolume = wallet[wallet.currentBase]
     // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+    console.log(wallet)
     wallet[wallet.currentAsset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[wallet.currentBase] -= oldBaseVolume
     // buyCountdown = 10
     tradeReport = `${timeNow()} - Bought ${n(wallet[wallet.currentAsset], 8)} ${wallet.currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
-    })  
+    })
   } catch(error) {
     console.log(error)
   }
   console.log(tradeReport)
+  console.log(wallet)
 }
 
 function n(n, d) {
