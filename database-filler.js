@@ -1,4 +1,4 @@
-// Fetch market data and store it in Mongo database
+// Fetch data for full market and store it in Mongo database
 
 require('dotenv').config();
 const username = process.env.MONGODB_USERNAME
@@ -27,12 +27,6 @@ async function run() {
   await mainProgram();
 }
 
-async function quickRun() {
-  console.log('Running');
-  await setupDB();
-  await quickMain();
-}
-
 async function setupDB() {
   console.log("Setting up database\n");
   await mongo.connect()
@@ -45,319 +39,6 @@ async function mainProgram() {
   await populateDatabase(markets)
   console.log('Restarting process')
   mainProgram()
-}
-
-async function quickMain() {
-  let markets = [
-    "ETH/BTC",
-    "LTC/BTC",
-    "BNB/BTC",
-    "EOS/ETH",
-    "BNB/ETH",
-    "BTC/USDT",
-    "ETH/USDT",
-    "LINK/BTC",
-    "LINK/ETH",
-    "EOS/BTC",
-    "ETC/ETH",
-    "ETC/BTC",
-    "XRP/BTC",
-    "XRP/ETH",
-    "BNB/USDT",
-    "ADA/BTC",
-    "ADA/ETH",
-    "XLM/BTC",
-    "XLM/ETH",
-    "XLM/BNB",
-    "LTC/ETH",
-    "LTC/USDT",
-    "LTC/BNB",
-    "GTO/BTC",
-    "GTO/ETH",
-    "GTO/BNB",
-    "ADA/USDT",
-    "ADA/BNB",
-    "XRP/USDT",
-    "BTC/TUSD",
-    "ETH/TUSD",
-    "EOS/USDT",
-    "EOS/BNB",
-    "THETA/BTC",
-    "THETA/ETH",
-    "THETA/BNB",
-    "XRP/BNB",
-    "XLM/USDT",
-    "DATA/BTC",
-    "DATA/ETH",
-    "ETC/USDT",
-    "ETC/BNB",
-    "VET/BTC",
-    "VET/ETH",
-    "VET/USDT",
-    "VET/BNB",
-    "USDC/BNB",
-    "BNB/PAX",
-    "BTC/PAX",
-    "ETH/PAX",
-    "XRP/PAX",
-    "EOS/PAX",
-    "XLM/PAX",
-    "BNB/TUSD",
-    "XRP/TUSD",
-    "EOS/TUSD",
-    "XLM/TUSD",
-    "BNB/USDC",
-    "BTC/USDC",
-    "ETH/USDC",
-    "XRP/USDC",
-    "EOS/USDC",
-    "XLM/USDC",
-    "USDC/USDT",
-    "ADA/TUSD",
-    "USDC/TUSD",
-    "USDC/PAX",
-    "LINK/USDT",
-    "LINK/TUSD",
-    "LINK/PAX",
-    "LINK/USDC",
-    "LTC/TUSD",
-    "LTC/PAX",
-    "LTC/USDC",
-    "BNB/USDS",
-    "BTC/USDS",
-    "ADA/PAX",
-    "ADA/USDC",
-    "THETA/USDT",
-    "MATIC/BNB",
-    "MATIC/BTC",
-    "MATIC/USDT",
-    "ETC/USDC",
-    "ETC/PAX",
-    "ETC/TUSD",
-    "TFUEL/BNB",
-    "TFUEL/BTC",
-    "TFUEL/USDT",
-    "TFUEL/USDC",
-    "TFUEL/TUSD",
-    "TFUEL/PAX",
-    "GTO/USDT",
-    "GTO/PAX",
-    "GTO/TUSD",
-    "GTO/USDC",
-    "DOGE/BNB",
-    "DOGE/BTC",
-    "DOGE/USDT",
-    "DOGE/PAX",
-    "DOGE/USDC",
-    "CHZ/BNB",
-    "CHZ/BTC",
-    "CHZ/USDT",
-    "BNB/BUSD",
-    "BTC/BUSD",
-    "BUSD/USDT",
-    "XRP/BUSD",
-    "ETH/BUSD",
-    "LTC/BUSD",
-    "LINK/BUSD",
-    "ETC/BUSD",
-    "BUSD/NGN",
-    "BNB/NGN",
-    "BTC/NGN",
-    "EOS/BUSD",
-    "XLM/BUSD",
-    "ADA/BUSD",
-    "BTC/RUB",
-    "ETH/RUB",
-    "XRP/RUB",
-    "BNB/RUB",
-    "BUSD/RUB",
-    "VET/BUSD",
-    "BTC/TRY",
-    "BNB/TRY",
-    "BUSD/TRY",
-    "ETH/TRY",
-    "XRP/TRY",
-    "BTC/EUR",
-    "ETH/EUR",
-    "BNB/EUR",
-    "XRP/EUR",
-    "EUR/BUSD",
-    "EUR/USDT",
-    "BTC/ZAR",
-    "ETH/ZAR",
-    "BNB/ZAR",
-    "BUSD/ZAR",
-    "BTC/BKRW",
-    "ETH/BKRW",
-    "BNB/BKRW",
-    "DATA/BUSD",
-    "DATA/USDT",
-    "SOL/BNB",
-    "SOL/BTC",
-    "SOL/USDT",
-    "SOL/BUSD",
-    "BTC/IDRT",
-    "BNB/IDRT",
-    "BUSD/IDRT",
-    "MATIC/BUSD",
-    "BTC/GBP",
-    "ETH/GBP",
-    "XRP/GBP",
-    "BNB/GBP",
-    "BTC/UAH",
-    "BTC/BIDR",
-    "ETH/BIDR",
-    "BNB/BIDR",
-    "BUSD/BIDR",
-    "DOGE/BUSD",
-    "XRP/BKRW",
-    "ADA/BKRW",
-    "BTC/AUD",
-    "ETH/AUD",
-    "BUSD/BKRW",
-    "XRP/AUD",
-    "BNB/AUD",
-    "BTC/DAI",
-    "ETH/DAI",
-    "BNB/DAI",
-    "BUSD/DAI",
-    "DOT/BNB",
-    "DOT/BTC",
-    "DOT/BUSD",
-    "DOT/USDT",
-    "ETH/NGN",
-    "DOT/BIDR",
-    "LINK/AUD",
-    "KSM/BNB",
-    "KSM/BTC",
-    "KSM/BUSD",
-    "KSM/USDT",
-    "LINK/TRY",
-    "LINK/BKRW",
-    "CAKE/BNB",
-    "CAKE/BUSD",
-    "BTC/BRL",
-    "DOT/BKRW",
-    "FIL/BNB",
-    "FIL/BTC",
-    "FIL/BUSD",
-    "FIL/USDT",
-    "LINK/EUR",
-    "ETH/BRL",
-    "DOT/EUR",
-    "BNB/BRL",
-    "LTC/EUR",
-    "ADA/EUR",
-    "LTC/NGN",
-    "BUSD/BRL",
-    "XRP/BRL",
-    "XRP/NGN",
-    "LINK/BRL",
-    "LINK/NGN",
-    "LTC/RUB",
-    "XLM/EUR",
-    "BUSD/BVND",
-    "CHZ/TRY",
-    "XLM/TRY",
-    "LINK/GBP",
-    "EOS/EUR",
-    "LTC/BRL",
-    "USDC/BUSD",
-    "DOGE/EUR",
-    "DOGE/TRY",
-    "DOGE/AUD",
-    "DOGE/BRL",
-    "DOT/NGN",
-    "BTC/VAI",
-    "BUSD/VAI",
-    "DOGE/GBP",
-    "DOT/TRY",
-    "CAKE/BTC",
-    "CAKE/USDT",
-    "DOT/GBP",
-    "ADA/TRY",
-    "ADA/BRL",
-    "ADA/GBP",
-    "DOT/BRL",
-    "ADA/AUD",
-    "CHZ/BRL",
-    "CHZ/BUSD",
-    "CHZ/EUR",
-    "CHZ/GBP",
-    "ADA/RUB",
-    "MATIC/EUR",
-    "EOS/TRY",
-    "LTC/GBP",
-    "THETA/EUR",
-    "BNB/UAH",
-    "VET/EUR",
-    "VET/GBP",
-    "CAKE/GBP",
-    "DOGE/RUB",
-    "VET/TRY",
-    "SHIB/USDT",
-    "SHIB/BUSD",
-    "ICP/BTC",
-    "ICP/BNB",
-    "ICP/BUSD",
-    "ICP/USDT",
-    "BTC/GYEN",
-    "SHIB/EUR",
-    "SHIB/RUB",
-    "ETC/EUR",
-    "ETC/BRL",
-    "DOGE/BIDR",
-    "ETH/UAH",
-    "MATIC/BRL",
-    "SOL/EUR",
-    "SHIB/BRL",
-    "ICP/EUR",
-    "MATIC/GBP",
-    "SHIB/TRY",
-    "MATIC/BIDR",
-    "MATIC/RUB",
-    "THETA/BUSD",
-    "ATA/BTC",
-    "ATA/BNB",
-    "ATA/BUSD",
-    "ATA/USDT",
-    "MATIC/TRY",
-    "ETC/GBP",
-    "SOL/GBP"
-  ]
-  await quickFill(markets);
-}
-
-async function quickFill(markets) {
-  let n = markets.length
-  let tallyObject = { assets: {}, bases: {} }
-  for (let i = 0; i < n; i ++) {
-    let market = markets[i]
-    let asset = market.substring(0, market.indexOf('/'))
-    let base = market.substring(market.indexOf('/')+1)
-    tally(asset, base, tallyObject)
-    let symbol = market.replace('/', '')
-    console.log(`Fetching history for ${i+1}/${n} - ${symbol}`)
-    let history = await fetchHistory(symbol)
-    if (history === "Fetch failed") {
-      markets.splice(i, 1)
-      symbols.splice(i, 1)
-      i --
-      n --
-    } else {
-      let symbolObject = {
-        'history': history,
-        'asset': asset,
-        'base': base
-      }
-      symbolObject = await collateData(symbolObject)
-      await dbInsert(symbolObject)
-    }
-  }
-  fs.appendFile('coinpairs.txt', JSON.stringify(tallyObject), function(err) {
-    if (err) return console.log(err);
-  })
-  quickFill(markets)
 }
 
 async function getMarkets() {
@@ -402,11 +83,16 @@ async function populateDatabase(markets) {
   let symbols = markets.map(market => market = market.replace('/', ''))
   let n = markets.length
   let goodMarkets = []
+  let tallyObject = { 
+    assets: { total: 0, unique: 0 }, 
+    bases: { total: 0, unique: 0 } 
+  }
   for (let i = 0; i < n; i ++) {
     let symbol = symbols[i]
     let market = markets[i]
     let asset = market.substring(0, market.indexOf('/'))
     let base = market.substring(market.indexOf('/')+1)
+    tally(asset, base, tallyObject)
     console.log(`Checking 24 hour volume of market ${i+1}/${n} - ${symbol}`)
     let response = await checkVolume(markets, i)
     if (response === "Insufficient volume" || response === "No dollar comparison available") {
@@ -432,11 +118,13 @@ async function populateDatabase(markets) {
         }
         symbolObject = await collateData(symbolObject)
         await dbInsert(symbolObject)
-        goodMarkets.push(symbolObject.symbol)
+        fs.appendFile('goodMarkets.txt', JSON.stringify(market), function(err) {
+          if (err) return console.log(err);
+        })
       }
     }
   }
-  fs.appendFile('goodMarkets.txt', `${goodMarkets}`, function(err) {
+  fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
     if (err) return console.log(err);
   })
 }
@@ -503,4 +191,3 @@ async function tally(asset, base, tallyObject) {
 }
 
 run();
-// quickRun();
