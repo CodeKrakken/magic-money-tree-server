@@ -77,15 +77,15 @@ async function quickFill(markets) {
 async function tally(asset, base, tallyObject) {
   try{
     if (Object.keys(tallyObject.assets).includes(asset)) {
-      tallyObject.assets[asset] ++
+      tallyObject.assets[asset].push(base)
     } else {
-      tallyObject.assets[asset] = 1
+      tallyObject.assets[asset] = [base]
       tallyObject.assets.unique ++
     }
     if (Object.keys(tallyObject.bases).includes(base)) {
-      tallyObject.bases[base] ++
+      tallyObject.bases[base].push(asset)
     } else {
-      tallyObject.bases[base] = 1
+      tallyObject.bases[base] = [asset]
       tallyObject.bases.unique ++
     }
     tallyObject.assets.total ++
