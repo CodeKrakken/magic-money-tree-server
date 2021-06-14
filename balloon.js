@@ -11,6 +11,11 @@ let collection;
 let exchangeHistory
 let ema1
 let ema3
+let wallet = {}
+let currentAsset
+let currentBase
+let currentMarket
+
 const dbName = "magic-money-tree";
 
 async function run() {
@@ -23,6 +28,18 @@ async function mainProgram() {
   rankedByMovement = await rankMovement(exchangeHistory)
   console.log(`Movement chart`)
   await console.log(rankedByMovement)
+  let currentMarket = rankedByMovement[0]
+  console.log(currentMarket)
+
+
+
+
+
+
+
+
+
+
   mainProgram()
 }
 

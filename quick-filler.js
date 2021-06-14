@@ -35,6 +35,7 @@ async function setupDB() {
 
 async function quickMain() {
   let markets = await fs.readFileSync('goodMarkets.txt', 'utf8').split('""');
+  markets = markets.filter(market => market.includes('USDT'))
   await quickFill(markets);
 }
 
