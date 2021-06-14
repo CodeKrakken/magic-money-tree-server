@@ -7,7 +7,7 @@ const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const config = {
-  fee: 0.076
+  fee: 0.0075
 }
 const axios = require('axios')
 const fs = require('fs')
@@ -16,8 +16,6 @@ const fs = require('fs')
 let db;
 let collection;
 let exchangeHistory
-let ema1
-let ema3
 
 const dbName = "magic-money-tree";
 
@@ -43,13 +41,14 @@ async function setupDB() {
 async function mainProgram(wallet) {
   exchangeHistory = await dbRetrieve()
   let ema1
+  let ema2
+  let ema3
   rankedByMovement = await rankMovement(exchangeHistory)
   let currentTime = Date.now()
   console.log(`Movement chart at ${timeNow()}\n`)
   display(rankedByMovement)
   let currentMarket = rankedByMovement[0].market
-  
-  await trade(currentMarket, wallet, ema1)
+  await trade(currentMarket, wallet, ema1, ema2)
   
   mainProgram(wallet)
 }
@@ -71,6 +70,7 @@ function rankMovement(markets) {
   markets.forEach(market => {
     let marketName = `${market.asset}/${market.base}`
     ema1 = ema(market.history, 1, 'close')
+    ema2 = ema(market.history, 1, 'close')
     ema3 = ema(market.history, 3, 'close')
     outputArray.push({
       'market': marketName,
@@ -112,7 +112,7 @@ function extractData(dataArray, key) {
   return outputArray
 }
 
-async function trade(currentMarket, wallet, ema1) {
+async function trade(currentMarket, wallet, ema1, ema2) {
   wallet.currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
   wallet.currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
   wallet[wallet.currentAsset] = 0
@@ -120,10 +120,10 @@ async function trade(currentMarket, wallet, ema1) {
   let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
   let currentPrice = parseFloat(currentPriceRaw.data.price)
   if (timeToBuy(wallet, currentPrice, ema1)) {
-    newBuyOrder(currentSymbol, wallet, currentPrice)
+    newBuyOrder(wallet, currentPrice)
   }
-  if (timeToSell()) {
-    newSellOrder()
+  if (timeToSell(wallet, currentPrice, ema1, ema2)) {
+    newSellOrder(wallet, currentPrice)
   }
 }
 
@@ -131,7 +131,7 @@ async function timeToBuy(wallet, currentPrice) {
   return wallet[wallet.currentBase] > wallet[wallet.currentAsset] * currentPrice && currentPrice > ema1
 }
 
-async function newBuyOrder(symbol, wallet, currentPrice) {
+async function newBuyOrder(wallet, currentPrice) {
   let tradeReport
   try {
     let oldBaseVolume = wallet[wallet.currentBase]
@@ -139,13 +139,34 @@ async function newBuyOrder(symbol, wallet, currentPrice) {
     console.log(wallet)
     wallet[wallet.currentAsset] += oldBaseVolume * (1 - config.fee) / currentPrice
     wallet[wallet.currentBase] -= oldBaseVolume
-    // buyCountdown = 10
     tradeReport = `${timeNow()} - Bought ${n(wallet[wallet.currentAsset], 8)} ${wallet.currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })
   } catch(error) {
     console.log(error)
+  }
+  console.log(tradeReport)
+  console.log(wallet)
+}
+
+async function timeToSell(wallet, currentPrice, ema1, ema2) {
+  return wallet[wallet.currentAsset] * currentPrice > wallet[wallet.currentBase] && ema1 < ema2
+}
+
+async function newSellOrder(wallet, currentPrice) {
+  let tradeReport
+  try {
+    const oldAssetVolume = wallet[wallet.currentAsset]
+    // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
+    wallet[wallet.currentBase] += oldAssetVolume * currentPrice * (1 - config.fee)
+    wallet[wallet.currentAsset] -= oldAssetVolume
+    tradeReport = `${timeNow()} - Sold   ${n(oldAssetVolume, 8)} ${wallet.currentAsset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })  
+  } catch (error) {
+    console.log(error.message)
   }
   console.log(tradeReport)
   console.log(wallet)
