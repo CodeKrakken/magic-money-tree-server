@@ -6,17 +6,19 @@ const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const config = {
+  fee: 0.076
+}
+const axios = require('axios')
+
 let db;
 let collection;
 let exchangeHistory
 let ema1
 let ema3
-let wallet = {}
-let currentAsset
-let currentBase
-let currentMarket
 
 const dbName = "magic-money-tree";
+
 
 async function run() {
   await setupDB()
@@ -35,22 +37,23 @@ async function mainProgram() {
   exchangeHistory = await dbRetrieve()
   rankedByMovement = await rankMovement(exchangeHistory)
   let currentTime = Date.now()
-  let prettyTime = new Date(currentTime).toLocaleString()
-  console.log(`Movement chart at ${prettyTime}\n`)
+  console.log(`Movement chart at ${timeNow()}\n`)
   display(rankedByMovement)
   let currentMarket = rankedByMovement[0].market
-  console.log(`Current Market: ${currentMarket}\n`)
-
-
-
-
-
-
-
-
-
-
+  let wallet = {
+    'USDT': 2000,
+    'currentAsset': '',
+    'currentBase': 'USDT'
+  }
+  await trade(currentMarket, wallet)
+  
   mainProgram()
+}
+
+function timeNow() {
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  return prettyTime
 }
 
 
@@ -103,6 +106,36 @@ function extractData(dataArray, key) {
     outputArray.push(obj[key])
   })
   return outputArray
+}
+
+async function trade(currentMarket, wallet) {
+  wallet.currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
+  wallet.currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
+  let currentSymbol = currentMarket.replace('/', '')
+  console.log(`Current Market: ${currentMarket}\n`)
+  console.log(wallet)
+  newBuyOrder(currentSymbol, wallet)
+}
+
+async function newBuyOrder(symbol, wallet) {
+  let tradeReport
+  try {
+    let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`) 
+    let currentPrice = parseFloat(currentPriceRaw.data.price)
+    let oldBaseVolume = wallet[wallet.currentBase]
+    // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+    wallet[wallet.currentAsset] += oldBaseVolume * (1 - config.fee) / currentPrice
+    wallet[wallet.currentBase] -= oldBaseVolume
+    // buyCountdown = 10
+
+    tradeReport = `${timeNow()} - Bought ${n(wallet[config.asset], 8)} ${config.asset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })  
+  } catch(error) {
+    console.log(error.message)
+  }
+  console.log(tradeReport)
 }
 
 run();
