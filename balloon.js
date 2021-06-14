@@ -30,7 +30,7 @@ async function mainProgram() {
   await console.log(rankedByMovement)
   let currentMarket = rankedByMovement[0]
   console.log(currentMarket)
-
+  
 
 
 

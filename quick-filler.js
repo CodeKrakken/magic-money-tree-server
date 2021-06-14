@@ -72,7 +72,7 @@ async function quickFill(markets) {
   fs.appendFile('good market tally.txt', JSON.stringify(tallyObject), function(err) {
     if (err) return console.log(err);
   })
-  // quickFill(markets)
+  quickFill(markets)
 }
 
 async function tally(asset, base, tallyObject) {
