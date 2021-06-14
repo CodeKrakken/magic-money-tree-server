@@ -121,8 +121,7 @@ async function trade(currentMarket, wallet, ema1, ema2) {
   let currentPrice = parseFloat(currentPriceRaw.data.price)
   if (timeToBuy(wallet, currentPrice, ema1)) {
     newBuyOrder(wallet, currentPrice)
-  }
-  if (timeToSell(wallet, currentPrice, ema1, ema2)) {
+  } else if (timeToSell(wallet, currentPrice, ema1, ema2)) {
     newSellOrder(wallet, currentPrice)
   }
 }
