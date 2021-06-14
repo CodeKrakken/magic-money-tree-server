@@ -60,6 +60,7 @@ async function quickFill(markets) {
     } else {
       let symbolObject = {
         'history': history,
+        'symbol': symbol,
         'asset': asset,
         'base': base
       }
