@@ -23,7 +23,7 @@ async function mainProgram() {
   rankedByMovement = await rankMovement(exchangeHistory)
   console.log(`Movement chart`)
   await console.log(rankedByMovement)
-
+  mainProgram()
 }
 
 async function setupDB() {
