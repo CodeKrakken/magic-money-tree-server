@@ -10,7 +10,8 @@ const config = {
   fee: 0.0075
 }
 const axios = require('axios')
-const fs = require('fs')
+const fs = require('fs');
+const { format } = require('path');
 
 
 let db;
@@ -19,15 +20,16 @@ let exchangeHistory
 
 const dbName = "magic-money-tree";
 
+let wallet = {
+  'USDT': 2000,
+  'currentAsset': '',
+  'currentBase': 'USDT'
+}
 
 async function run() {
-  await setupDB()
-  let wallet = {
-    'USDT': 2000,
-    'currentAsset': '',
-    'currentBase': 'USDT'
-  }
-  await mainProgram(wallet)
+  console.log('Running')
+  // await setupDB()
+  await mainProgram()
 }
 
 async function setupDB() {
@@ -38,7 +40,8 @@ async function setupDB() {
   console.log(`Retrieving data from database`)
 }
 
-async function mainProgram(wallet) {
+async function mainProgram() {
+
   exchangeHistory = await dbRetrieve()
   let ema1
   let ema2
@@ -49,8 +52,7 @@ async function mainProgram(wallet) {
   display(rankedByMovement)
   let currentMarket = rankedByMovement[0].market
   await trade(currentMarket, wallet, ema1, ema2)
-  
-  mainProgram(wallet)
+  mainProgram()
 }
 
 function timeNow() {
@@ -61,8 +63,68 @@ function timeNow() {
 
 
 async function dbRetrieve() {
-  data = await collection.find().toArray();
+  // data = await collection.find().toArray();
+  let markets = await fs.readFileSync('goodMarkets.txt', 'utf8').split('""');
+  markets = markets.filter(market => market.includes('USDT'))
+  let data = await fetch(markets);
   return data
+}
+
+async function fetch(markets){ 
+  let n = markets.length
+  let returnArray = []
+  for (let i = 0; i < n; i ++) {
+    let market = markets[i]
+    let asset = market.substring(0, market.indexOf('/'))
+    let base = market.substring(market.indexOf('/')+1)
+    let symbol = market.replace('/', '')
+    let history = await fetchHistory(symbol)
+    if (history === "Fetch failed") {
+      markets.splice(i, 1)
+      i --
+      n --
+    } else {
+      let symbolObject = {
+        'history': history,
+        'symbol': symbol,
+        'asset': asset,
+        'base': base
+      }
+      symbolObject = await collateData(symbolObject)
+      returnArray.push(symbolObject)
+    }
+  }
+  return returnArray
+}
+
+async function fetchHistory(symbol) {
+  try {
+    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbol}&interval=1m`)
+    return history.data
+  } catch (error) {
+    return "Fetch failed"
+  }
+}
+
+async function collateData(data) {
+  let history = []
+  data.history.forEach(period => {
+    history.push({
+      'startTime': period[0],
+      'open': period[1],
+      'high': period[2],
+      'low': period[3],
+      'close': period[4],
+      'endTime': period[6]
+    })
+  })
+  let outputObject = {
+    'history': history,
+    'asset': data.asset,
+    'base': data.base,
+    'symbol': data.symbol
+  }
+  return outputObject
 }
 
 function rankMovement(markets) {
@@ -127,7 +189,9 @@ async function trade(currentMarket, wallet, ema1, ema2) {
 }
 
 async function timeToBuy(wallet, currentPrice) {
-  return wallet[wallet.currentBase] > wallet[wallet.currentAsset] * currentPrice && currentPrice > ema1
+  return wallet[wallet.currentBase] > wallet[wallet.currentAsset] * currentPrice 
+  && currentPrice > ema1
+  && wallet[wallet.currentBase] > 0
 }
 
 async function newBuyOrder(wallet, currentPrice) {
