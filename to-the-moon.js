@@ -17,13 +17,17 @@ let wallet = {
 
 async function run() {
   console.log('Running')
+  mainProgram()
+}
+
+async function mainProgram() {
   let marketNames = await fetchNames()
   let exchangeHistory = await fetchAllHistory(marketNames)
   console.log(`Movement chart at ${timeNow()}\n`)
   let rankedByMovement = await rank(exchangeHistory)
   await display(rankedByMovement)
   await displayWallet()
-  run()
+  mainProgram()
 }
 
 async function fetchNames() {
@@ -139,7 +143,11 @@ function extractData(dataArray, key) {
 
 function displayWallet() {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
-  console.log(displayWallet)
+  console.log('Wallet\n')
+  displayWallet.forEach(currency => {
+    console.log(`${wallet[currency]} ${currency}`)
+  })
+
 }
 
 run();
