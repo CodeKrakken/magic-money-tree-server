@@ -91,7 +91,8 @@ function timeNow() {
 function display(rankedByMovement) {
   for (let i = 0; i < 10; i++) {
     let market = rankedByMovement[i]
-    console.log(`${market.asset + market.base} ... Movement: ${market.movement} ... (${market.fetched})`)
+    console.log(market)
+    console.log(`${market.market} ... Movement: ${market.movement} ... (${market.fetched})`)
   }
   console.log('\n')
 }
