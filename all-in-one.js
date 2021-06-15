@@ -59,6 +59,8 @@ let wallet = {
   "ATA": 0
 }
 
+let ema1 = 0
+
 async function run() {
   console.log('Running')
   // await setupDB()
@@ -75,14 +77,13 @@ async function setupDB() {
 
 async function mainProgram() {
   exchangeHistory = await dbRetrieve()
-  let ema1
   let ema2
   let ema3
   rankedByMovement = await rankMovement(exchangeHistory)
   console.log(`Movement chart at ${timeNow()}\n`)
   display(rankedByMovement)
   let currentMarket = rankedByMovement[0].market
-  await trade(currentMarket, wallet, ema1, ema2)
+  await trade(currentMarket, wallet, ema2)
   mainProgram()
 }
 
@@ -163,7 +164,7 @@ function rankMovement(markets) {
   markets.forEach(market => {
     let marketName = `${market.asset}/${market.base}`
     ema1 = ema(market.history, 1, 'close')
-    ema2 = ema(market.history, 1, 'close')
+    ema2 = ema(market.history, 2, 'close')
     ema3 = ema(market.history, 3, 'close')
     outputArray.push({
       'market': marketName,
@@ -205,20 +206,25 @@ function extractData(dataArray, key) {
   return outputArray
 }
 
-async function trade(currentMarket, wallet, ema1, ema2) {
+async function trade(currentMarket, wallet, ema2) {
   let currentAsset = currentMarket.substring(0, currentMarket.indexOf('/'))
   let currentBase = currentMarket.substring(currentMarket.indexOf('/')+1)
   let currentSymbol = currentMarket.replace('/', '')
   let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
   let currentPrice = parseFloat(currentPriceRaw.data.price)
-  if (timeToBuy(wallet, currentPrice, ema1, currentAsset, currentBase)) {
+  if (timeToBuy(wallet, currentPrice, currentAsset, currentBase)) {
     newBuyOrder(wallet, currentPrice, currentAsset, currentBase)
-  } else if (timeToSell(wallet, currentPrice, ema1, ema2, currentAsset, currentBase)) {
+  } else if (timeToSell(wallet, currentPrice, ema2, currentAsset, currentBase)) {
     newSellOrder(wallet, currentPrice, currentAsset, currentBase)
   }
 }
 
-async function timeToBuy(wallet, currentPrice, ema1, currentAsset, currentBase) {
+async function timeToBuy(wallet, currentPrice, currentAsset, currentBase) {
+  console.log(wallet[currentBase])
+  console.log(wallet[currentAsset])
+  console.log(currentPrice)
+  console.log(wallet[currentAsset] * currentPrice)
+  console.log(ema1)
   return wallet[currentBase] > wallet[currentAsset] * currentPrice 
   && currentPrice > ema1
   && wallet[currentBase] > 0
@@ -229,7 +235,7 @@ async function newBuyOrder(wallet, currentPrice, currentAsset, currentBase) {
   try {
     let oldBaseVolume = wallet[currentBase]
     // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
-    console.log(wallet)
+    displayWallet()
     wallet[currentAsset] += oldBaseVolume * (1 - fee) / currentPrice
     wallet[currentBase] -= oldBaseVolume
     tradeReport = `${timeNow()} - Bought ${n(wallet[currentAsset], 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
@@ -240,10 +246,28 @@ async function newBuyOrder(wallet, currentPrice, currentAsset, currentBase) {
     console.log(error)
   }
   console.log(tradeReport)
-  console.log(wallet)
+  tradeReport = ''
+  displayWallet(wallet)
 }
 
-async function timeToSell(wallet, currentPrice, ema1, ema2, currentAsset, currentBase) {
+async function displayWallet(wallet) {
+  try {
+    console.log('Wallet')
+    let currencies = Object.keys(wallet)
+    currencies.map(currency => {
+      if (wallet[currency] > 0) {
+        console.log(`${wallet[currency]} ${currency} `)
+      }
+    })
+  } catch (error) {
+    let err = error.message
+  }
+  
+}
+
+
+
+async function timeToSell(wallet, currentPrice, ema2, currentAsset, currentBase) {
   return wallet[currentAsset] * currentPrice > wallet[currentBase] && ema1 < ema2
 }
 
@@ -262,7 +286,7 @@ async function newSellOrder(wallet, currentPrice, currentAsset, currentBase) {
     console.log(error.message)
   }
   console.log(tradeReport)
-  console.log(wallet)
+  // displayWallet(wallet)
 }
 
 function n(n, d) {
