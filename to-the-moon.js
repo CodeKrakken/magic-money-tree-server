@@ -167,24 +167,25 @@ async function trade() {
   let potentialBase = potentialMarket.market.substring(potentialMarket.market.indexOf('/')+1)
   let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
   let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
-  currentPrice = await fetchCurrentPrice(currentMarket)
-  potentialPrice = await fetchCurrentPrice(potentialMarket)
-  if (timeToBuy(potentialAsset, currentBase)) {
+  currentPrice = await fetchPrice(currentMarket)
+  potentialPrice = await fetchPrice(potentialMarket)
+  if (timeToBuy(currentAsset, currentBase)) {
     currentAsset = potentialAsset
     currentBase = potentialBase
     currentMarket = potentialMarket
     currentPrice = potentialPrice
-    await newBuyOrder(potentialAsset, currentBase)
+    await newBuyOrder(currentAsset, currentBase)
   } else if (timeToSell(currentAsset, currentBase)) {
+    console.log(currentPrice)
     await newSellOrder(currentAsset, currentBase)
   }
 }
 
-async function fetchCurrentPrice() {
-  let currentSymbol = currentMarket.market.replace('/', '')
-  let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
-  currentPrice = parseFloat(currentPriceRaw.data.price)
-  return currentPrice
+async function fetchPrice(market) {
+  let currentSymbol = market.market.replace('/', '')
+  let priceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
+  let price = parseFloat(priceRaw.data.price)
+  return price
 }
 
 function timeToBuy(currentAsset, currentBase) {
