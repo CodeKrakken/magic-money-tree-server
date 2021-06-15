@@ -19,7 +19,7 @@ async function run() {
   console.log('Running')
   let marketNames = await fetchNames()
   let exchangeHistory = await fetchAllHistory(marketNames)
-  console.log(exchangeHistory)
+  console.log(rank(exchangeHistory))
   run()
 }
 
@@ -78,6 +78,46 @@ async function collateData(data) {
     'base': data.base,
   }
   return outputObject
+}
+
+async function rank(markets) {
+  outputArray = []
+  markets.forEach(market => {
+    let marketName = `${market.asset}/${market.base}`
+    let ema1 = ema(market.history, 1, 'close')
+    let ema2 = ema(market.history, 2, 'close')
+    let ema3 = ema(market.history, 3, 'close')
+    outputArray.push({
+      'market': marketName,
+      'movement': ema1/ema3 - 1,
+      'ema1': ema1,
+      'ema2': ema2,
+      'ema3': ema3,
+      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString()
+    })
+  })
+  return outputArray.sort((a, b) => a.movement - b.movement)
+}
+
+function ema(rawData, time, parameter) {
+  let data = extractData(rawData, parameter)
+  const k = 2/(time + 1)
+  let emaData = []
+  emaData[0] = data[0]
+  for (let i = 1; i < data.length; i++) {
+    let newPoint = (data[i] * k) + (emaData[i-1] * (1-k))
+    emaData.push(newPoint)
+  }
+  let currentEma = [...emaData].pop()
+  return +currentEma
+}
+
+function extractData(dataArray, key) {
+  let outputArray = []
+  dataArray.forEach(obj => {
+    outputArray.push(obj[key])
+  })
+  return outputArray
 }
 
 run();
