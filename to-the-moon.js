@@ -22,6 +22,7 @@ async function run() {
   console.log(`Movement chart at ${timeNow()}\n`)
   let rankedByMovement = await rank(exchangeHistory)
   await display(rankedByMovement)
+  await displayWallet()
   run()
 }
 
@@ -91,7 +92,6 @@ function timeNow() {
 function display(rankedByMovement) {
   for (let i = 0; i < 10; i++) {
     let market = rankedByMovement[i]
-    console.log(market)
     console.log(`${market.market} ... Movement: ${market.movement} ... (${market.fetched})`)
   }
   console.log('\n')
@@ -135,6 +135,11 @@ function extractData(dataArray, key) {
     outputArray.push(obj[key])
   })
   return outputArray
+}
+
+function displayWallet() {
+  let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
+  console.log(displayWallet)
 }
 
 run();
