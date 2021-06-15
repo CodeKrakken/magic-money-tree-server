@@ -60,7 +60,7 @@ let wallet = {
 }
 
 async function run() {
-  console.log('Running')
+  console.log('Running\n')
   // await setupDB()
   await mainProgram()
 }
