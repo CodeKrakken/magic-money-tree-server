@@ -15,6 +15,11 @@ let wallet = {
   "ICP":  0,    "ATA":     0
 }
 
+let currentMarket = 'None'
+let potentialMarket
+let currentPrice
+let potentialPrice
+
 async function run() {
   console.log('Running\n')
   mainProgram()
@@ -27,8 +32,11 @@ async function mainProgram() {
   let rankedByMovement = await rank(exchangeHistory)
   await display(rankedByMovement)
   await displayWallet()
-  let currentMarket = rankedByMovement[0]
-  await trade(currentMarket)
+  if (currentMarket === 'None') {
+    currentMarket = rankedByMovement[0]
+  }
+  potentialMarket = rankedByMovement[0]
+  await trade()
   mainProgram()
 }
 
@@ -152,27 +160,38 @@ function displayWallet() {
   console.log('\n')
 }
 
-async function trade(market) {
-  let currentAsset = market.market.substring(0, market.market.indexOf('/'))
-  let currentBase = market.market.substring(market.market.indexOf('/')+1)
-  let currentPrice = await fetchCurrentPrice(market)
-  if (timeToBuy(currentAsset, currentBase)) {
-    await newBuyOrder(currentPrice, currentAsset, currentBase)
+async function trade() {
+  console.log(currentMarket)
+  console.log(potentialMarket)
+  let potentialAsset = potentialMarket.market.substring(0, potentialMarket.market.indexOf('/'))
+  let potentialBase = potentialMarket.market.substring(potentialMarket.market.indexOf('/')+1)
+  let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
+  let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
+  currentPrice = await fetchCurrentPrice(currentMarket)
+  potentialPrice = await fetchCurrentPrice(potentialMarket)
+  if (timeToBuy(potentialAsset, currentBase)) {
+    currentAsset = potentialAsset
+    currentBase = potentialBase
+    currentMarket = potentialMarket
+    currentPrice = potentialPrice
+    await newBuyOrder(potentialAsset, currentBase)
+  } else if (timeToSell(currentAsset, currentBase)) {
+    await newSellOrder(currentAsset, currentBase)
   }
 }
 
-async function fetchCurrentPrice(currentMarket) {
+async function fetchCurrentPrice() {
   let currentSymbol = currentMarket.market.replace('/', '')
   let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
-  let currentPrice = parseFloat(currentPriceRaw.data.price)
+  currentPrice = parseFloat(currentPriceRaw.data.price)
   return currentPrice
 }
 
 function timeToBuy(currentAsset, currentBase) {
-  return wallet[currentAsset] < wallet[currentBase]
+  return wallet[currentAsset] < wallet[currentBase] * currentPrice 
 }
 
-async function newBuyOrder(currentPrice, currentAsset, currentBase) {
+async function newBuyOrder(currentAsset, currentBase) {
   let tradeReport
   try {
     let oldBaseVolume = wallet[currentBase]
@@ -184,7 +203,32 @@ async function newBuyOrder(currentPrice, currentAsset, currentBase) {
       if (err) return console.log(err);
     })
   } catch(error) {
-    console.log(error)
+    console.log(error.message)
+  }
+  console.log(tradeReport)
+  tradeReport = ''
+  displayWallet()
+  console.log('--------\n')
+}
+
+function timeToSell(currentAsset, currentBase) {
+  // return wallet[currentAsset] * currentPrice > wallet[currentBase]
+  return wallet[currentBase] === 0
+}
+
+async function newSellOrder(currentAsset, currentBase) {
+  let tradeReport
+  try {
+    const oldAssetVolume = wallet[currentAsset]
+    // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
+    wallet[currentBase] += oldAssetVolume * currentPrice * (1 - fee)
+    wallet[currentAsset] -= oldAssetVolume
+    tradeReport = `${timeNow()} - Sold   ${n(oldAssetVolume, 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })  
+  } catch (error) {
+    console.log(error.message)
   }
   console.log(tradeReport)
   tradeReport = ''
