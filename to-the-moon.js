@@ -19,7 +19,9 @@ async function run() {
   console.log('Running')
   let marketNames = await fetchNames()
   let exchangeHistory = await fetchAllHistory(marketNames)
-  console.log(rank(exchangeHistory))
+  console.log(`Movement chart at ${timeNow()}\n`)
+  let rankedByMovement = await rank(exchangeHistory)
+  await display(rankedByMovement)
   run()
 }
 
@@ -78,6 +80,20 @@ async function collateData(data) {
     'base': data.base,
   }
   return outputObject
+}
+
+function timeNow() {
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  return prettyTime
+}
+
+function display(rankedByMovement) {
+  for (let i = 0; i < 10; i++) {
+    let market = rankedByMovement[i]
+    console.log(`${market.asset + market.base} ... Movement: ${market.movement} ... (${market.fetched})`)
+  }
+  console.log('\n')
 }
 
 async function rank(markets) {
