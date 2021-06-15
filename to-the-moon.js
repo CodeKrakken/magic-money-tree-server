@@ -16,7 +16,7 @@ let wallet = {
 }
 
 async function run() {
-  console.log('Running')
+  console.log('Running\n')
   mainProgram()
 }
 
@@ -27,6 +27,8 @@ async function mainProgram() {
   let rankedByMovement = await rank(exchangeHistory)
   await display(rankedByMovement)
   await displayWallet()
+  let currentMarket = rankedByMovement[0]
+  await trade(currentMarket)
   mainProgram()
 }
 
@@ -147,7 +149,51 @@ function displayWallet() {
   displayWallet.forEach(currency => {
     console.log(`${wallet[currency]} ${currency}`)
   })
+  console.log('\n')
+}
 
+async function trade(market) {
+  let currentAsset = market.market.substring(0, market.market.indexOf('/'))
+  let currentBase = market.market.substring(market.market.indexOf('/')+1)
+  let currentPrice = await fetchCurrentPrice(market)
+  if (timeToBuy(currentAsset, currentBase)) {
+    await newBuyOrder(currentPrice, currentAsset, currentBase)
+  }
+}
+
+async function fetchCurrentPrice(currentMarket) {
+  let currentSymbol = currentMarket.market.replace('/', '')
+  let currentPriceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
+  let currentPrice = parseFloat(currentPriceRaw.data.price)
+  return currentPrice
+}
+
+function timeToBuy(currentAsset, currentBase) {
+  return wallet[currentAsset] < wallet[currentBase]
+}
+
+async function newBuyOrder(currentPrice, currentAsset, currentBase) {
+  let tradeReport
+  try {
+    let oldBaseVolume = wallet[currentBase]
+    // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+    wallet[currentAsset] += oldBaseVolume * (1 - fee) / currentPrice
+    wallet[currentBase] -= oldBaseVolume
+    tradeReport = `${timeNow()} - Bought ${n(wallet[currentAsset], 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })
+  } catch(error) {
+    console.log(error)
+  }
+  console.log(tradeReport)
+  tradeReport = ''
+  displayWallet()
+  console.log('--------\n')
+}
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
 }
 
 run();

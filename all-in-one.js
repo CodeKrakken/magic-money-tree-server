@@ -214,11 +214,6 @@ async function trade(currentMarket, wallet) {
   } else if (await timeToSell(wallet, currentPrice, currentMarket.ema1, currentMarket.ema2, currentAsset, currentBase)) {
     await newSellOrder(wallet, currentPrice, currentAsset, currentBase)
   } else {
-    console.log('I\'m a cunt')
-    // console.log(wallet)
-    // console.log(currentPrice)
-    // console.log(currentAsset)
-    // console.log(currentBase)
     console.log(currentMarket.ema1)
     console.log(currentMarket.ema2)
   }
@@ -264,8 +259,6 @@ async function displayWallet(wallet) {
   }
   
 }
-
-
 
 async function timeToSell(wallet, currentPrice, ema1, ema2, currentAsset, currentBase) {
   return wallet[currentAsset] * currentPrice > wallet[currentBase] && ema1 < ema2
