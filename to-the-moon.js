@@ -224,7 +224,7 @@ async function newSellOrder(currentAsset, currentBase) {
     // await binanceClient.createMarketSellOrder(market, oldAssetVolume)
     wallet[currentBase] += oldAssetVolume * currentPrice * (1 - fee)
     wallet[currentAsset] -= oldAssetVolume
-    tradeReport = `${timeNow()} - Sold   ${n(oldAssetVolume, 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice})\n`
+    tradeReport = `${timeNow()} - Sold   ${n(oldAssetVolume, 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldAssetVolume * currentPrice * (1 - fee)})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })  
