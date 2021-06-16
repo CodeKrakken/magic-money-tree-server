@@ -19,6 +19,7 @@ let currentMarket = 'None'
 let potentialMarket
 let currentPrice
 let potentialPrice
+let boughtPrice = 0
 
 async function run() {
   console.log('Running\n')
@@ -155,14 +156,12 @@ function displayWallet() {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   displayWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency}`)
+    console.log(`${wallet[currency]} ${currency} ${currency === 'USDT' ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`}`)
   })
   console.log('\n')
 }
 
 async function trade() {
-  console.log(currentMarket)
-  console.log(potentialMarket)
   let potentialAsset = potentialMarket.market.substring(0, potentialMarket.market.indexOf('/'))
   let potentialBase = potentialMarket.market.substring(potentialMarket.market.indexOf('/')+1)
   let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
@@ -175,8 +174,8 @@ async function trade() {
     currentMarket = potentialMarket
     currentPrice = potentialPrice
     await newBuyOrder(currentAsset, currentBase)
-  } else if (timeToSell(currentAsset, currentBase)) {
-    console.log(currentPrice)
+    boughtPrice = currentPrice
+  } else if (timeToSell(currentBase, currentPrice)) {
     await newSellOrder(currentAsset, currentBase)
   }
 }
@@ -190,6 +189,7 @@ async function fetchPrice(market) {
 
 function timeToBuy(currentAsset, currentBase) {
   return wallet[currentAsset] < wallet[currentBase] * currentPrice 
+      && currentPrice > potentialMarket.ema1
 }
 
 async function newBuyOrder(currentAsset, currentBase) {
@@ -212,9 +212,9 @@ async function newBuyOrder(currentAsset, currentBase) {
   console.log('--------\n')
 }
 
-function timeToSell(currentAsset, currentBase) {
+function timeToSell(currentBase, currentPrice) {
   // return wallet[currentAsset] * currentPrice > wallet[currentBase]
-  return wallet[currentBase] === 0
+  return wallet[currentBase] === 0 && currentPrice * (1 - fee) > boughtPrice
 }
 
 async function newSellOrder(currentAsset, currentBase) {
