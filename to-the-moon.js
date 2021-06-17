@@ -3,6 +3,14 @@ require('dotenv').config();
 const fee = 0.00075
 const axios = require('axios')
 const fs = require('fs');
+
+// const WebSocket = require('ws');
+
+// const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+
+// ws.on('message', function incoming(data) {
+//     console.log(data);
+// });
 const { runInContext } = require('vm');
 
 let wallet = {
@@ -18,6 +26,7 @@ let wallet = {
 let currentMarket = 'None'
 let currentPrice
 let boughtPrice = 0
+let targetPrice = 0
 
 async function run() {
   console.log('Running\n')
@@ -28,8 +37,9 @@ async function mainProgram() {
   let marketNames = await fetchNames()
   let exchangeHistory = await fetchAllHistory(marketNames)
   console.log(`Movement chart at ${timeNow()}\n`)
-  let rankedByMovement = await rank(exchangeHistory)
-  await display(rankedByMovement)
+  // let rankedByMovement = await rank(exchangeHistory)
+  let filteredByEMA = await filter(exchangeHistory)
+  await display(filteredByEMA)
   await displayWallet()
   if (currentMarket === 'None') {
     currentMarket = rankedByMovement[0]
@@ -71,7 +81,7 @@ async function fetchAllHistory(marketNames) {
 }
 
 async function fetchOneHistory(symbolName) {
-  let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`)
+  let history = await axios.get(`wss://stream.binance.com:9443`)
   return history.data
 }
 
@@ -128,6 +138,17 @@ async function rank(markets) {
   return outputArray.sort((a, b) => b.movement - a.movement)
 }
 
+async function filter(markets) {
+  outputArray = markets
+  outputArray = outputArray.filter(market => { 
+    let ema20 = ema(market.history, 20, 'close')
+    let ema50 = ema(market.history, 50, 'close')
+    let ema200 = ema(market.history, 200, 'close')
+    ema20 > ema50 && ema50 > ema200
+  })
+  return outputArray
+}
+
 function ema(rawData, time, parameter) {
   let data = extractData(rawData, parameter)
   const k = 2/(time + 1)
@@ -162,10 +183,12 @@ async function trade() {
   let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
   let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
   currentPrice = await fetchPrice(currentMarket)
+
   if (timeToBuy(currentAsset, currentBase)) {
     await newBuyOrder(currentAsset, currentBase)
     boughtPrice = currentPrice
-  } else if (timeToSell(currentBase, currentPrice)) {
+    targetPrice = boughtPrice * (1 + (2 * fee))
+  } else if (timeToSell(currentBase, targetPrice)) {
     await newSellOrder(currentAsset, currentBase)
     currentMarket = 'None'
   } else {
@@ -207,9 +230,9 @@ async function newBuyOrder(currentAsset, currentBase) {
   console.log('--------\n')
 }
 
-function timeToSell(currentBase, currentPrice) {
+function timeToSell(currentBase) {
   // return wallet[currentAsset] * currentPrice > wallet[currentBase]
-  return wallet[currentBase] === 0 && currentPrice * (1 - (2 * fee)) > boughtPrice
+  return wallet[currentBase] === 0 && currentPrice > targetPrice
 }
 
 async function newSellOrder(currentAsset, currentBase) {
