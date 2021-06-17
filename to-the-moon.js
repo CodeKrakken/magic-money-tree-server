@@ -16,9 +16,7 @@ let wallet = {
 }
 
 let currentMarket = 'None'
-let potentialMarket
 let currentPrice
-let potentialPrice
 let boughtPrice = 0
 
 async function run() {
@@ -36,7 +34,6 @@ async function mainProgram() {
   if (currentMarket === 'None') {
     currentMarket = rankedByMovement[0]
   }
-  potentialMarket = rankedByMovement[0]
   await trade()
   mainProgram()
 }
@@ -116,19 +113,19 @@ async function rank(markets) {
   outputArray = []
   markets.forEach(market => {
     let marketName = `${market.asset}/${market.base}`
-    let ema1 = ema(market.history, 1, 'close')
-    let ema2 = ema(market.history, 2, 'close')
-    let ema3 = ema(market.history, 3, 'close')
+    let ema20 = ema(market.history, 20, 'close')
+    let ema50 = ema(market.history, 50, 'close')
+    let ema200 = ema(market.history, 200, 'close')
     outputArray.push({
       'market': marketName,
-      'movement': ema1/ema3 - 1,
-      'ema1': ema1,
-      'ema2': ema2,
-      'ema3': ema3,
+      'movement': ema20/ema50 -1,
+      'ema20': ema20,
+      'ema50': ema50,
+      'ema200': ema200,
       'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString()
     })
   })
-  return outputArray.sort((a, b) => a.movement - b.movement)
+  return outputArray.sort((a, b) => b.movement - a.movement)
 }
 
 function ema(rawData, time, parameter) {
@@ -162,21 +159,19 @@ function displayWallet() {
 }
 
 async function trade() {
-  let potentialAsset = potentialMarket.market.substring(0, potentialMarket.market.indexOf('/'))
-  let potentialBase = potentialMarket.market.substring(potentialMarket.market.indexOf('/')+1)
   let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
   let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
   currentPrice = await fetchPrice(currentMarket)
-  potentialPrice = await fetchPrice(potentialMarket)
   if (timeToBuy(currentAsset, currentBase)) {
-    currentAsset = potentialAsset
-    currentBase = potentialBase
-    currentMarket = potentialMarket
-    currentPrice = potentialPrice
     await newBuyOrder(currentAsset, currentBase)
     boughtPrice = currentPrice
   } else if (timeToSell(currentBase, currentPrice)) {
     await newSellOrder(currentAsset, currentBase)
+    currentMarket = 'None'
+  } else {
+    console.log(currentAsset)
+    console.log(currentMarket)
+    console.log(currentPrice)
   }
 }
 
@@ -189,7 +184,7 @@ async function fetchPrice(market) {
 
 function timeToBuy(currentAsset, currentBase) {
   return wallet[currentAsset] < wallet[currentBase] * currentPrice 
-      && currentPrice > potentialMarket.ema1
+      && currentPrice > currentMarket.ema20
 }
 
 async function newBuyOrder(currentAsset, currentBase) {
