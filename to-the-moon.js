@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const fee = 0.0075
+const fee = 0.00075
 const axios = require('axios')
 const fs = require('fs');
 const { runInContext } = require('vm');
