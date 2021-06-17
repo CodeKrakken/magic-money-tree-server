@@ -27,6 +27,7 @@ let currentMarket = 'None'
 let currentPrice
 let boughtPrice = 0
 let targetPrice = 0
+let currentBase
 
 async function run() {
   console.log('Running\n')
@@ -37,14 +38,16 @@ async function mainProgram() {
   let marketNames = await fetchNames()
   let exchangeHistory = await fetchAllHistory(marketNames)
   console.log(`Movement chart at ${timeNow()}\n`)
-  // let rankedByMovement = await rank(exchangeHistory)
   let filteredByEMA = await filter(exchangeHistory)
-  await display(filteredByEMA)
-  await displayWallet()
-  if (currentMarket === 'None') {
-    currentMarket = rankedByMovement[0]
+  if (filteredByEMA.length > 0) {
+    filteredByEMA = await rank(filteredByEMA)
+    await display(filteredByEMA)
+    if (currentMarket === 'None') {
+      currentMarket = filteredByEMA[0]
+    }
   }
-  await trade()
+  await displayWallet()
+  await trade(filteredByEMA)
   mainProgram()
 }
 
@@ -81,7 +84,7 @@ async function fetchAllHistory(marketNames) {
 }
 
 async function fetchOneHistory(symbolName) {
-  let history = await axios.get(`wss://stream.binance.com:9443`)
+  let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`)
   return history.data
 }
 
@@ -179,24 +182,29 @@ function displayWallet() {
   console.log('\n')
 }
 
-async function trade() {
-  let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
-  let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
-  currentPrice = await fetchPrice(currentMarket)
-
-  if (timeToBuy(currentAsset, currentBase)) {
-    await newBuyOrder(currentAsset, currentBase)
-    boughtPrice = currentPrice
-    targetPrice = boughtPrice * (1 + (2 * fee))
-  } else if (timeToSell(currentBase, targetPrice)) {
-    await newSellOrder(currentAsset, currentBase)
-    currentMarket = 'None'
-  } else {
-    console.log(currentAsset)
-    console.log(currentMarket)
-    console.log(currentPrice)
+async function trade(exchangeHistory) {
+  if (currentMarket !== 'None') {
+    let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
+    let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
+    currentPrice = await fetchPrice(currentMarket)
+    if (timeToBuy(currentAsset, currentBase)) {
+      await newBuyOrder(currentAsset, currentBase)
+      boughtPrice = currentPrice
+      targetPrice = boughtPrice * (1 + (3 * fee))
+    }
+  }
+  if (currentBase) {
+    if (timeToSell(currentBase, targetPrice, exchangeHistory)) {
+      await newSellOrder(currentAsset, currentBase)
+      currentMarket = 'None'
+    } else {
+      console.log(currentAsset)
+      console.log(currentMarket)
+      console.log(currentPrice)
+    }
   }
 }
+  
 
 async function fetchPrice(market) {
   let currentSymbol = market.market.replace('/', '')
@@ -230,9 +238,12 @@ async function newBuyOrder(currentAsset, currentBase) {
   console.log('--------\n')
 }
 
-function timeToSell(currentBase) {
+function timeToSell(currentBase, targetPrice, exchangeHistory) {
   // return wallet[currentAsset] * currentPrice > wallet[currentBase]
-  return wallet[currentBase] === 0 && currentPrice > targetPrice
+  let ema20 = ema(exchangeHistory, 20, 'high')
+  return wallet[currentBase] === 0 
+      && currentPrice > targetPrice
+      && currentPrice < ema20
 }
 
 async function newSellOrder(currentAsset, currentBase) {
