@@ -209,7 +209,7 @@ async function newBuyOrder(currentAsset, currentBase) {
 
 function timeToSell(currentBase, currentPrice) {
   // return wallet[currentAsset] * currentPrice > wallet[currentBase]
-  return wallet[currentBase] === 0 && currentPrice * (1 - fee) > boughtPrice
+  return wallet[currentBase] === 0 && currentPrice * (1 - (2 * fee) > boughtPrice
 }
 
 async function newSellOrder(currentAsset, currentBase) {
