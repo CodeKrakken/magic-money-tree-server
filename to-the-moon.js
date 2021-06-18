@@ -115,7 +115,9 @@ function timeNow() {
 }
 
 function display(rankedByMovement) {
-  for (let i = 0; i < 10; i++) {
+  console.log(rankedByMovement)
+  let n = rankedByMovement.length
+  for (let i = 0; i < n; i++) {
     let market = rankedByMovement[i]
     console.log(`${market.market} ... Movement: ${market.movement} ... (${market.fetched})`)
   }
@@ -187,6 +189,8 @@ function displayWallet() {
 }
 
 async function trade(exchangeHistory) {
+  console.log('Done')
+
   if (currentMarket !== 'None') {
     let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
     let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
@@ -216,7 +220,7 @@ async function trade(exchangeHistory) {
   
 
 async function fetchPrice(market) {
-  let currentSymbol = market.market.replace('/', '')
+  let currentSymbol = `${market.asset}${market.base}`
   let priceRaw = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${currentSymbol}`) 
   let price = parseFloat(priceRaw.data.price)
   return price
