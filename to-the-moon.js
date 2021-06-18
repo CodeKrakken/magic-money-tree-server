@@ -142,13 +142,17 @@ async function rank(markets) {
 }
 
 async function filter(markets) {
-  outputArray = markets
-  outputArray = outputArray.filter(market => { 
-    let ema20 = ema(market.history, 20, 'close')
-    let ema50 = ema(market.history, 50, 'close')
-    let ema200 = ema(market.history, 200, 'close')
-    ema20 > ema50 && ema50 > ema200
-  })
+  let outputArray = []
+  for (let i = 0; i < markets.length; i++) {
+    let market = markets[i]
+
+    let currentPrice = await fetchPrice(market)
+
+  if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
+  && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
+  && currentPrice > ema(market.history, 20, 'close')) {
+    outputArray.push(market)
+  }}
   return outputArray
 }
 
@@ -191,6 +195,11 @@ async function trade(exchangeHistory) {
       await newBuyOrder(currentAsset, currentBase)
       boughtPrice = currentPrice
       targetPrice = boughtPrice * (1 + (3 * fee))
+    } else {
+      console.log(wallet[currentAsset])
+      console.log(wallet[currentBase])
+      console.log(currentPrice) 
+      console.log(currentMarket.ema20)
     }
   }
   if (currentBase) {
@@ -214,8 +223,7 @@ async function fetchPrice(market) {
 }
 
 function timeToBuy(currentAsset, currentBase) {
-  return wallet[currentAsset] < wallet[currentBase] * currentPrice 
-      && currentPrice > currentMarket.ema20
+  return wallet[currentAsset] < wallet[currentBase] * currentPrice
 }
 
 async function newBuyOrder(currentAsset, currentBase) {
