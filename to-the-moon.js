@@ -39,6 +39,7 @@ async function mainProgram() {
   let exchangeHistory = await fetchAllHistory(marketNames)
   console.log(`Movement chart at ${timeNow()}\n`)
   let filteredByEMA = await filter(exchangeHistory)
+  console.log(filteredByEMA)
   if (filteredByEMA.length > 0) {
     filteredByEMA = await rank(filteredByEMA)
     await display(filteredByEMA)
@@ -147,14 +148,19 @@ async function filter(markets) {
   let outputArray = []
   for (let i = 0; i < markets.length; i++) {
     let market = markets[i]
-
     let currentPrice = await fetchPrice(market)
-
-  if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
-  && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
-  && currentPrice > ema(market.history, 20, 'close')) {
-    outputArray.push(market)
-  }}
+    console.log(currentPrice)
+    if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
+      && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
+      && currentPrice > ema(market.history, 20, 'close')) {
+      outputArray.push(market)
+    } else {
+      console.log(`${market.asset}${market.base}`)
+      console.log(ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
+      && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
+      && currentPrice > ema(market.history, 20, 'close'))
+    }
+  }
   return outputArray
 }
 
