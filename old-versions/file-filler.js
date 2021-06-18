@@ -19,7 +19,7 @@ async function run() {
   await mainProgram();
 }
  
-async function mainProgram() {
+async function fillFile() {
   let markets = await getMarkets()
   markets = await filterMarkets(markets)
   await populateFile(markets)
