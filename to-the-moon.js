@@ -9,7 +9,7 @@ const ccxt = require('ccxt');
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
   secret: process.env.API_SECRET,
-  // 'enableRateLimit': true,
+  'enableRateLimit': true,
 });
 
 
@@ -34,25 +34,21 @@ let currentBase
 
 async function run() {
   console.log('Running\n')
-  await fillFile()
-  mainProgram()
+  let voluminousMarkets = await fillFile()
+  mainProgram(voluminousMarkets)
 }
 
 async function fillFile() {
   let markets = await fetchMarkets()
   let marketNames = await filterMarkets(markets)
-  await populateFile(marketNames)
+  let voluminousMarkets = await populateFile(marketNames)
   console.log('Populated files')
-  // console.log('Restarting process')
+  return voluminousMarkets
 }
 
 async function fetchMarkets() {
   console.log('Fetching overview\n')
   let markets = await binance.load_markets()
-  // console.log(markets)
-
-  // markets = Object.keys(markets).map(market => market.includes('USDT'))
-  // console.log(markets)
   return markets
 }
 
@@ -62,12 +58,11 @@ async function filterMarkets(markets) {
 }
 
 function goodMarket(market, markets) {
-  // console.log(market)
   return markets[market].active 
-  // && !market.includes('UP') 
-  // && !market.includes('DOWN') 
+  && !market.includes('UP') 
+  && !market.includes('DOWN') 
   && market.includes('USDT') 
-  // && !market.replace("USD", "").includes("USD")
+  && !market.replace("USD", "").includes("USD")
 }
 
 async function checkVolume(marketNames, i) {
@@ -98,9 +93,8 @@ async function fetchDollarVolume(symbol) {
 }
 
 async function populateFile(marketNames) {
-  console.log('\n')
+  let voluminousMarkets = []
   let symbolNames = marketNames.map(marketname => marketname = marketname.replace('/', ''))
-  // symbols = symbols.filter(symbol => symbol.includes('USDT'))
   let n = marketNames.length
   let tallyObject = { 
     assets: { total: 0, unique: 0 }, 
@@ -122,22 +116,19 @@ async function populateFile(marketNames) {
       console.log(response + '\n')
     } else {
       console.log(`Recording ${marketName}\n`)
-      fs.appendFile('goodMarkets.txt', JSON.stringify(marketName), function(err) {
-        if (err) return console.log(err);
-      })
+      voluminousMarkets.push(marketName)
     }
   }
   fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
     if (err) return console.log(err);
   })
+  return voluminousMarkets
 }
 
-async function mainProgram() {
-  let marketNames = await fetchNames()
+async function mainProgram(marketNames) {
+  try {
   let exchangeHistory = await fetchAllHistory(marketNames)
-  console.log(`Movement chart at ${timeNow()}\n`)
   let bullishMarkets = await filter(exchangeHistory)
-  // console.log(filteredByEMA)
   if (bullishMarkets.length > 0) {
     bullishMarkets = await rank(bullishMarkets)
     await display(bullishMarkets)
@@ -147,26 +138,30 @@ async function mainProgram() {
   }
   await displayWallet()
   await trade(bullishMarkets)
-  mainProgram()
+  console.log('Restarting process')
+  mainProgram(marketNames)
+  } catch (error) {
+    console.log(error)
+  }
+  
 }
 
 async function fetchNames() {
   let marketNames = fs.readFileSync('goodMarkets.txt', 'utf8').split('""')
   marketNames = marketNames.map(marketName => marketName.replace('"', ''))
-  // marketNames = marketNames.filter(marketName => marketName.includes('USDT'))
   return marketNames
 }
 
 async function fetchAllHistory(marketNames) {
   let n = marketNames.length
   let returnArray = []
+  console.log('Fetching History ...\n')
   for (let i = 0; i < n; i ++) {
     try {
       let marketName = marketNames[i]
       let symbolName = marketName.replace('/', '')
       let assetName = marketName.substring(0, marketName.indexOf('/'))
       let baseName = marketName.substring(marketName.indexOf('/')+1)
-      console.log('Fetching History ...\n')
       let symbolHistory = await fetchOneHistory(symbolName)  
       let symbolObject = {
         'history': symbolHistory,
@@ -214,8 +209,8 @@ function timeNow() {
 }
 
 function display(markets) {
-  // console.log(rankedByMovement)
   let n = markets.length
+  console.log(`Bullish markets at ${timeNow()}\n`)
   for (let i = 0; i < n; i++) {
     let market = markets[i]
     console.log(`${market.market} ... Movement: ${market.movement} ... (${market.fetched})`)
@@ -224,7 +219,7 @@ function display(markets) {
 }
 
 async function rank(markets) {
-  outputArray = []
+  let outputArray = []
   markets.forEach(market => {
     let marketName = market.market
     let ema20 = ema(market.history, 20, 'close')
@@ -243,23 +238,22 @@ async function rank(markets) {
 }
 
 async function filter(markets) {
-  let outputArray = []
-  for (let i = 0; i < markets.length; i++) {
-    let market = markets[i]
-    let currentPrice = await fetchPrice(market)
-    // console.log(currentPrice)
-    if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
-      && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
-      && currentPrice > ema(market.history, 20, 'close')) {
-      outputArray.push(market)
-    } else {
-      // console.log(`${market.asset}${market.base}`)
-      // console.log(ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
-      // && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
-      // && currentPrice > ema(market.history, 20, 'close'))
+  try {
+    let outputArray = []
+    for (let i = 0; i < markets.length; i++) {
+      let market = markets[i]
+      let currentPrice = await fetchPrice(market)
+      if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
+        && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
+        && currentPrice > ema(market.history, 20, 'close')) {
+        outputArray.push(market)
+      }
     }
+    return outputArray
+  } catch (error) {
+    console.log(error)
   }
-  return outputArray
+
 }
 
 function ema(rawData, time, parameter) {
@@ -302,10 +296,10 @@ async function trade(markets) {
       boughtPrice = currentPrice
       targetPrice = boughtPrice * (1 + (3 * fee))
     } else {
-      // console.log(wallet[currentAsset])
-      // console.log(wallet[currentBase])
-      // console.log(currentPrice) 
-      // console.log(currentMarket.ema20)
+      console.log(wallet[currentAsset])
+      console.log(wallet[currentBase])
+      console.log(currentPrice) 
+      console.log(currentMarket.ema20)
     }
   }
   if (currentBase) {
@@ -345,16 +339,14 @@ async function newBuyOrder(currentAsset, currentBase) {
       if (err) return console.log(err);
     })
   } catch(error) {
-    console.log(error.message)
+    console.log(error)
   }
   console.log(tradeReport)
   tradeReport = ''
   displayWallet()
-  console.log('--------\n')
 }
 
 function timeToSell(currentBase, targetPrice, history) {
-  // return wallet[currentAsset] * currentPrice > wallet[currentBase]
   let ema20 = ema(history, 20, 'high')
   return wallet[currentBase] === 0 
       && currentPrice > targetPrice
@@ -373,12 +365,11 @@ async function newSellOrder(currentAsset, currentBase) {
       if (err) return console.log(err);
     })  
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
   console.log(tradeReport)
   tradeReport = ''
   displayWallet()
-  console.log('--------\n')
 }
 
 function n(n, d) {
@@ -402,7 +393,7 @@ async function tally(asset, base, tallyObject) {
     tallyObject.assets.total ++
     tallyObject.bases.total ++
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
