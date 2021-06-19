@@ -243,8 +243,8 @@ async function filter(markets) {
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
-      if (ema(market.history, 20, 'close') > ema(market.history, 50, 'close') 
-        && ema(market.history, 50, 'close') > ema(market.history, 200, 'close')
+      if (ema(market.history, 20) > ema(market.history, 50) 
+        && ema(market.history, 50) > ema(market.history, 200)
         && currentPrice > ema(market.history, 20, 'close')) {
         outputArray.push(market)
       }
@@ -256,8 +256,8 @@ async function filter(markets) {
 
 }
 
-function ema(rawData, time, parameter) {
-  let data = extractData(rawData, parameter)
+function ema(rawData, time) {
+  let data = averageData(rawData)
   const k = 2/(time + 1)
   let emaData = []
   emaData[0] = data[0]
@@ -267,6 +267,15 @@ function ema(rawData, time, parameter) {
   }
   let currentEma = [...emaData].pop()
   return +currentEma
+}
+
+function averageData(dataArray) {
+  let outputArray = []
+  dataArray.forEach(obj => {
+    let total = obj['open'] + obj['high'] + obj['low'] + obj['close']
+    outputArray.push(total)
+  })
+  return outputArray
 }
 
 function extractData(dataArray, key) {
@@ -322,8 +331,8 @@ async function fetchPrice(market) {
   return price
 }
 
-function timeToBuy(currentAsset, currentBase) {
-  return wallet[currentAsset] < wallet[currentBase] * currentPrice
+function timeToBuy(currentBase) {
+  return wallet[currentBase] > 0
 }
 
 async function newBuyOrder(currentAsset, currentBase) {
