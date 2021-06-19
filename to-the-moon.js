@@ -243,10 +243,17 @@ async function filter(markets) {
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
-      if (ema(market.history, 20) > ema(market.history, 50) 
-        && ema(market.history, 50) > ema(market.history, 200)
-        && currentPrice > ema(market.history, 20, 'close')) {
+      if (
+      // ema(market.history, 20) > ema(market.history, 50) 
+      //   && ema(market.history, 50) > ema(market.history, 200)
+        // && 
+        currentPrice > ema(market.history, 20)) {
         outputArray.push(market)
+      } else {
+        // console.log(market.market)
+        // console.log(currentPrice)
+        // console.log(ema(market.history, 20))
+        // console.log('\n')
       }
     }
     return outputArray
@@ -266,6 +273,7 @@ function ema(rawData, time) {
     emaData.push(newPoint)
   }
   let currentEma = [...emaData].pop()
+  console.log(+currentEma)
   return +currentEma
 }
 
