@@ -28,6 +28,7 @@ let wallet = {
 
 let currentMarket = 'None'
 let currentPrice
+let currentAsset = ''
 let currentBase = 'USDT'
 let boughtPrice = 0
 let targetPrice = 0
@@ -278,7 +279,6 @@ function ema(rawData, time, parameter) {
 
 function extractData(dataArray, key) {
   let outputArray = []
-  console.log(dataArray)
   dataArray.forEach(obj => {
     outputArray.push(obj[key])
   })
@@ -305,7 +305,7 @@ function displayWallet() {
 
 async function trade(markets) {
   if (currentMarket !== 'None') {
-    let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
+    currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
     currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
     currentPrice = await fetchPrice(currentMarket)
     if (timeToBuy()) {
@@ -319,9 +319,9 @@ async function trade(markets) {
       // console.log(currentMarket.ema20)
     }
   }
-  console.log(currentBase)
   if (currentBase) {
-    if (timeToSell(targetPrice, currentMarket)) {
+    console.log(markets)
+    if (timeToSell(targetPrice, markets[currentMarket])) {
       await newSellOrder(currentAsset)
       currentMarket = 'None'
     } else {
@@ -365,7 +365,7 @@ async function newBuyOrder(currentAsset) {
 }
 
 function timeToSell(targetPrice, history) {
-  let ema20 = ema(history, 20, 'close')
+  
 
   return wallet[currentBase] === 0 
       // && currentPrice >= targetPrice
