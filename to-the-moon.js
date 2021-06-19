@@ -215,13 +215,14 @@ async function rank(markets) {
   let outputArray = []
   markets.forEach(market => {
     let marketName = market.market
-    let ema2 = ema(market.history, 2, close)
+    let ema2 = ema(market.history, 2, 'close')
     let ema20 = ema(market.history, 20, 'close')
     let ema50 = ema(market.history, 50, 'close')
     let ema200 = ema(market.history, 200, 'close')
     outputArray.push({
       'market': marketName,
       'movement': ema20/ema50 -1,
+      'ema2': ema2,
       'ema20': ema20,
       'ema50': ema50,
       'ema200': ema200,
@@ -238,9 +239,9 @@ async function filter(markets) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
       if (
-        ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
-        ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
-        currentPrice > ema(market.history, 20, 'close')
+        ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
+        ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
+        currentPrice < ema(market.history, 20, 'close')
       ) {
         outputArray.push(market)
       } else {
@@ -313,7 +314,7 @@ async function trade(markets) {
     }
   }
   if (currentBase) {
-    if (timeToSell(targetPrice, markets[currentMarket])) {
+    if (timeToSell(targetPrice, currentMarket)) {
       await newSellOrder(currentAsset)
       currentMarket = 'None'
     } else {
@@ -358,7 +359,7 @@ async function newBuyOrder(currentAsset) {
 
 function timeToSell(targetPrice, market) {
   return wallet[currentBase] === 0 
-      && currentPrice >= targetPrice
+      && currentPrice <= targetPrice
       && currentPrice < market.ema2
 }
 
