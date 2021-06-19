@@ -28,9 +28,9 @@ let wallet = {
 
 let currentMarket = 'None'
 let currentPrice
+let currentBase = 'USDT'
 let boughtPrice = 0
 let targetPrice = 0
-let currentBase
 
 async function run() {
   console.log('Running\n')
@@ -129,15 +129,15 @@ async function mainProgram(marketNames) {
   try {
   let exchangeHistory = await fetchAllHistory(marketNames)
   let bullishMarkets = await filter(exchangeHistory)
+  await displayWallet()
   if (bullishMarkets.length > 0) {
     bullishMarkets = await rank(bullishMarkets)
     await display(bullishMarkets)
     if (currentMarket === 'None') {
       currentMarket = bullishMarkets[0]
     }
+    await trade(bullishMarkets) 
   }
-  await displayWallet()
-  await trade(bullishMarkets)
   console.log('Restarting process')
   mainProgram(marketNames)
   } catch (error) {
@@ -247,12 +247,12 @@ async function filter(markets) {
       // ema(market.history, 20) > ema(market.history, 50) 
       //   && ema(market.history, 50) > ema(market.history, 200)
         // && 
-        currentPrice > ema(market.history, 20)) {
+        currentPrice > ema(market.history, 20, 'close')) {
         outputArray.push(market)
       } else {
         // console.log(market.market)
         // console.log(currentPrice)
-        // console.log(ema(market.history, 20))
+        // console.log(ema(market.history, 20, 'close'))
         // console.log('\n')
       }
     }
@@ -263,8 +263,8 @@ async function filter(markets) {
 
 }
 
-function ema(rawData, time) {
-  let data = averageData(rawData)
+function ema(rawData, time, parameter) {
+  let data = extractData(rawData, parameter)
   const k = 2/(time + 1)
   let emaData = []
   emaData[0] = data[0]
@@ -273,8 +273,16 @@ function ema(rawData, time) {
     emaData.push(newPoint)
   }
   let currentEma = [...emaData].pop()
-  console.log(+currentEma)
   return +currentEma
+}
+
+function extractData(dataArray, key) {
+  let outputArray = []
+  console.log(dataArray)
+  dataArray.forEach(obj => {
+    outputArray.push(obj[key])
+  })
+  return outputArray
 }
 
 function averageData(dataArray) {
@@ -282,14 +290,6 @@ function averageData(dataArray) {
   dataArray.forEach(obj => {
     let total = obj['open'] + obj['high'] + obj['low'] + obj['close']
     outputArray.push(total)
-  })
-  return outputArray
-}
-
-function extractData(dataArray, key) {
-  let outputArray = []
-  dataArray.forEach(obj => {
-    outputArray.push(obj[key])
   })
   return outputArray
 }
@@ -306,22 +306,23 @@ function displayWallet() {
 async function trade(markets) {
   if (currentMarket !== 'None') {
     let currentAsset = currentMarket.market.substring(0, currentMarket.market.indexOf('/'))
-    let currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
+    currentBase = currentMarket.market.substring(currentMarket.market.indexOf('/')+1)
     currentPrice = await fetchPrice(currentMarket)
-    if (timeToBuy(currentAsset, currentBase)) {
-      await newBuyOrder(currentAsset, currentBase)
+    if (timeToBuy()) {
+      await newBuyOrder(currentAsset)
       boughtPrice = currentPrice
       targetPrice = boughtPrice * (1 + (3 * fee))
     } else {
-      console.log(wallet[currentAsset])
-      console.log(wallet[currentBase])
-      console.log(currentPrice) 
-      console.log(currentMarket.ema20)
+      // console.log(wallet[currentAsset])
+      // console.log(wallet[currentBase])
+      // console.log(currentPrice) 
+      // console.log(currentMarket.ema20)
     }
   }
+  console.log(currentBase)
   if (currentBase) {
-    if (timeToSell(currentBase, targetPrice, currentMarket)) {
-      await newSellOrder(currentAsset, currentBase)
+    if (timeToSell(targetPrice, currentMarket)) {
+      await newSellOrder(currentAsset)
       currentMarket = 'None'
     } else {
       // console.log(currentAsset)
@@ -339,11 +340,11 @@ async function fetchPrice(market) {
   return price
 }
 
-function timeToBuy(currentBase) {
+function timeToBuy() {
   return wallet[currentBase] > 0
 }
 
-async function newBuyOrder(currentAsset, currentBase) {
+async function newBuyOrder(currentAsset) {
   let tradeReport
   try {
     let oldBaseVolume = wallet[currentBase]
@@ -363,14 +364,15 @@ async function newBuyOrder(currentAsset, currentBase) {
   displayWallet()
 }
 
-function timeToSell(currentBase, targetPrice, history) {
-  let ema20 = ema(history, 20, 'high')
+function timeToSell(targetPrice, history) {
+  let ema20 = ema(history, 20, 'close')
+
   return wallet[currentBase] === 0 
-      && currentPrice > targetPrice
-      && currentPrice < ema20
+      // && currentPrice >= targetPrice
+      // && currentPrice < ema20
 }
 
-async function newSellOrder(currentAsset, currentBase) {
+async function newSellOrder(currentAsset) {
   let tradeReport
   try {
     const oldAssetVolume = wallet[currentAsset]
