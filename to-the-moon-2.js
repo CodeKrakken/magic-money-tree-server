@@ -14,7 +14,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'BTC': 2000  
+  'USDT': 2000  
 }
 
 let currentMarket = 'None'
@@ -33,7 +33,12 @@ async function tick() {
   console.log(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
-  console.log(bullishMarkets)
+  let bestMarket = {}
+  if (bullishMarkets.length > 0) {
+    bullishMarkets = await rank(bullishMarkets)
+    console.log(bullishMarkets)
+    bestMarket = bullishMarkets[0]
+  }
 }
 
 async function getActiveCurrency() {
@@ -279,6 +284,27 @@ function extractData(dataArray, key) {
     outputArray.push(obj[key])
   })
   return outputArray
+}
+
+async function rank(markets) {
+  let outputArray = []
+  markets.forEach(market => {
+    let marketName = market.market
+    let ema2 = ema(market.history, 2, 'close')
+    let ema20 = ema(market.history, 20, 'close')
+    let ema50 = ema(market.history, 50, 'close')
+    let ema200 = ema(market.history, 200, 'close')
+    outputArray.push({
+      'market': marketName,
+      'movement': ema20/ema50 -1,
+      'ema2': ema2,
+      'ema20': ema20,
+      'ema50': ema50,
+      'ema200': ema200,
+      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString()
+    })
+  })
+  return outputArray.sort((a, b) => b.movement - a.movement)
 }
 
 run();
