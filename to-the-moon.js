@@ -130,7 +130,9 @@ async function mainProgram(marketNames) {
   try {
   let exchangeHistory = await fetchAllHistory(marketNames)
   let bullishMarkets = await filter(exchangeHistory)
-  currentPrice = await fetchPrice(currentMarket)
+  if (currentMarket !== undefined) {
+    currentPrice = await fetchPrice(currentMarket)
+  }
   await displayWallet()
   if (bullishMarkets !== undefined) {
     if (bullishMarkets.length > 0) {
