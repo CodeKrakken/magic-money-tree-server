@@ -216,8 +216,8 @@ async function filter(markets, activeCurrency) {
       let currentPrice = await fetchPrice(market)
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
-          ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
+          // ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
+          // ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
           currentPrice < ema(market.history, 20, 'close')
         ) {
           outputArray.push(market)
@@ -229,8 +229,8 @@ async function filter(markets, activeCurrency) {
         }
       } else {
         if (
-          ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
-          ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
+          // ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
+          // ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
           currentPrice > ema(market.history, 20, 'close')
         ) {
           outputArray.push(market)
