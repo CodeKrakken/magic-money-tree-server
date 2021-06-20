@@ -130,14 +130,17 @@ async function mainProgram(marketNames) {
   try {
   let exchangeHistory = await fetchAllHistory(marketNames)
   let bullishMarkets = await filter(exchangeHistory)
+  currentPrice = await fetchPrice(currentMarket)
   await displayWallet()
-  if (bullishMarkets.length > 0) {
-    bullishMarkets = await rank(bullishMarkets)
-    await display(bullishMarkets)
-    if (currentMarket === 'None') {
-      currentMarket = bullishMarkets[0]
+  if (bullishMarkets !== undefined) {
+    if (bullishMarkets.length > 0) {
+      bullishMarkets = await rank(bullishMarkets)
+      await display(bullishMarkets)
+      if (currentMarket === 'None') {
+        currentMarket = bullishMarkets[0]
+      }
+      await trade(bullishMarkets) 
     }
-    await trade(bullishMarkets) 
   }
   console.log('Restarting process')
   mainProgram(marketNames)
@@ -150,7 +153,7 @@ async function mainProgram(marketNames) {
 async function fetchAllHistory(marketNames) {
   let n = marketNames.length
   let returnArray = []
-  console.log('Fetching History ...\n')
+  console.log(`Fetching History @ ${timeNow()}\n`)
   for (let i = 0; i < n; i ++) {
     try {
       let marketName = marketNames[i]
@@ -239,9 +242,9 @@ async function filter(markets) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
       if (
-        ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
-        ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
-        currentPrice < ema(market.history, 20, 'close')
+        ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
+        ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
+        currentPrice > ema(market.history, 20, 'close')
       ) {
         outputArray.push(market)
       } else {
@@ -292,7 +295,10 @@ function displayWallet() {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   displayWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency} ${currency === 'USDT' ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`}`)
+    console.log(`${wallet[currency]} ${currency} ${currency === 'USDT' ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
+    if (currency !== 'USDT') {
+      console.log(`Target price: ${targetPrice} = $${wallet[currency] * targetPrice}`)
+    }
   })
   console.log('\n')
 }
@@ -327,10 +333,14 @@ async function trade(markets) {
   
 
 async function fetchPrice(market) {
-  let symbolName = market.market.replace('/', '')
-  let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
-  let price = parseFloat(rawPrice.data.price)
-  return price
+  try {
+    let symbolName = market.market.replace('/', '')
+    let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
+    let price = parseFloat(rawPrice.data.price)
+    return price
+  } catch {
+    fetchPrice(market)
+  }
 }
 
 function timeToBuy() {
@@ -359,7 +369,7 @@ async function newBuyOrder(currentAsset) {
 
 function timeToSell(targetPrice, market) {
   return wallet[currentBase] === 0 
-      && currentPrice <= targetPrice
+      && currentPrice >= targetPrice
       && currentPrice < market.ema2
 }
 
