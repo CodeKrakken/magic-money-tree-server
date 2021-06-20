@@ -14,7 +14,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'USDT': 2000
+  'USDT': 2000  
 }
 
 let currentMarket = 'None'
@@ -30,9 +30,14 @@ async function run() {
 }
 
 async function tick() {
-  let activeCurrency = Object.keys(wallet).sort((a, b) => a - b)[0]
+  let activeCurrency = await getActiveCurrency()
   console.log(activeCurrency)
   let markets = await getMarkets()
+}
+
+async function getActiveCurrency() {
+  let sorted = Object.entries(wallet).sort((prev, next) => prev[1] - next[1])
+  return sorted.pop()[0]
 }
 
 async function getMarkets() {
