@@ -5,7 +5,7 @@ const axios = require('axios')
 const fs = require('fs');
 
 const ccxt = require('ccxt');
-const { nextTick } = require('process');
+const { nextTick, traceDeprecation } = require('process');
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -14,14 +14,8 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'DOGE': 2000  
+  'USDT': 2000  
 }
-
-let currentMarket = 'None'
-let currentAsset = 'None'
-let currentBase = 'USDT'
-let boughtPrice = 0
-let targetPrice = 0
 
 async function run() {
   console.log('Running\n')
@@ -30,21 +24,48 @@ async function run() {
 
 async function tick() {
   let activeCurrency = await getActiveCurrency()
-  console.log(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
-  let bestMarket = await selectMarket(bullishMarkets)
-  
+  if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
+    let bestMarket = await selectMarket(bullishMarkets)
+    await trade(bestMarket, activeCurrency)
+  } else {
+    console.log(`No bullish markets @ ${timeNow()}`)
+  }
+  tick()
+}
+
+async function trade(market, base) {
+  await newBuyOrder(market, base)
+}
+
+async function newBuyOrder(market, base) {
+  let tradeReport
+  let targetAsset = market.market.replace(`/${base}`, '')
+  console.log(targetAsset)
+  // try {
+  //   let oldBaseVolume = wallet[base]
+  //   // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+  //   if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
+  //   wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
+  //   wallet[currentBase] -= oldBaseVolume
+  //   tradeReport = `${timeNow()} - Bought ${n(wallet[currentAsset], 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+  //   fs.appendFile('trade-history.txt', tradeReport, function(err) {
+  //     if (err) return console.log(err);
+  //   })
+  // } catch(error) {
+  //   console.log(error)
+  // }
+  // console.log(tradeReport)
+  // tradeReport = ''
+  // displayWallet()
 }
 
 async function selectMarket(markets) {
-  if (markets.length > 0) {
-    markets = await rank(markets)
-    bestMarket = markets[0]
-    console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
-    return bestMarket
-  }
-  console.log(`No bullish markets @ ${timeNow()}`)
+  markets = await rank(markets)
+  bestMarket = markets[0]
+  console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
+  return bestMarket
 }
 
 async function getActiveCurrency() {
@@ -56,7 +77,6 @@ async function getMarkets(currency) {
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
   let voluminousMarkets = await checkVolumes(marketNames)
-  console.log('Filtered by volume')
   return voluminousMarkets
 }
 
@@ -167,14 +187,13 @@ async function getBullishMarkets(marketNames, activeCurrency) {
     let bullishMarkets = await filter(exchangeHistory, activeCurrency)
     return bullishMarkets
   } catch (error) {
-    getBullishMarkets()
+    getBullishMarkets(marketNames, activeCurrency)
   }
 }
 
 async function fetchAllHistory(marketNames) {
   let n = marketNames.length
   let returnArray = []
-  console.log(`Fetching History @ ${timeNow()}\n`)
   for (let i = 0; i < n; i ++) {
     try {
       let marketName = marketNames[i]
@@ -219,38 +238,23 @@ async function collateData(data) {
   return outputObject
 }
 
-async function filter(markets, activeCurrency) {
+async function filter(markets) {
   try {
     let outputArray = []
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
-      if (market.market.indexOf(activeCurrency) === 0) {
-        if (
-          // ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
-          // ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
-          currentPrice < ema(market.history, 20, 'close')
-        ) {
-          outputArray.push(market)
-        } else {
-          // console.log(market.market)
-          // console.log(currentPrice)
-          // console.log(ema(market.history, 20, 'close'))
-          // console.log('\n')
-        }
+      if (
+        // ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
+        // ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
+        currentPrice < ema(market.history, 20, 'close')
+      ) {
+        outputArray.push(market)
       } else {
-        if (
-          // ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
-          // ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
-          currentPrice > ema(market.history, 20, 'close')
-        ) {
-          outputArray.push(market)
-        } else {
-          // console.log(market.market)
-          // console.log(currentPrice)
-          // console.log(ema(market.history, 20, 'close'))
-          // console.log('\n')
-        }
+        // console.log(market.market)
+        // console.log(currentPrice)
+        // console.log(ema(market.history, 20, 'close'))
+        // console.log('\n')
       }
     }
     return outputArray
@@ -259,6 +263,7 @@ async function filter(markets, activeCurrency) {
   }
 
 }
+
 
 async function fetchPrice(market) {
   try {
