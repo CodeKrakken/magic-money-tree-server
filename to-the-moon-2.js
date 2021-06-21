@@ -14,7 +14,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'USDT': 2000  
+  'DOGE': 2000  
 }
 
 let currentMarket = 'None'
@@ -33,12 +33,18 @@ async function tick() {
   console.log(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
-  let bestMarket = {}
-  if (bullishMarkets.length > 0) {
-    bullishMarkets = await rank(bullishMarkets)
-    console.log(bullishMarkets)
-    bestMarket = bullishMarkets[0]
+  let bestMarket = await selectMarket(bullishMarkets)
+  
+}
+
+async function selectMarket(markets) {
+  if (markets.length > 0) {
+    markets = await rank(markets)
+    bestMarket = markets[0]
+    console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
+    return bestMarket
   }
+  console.log(`No bullish markets @ ${timeNow()}`)
 }
 
 async function getActiveCurrency() {
