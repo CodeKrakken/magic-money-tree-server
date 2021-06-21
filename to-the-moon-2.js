@@ -50,7 +50,7 @@ async function newSellOrder(market, activeCurrency) {
     let targetBase = market.market.replace(`${activeCurrency}/`, '')
     let oldAssetVolume = wallet[activeCurrency]
     if (wallet[targetBase] === undefined) { wallet[targetBase] = 0 }
-    wallet[targetBase] += oldAssetVolume / (1 - fee) * currentPrice
+    wallet[targetBase] += oldAssetVolume * (1 - fee) * currentPrice
     wallet[activeCurrency] -= oldAssetVolume
     let dollarValue
     if (!targetBase.includes('USD')) {
@@ -81,8 +81,8 @@ async function newBuyOrder(market, activeCurrency) {
     if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
     wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
     wallet[activeCurrency] -= oldBaseVolume
-    if (!targetBase.includes('USD')) {
-      let dollarValue = wallet[targetBase] * await fetchPrice(`${targetBase}/USDT`)
+    if (!targetAsset.includes('USD')) {
+      let dollarValue = wallet[targetAsset] * await fetchPrice(`${targetAsset}/USDT`)
     } else {
       let dollarValue = targetBase
     }
