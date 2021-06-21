@@ -23,7 +23,6 @@ async function run() {
 }
 
 async function tick() {
-  clearInterval()
   let activeCurrency = await getActiveCurrency()
   let marketNames = await getMarkets(activeCurrency)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
@@ -33,7 +32,7 @@ async function tick() {
   } else {
     console.log(`No bulls or bears @ ${timeNow()}`)
   }
-  tick(setInterval, 10000)
+  tick()
 }
 
 async function trade(market, activeCurrency) {
@@ -53,12 +52,13 @@ async function newSellOrder(market, activeCurrency) {
     wallet[targetBase] += oldAssetVolume * (1 - fee) * currentPrice
     wallet[activeCurrency] -= oldAssetVolume
     let dollarValue
+    displayWallet(currentPrice)
     if (!targetBase.includes('USD')) {
       dollarValue = wallet[targetBase] * await fetchPrice(`${targetBase}/USDT`)
     } else {
-      dollarValue = targetBase
+      dollarValue = wallet[targetBase]
     }
-    tradeReport = `${timeNow()} - Sold ${n(wallet[activeCurrency], 8)} ${activeCurrency} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
+    tradeReport = `${timeNow()} - Sold ${n(oldAssetVolume, 8)} ${activeCurrency} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })
@@ -66,12 +66,12 @@ async function newSellOrder(market, activeCurrency) {
     tradeReport = ''
     displayWallet(currentPrice)  
   } catch (error) {
-    console.log(error.message)
+    let errol = error.message
   }
 }
 
-
 async function newBuyOrder(market, activeCurrency) {
+  console.log('Hi!')
   let tradeReport
   try {
     let currentPrice = await fetchPrice(market)
@@ -81,12 +81,13 @@ async function newBuyOrder(market, activeCurrency) {
     if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
     wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
     wallet[activeCurrency] -= oldBaseVolume
+    let dollarValue
     if (!targetAsset.includes('USD')) {
-      let dollarValue = wallet[targetAsset] * await fetchPrice(`${targetAsset}/USDT`)
+      dollarValue = wallet[targetAsset] * await fetchPrice(`${targetAsset}/USDT`)
     } else {
-      let dollarValue = targetBase
+      dollarValue = wallet[targetAsset]
     }
-    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })
@@ -94,7 +95,7 @@ async function newBuyOrder(market, activeCurrency) {
     tradeReport = ''
     displayWallet(currentPrice)
   } catch (error) {
-    console.log(error)
+    let errol = error.message
   }
 }
 
@@ -113,7 +114,6 @@ function displayWallet(currentPrice) {
 
 async function selectMarket(markets) {
   markets = await rank(markets)
-  console.log(markets)
   bestMarket = markets[0]
   console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
   return bestMarket
@@ -165,16 +165,16 @@ async function checkVolumes(marketNames) {
     let asset = marketName.substring(0, marketName.indexOf('/'))
     let base = marketName.substring(marketName.indexOf('/')+1)
     tally(asset, base, tallyObject)
-    console.log(`Checking 24 hour volume of market ${i+1}/${n} - ${symbolName}`)
+    let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
     let response = await checkVolume(marketNames, i)
     if (response === "Insufficient volume" || response === "No dollar comparison available") {
       marketNames.splice(i, 1)
       symbolNames.splice(i, 1)
       i--
       n--
-      console.log(response + '\n')
+      console.log(announcement + response)
     } else {
-      console.log(`Including ${marketName}\n`)
+      console.log(announcement + `Including ${marketName}`)
       voluminousMarkets.push(marketName)
     }
   }
@@ -336,7 +336,7 @@ async function fetchPrice(market) {
     let price = parseFloat(rawPrice.data.price)
     return price
   } catch {
-    fetchPrice(market)
+    let errol = error.message
   }
 }
 
