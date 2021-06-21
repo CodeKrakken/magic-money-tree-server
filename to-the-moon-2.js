@@ -41,24 +41,38 @@ async function trade(market, base) {
 
 async function newBuyOrder(market, base) {
   let tradeReport
-  let targetAsset = market.market.replace(`/${base}`, '')
-  console.log(targetAsset)
-  // try {
-  //   let oldBaseVolume = wallet[base]
-  //   // await binanceClient.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
-  //   if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
-  //   wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
-  //   wallet[currentBase] -= oldBaseVolume
-  //   tradeReport = `${timeNow()} - Bought ${n(wallet[currentAsset], 8)} ${currentAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
-  //   fs.appendFile('trade-history.txt', tradeReport, function(err) {
-  //     if (err) return console.log(err);
-  //   })
-  // } catch(error) {
-  //   console.log(error)
-  // }
-  // console.log(tradeReport)
-  // tradeReport = ''
-  // displayWallet()
+
+  try {
+    let currentPrice = await fetchPrice(market)
+    const fee = 0.0075
+    let targetAsset = market.market.replace(`/${base}`, '')
+    let oldBaseVolume = wallet[base]
+    if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
+    wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
+    wallet[base] -= oldBaseVolume
+    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })
+    console.log(tradeReport)
+    tradeReport = ''
+    displayWallet(currentPrice)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
+}
+
+function displayWallet(currentPrice) {
+  let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
+  console.log('Wallet\n')
+  displayWallet.forEach(currency => {
+    console.log(`${wallet[currency]} ${currency} ${currency === 'USDT' ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
+  })
+  console.log('\n')
 }
 
 async function selectMarket(markets) {
@@ -244,17 +258,18 @@ async function filter(markets) {
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market)
+      market.ema1 = ema(market.history, 1, 'close')
       if (
-        // ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
-        // ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
-        currentPrice < ema(market.history, 20, 'close')
+        // ema(market.history, 1, 'close') > ema(market.history, 2, 'close') && 
+        // ema(market.history, 2, 'close') > ema(market.history, 3, 'close') && 
+        currentPrice > market.ema1
       ) {
         outputArray.push(market)
       } else {
-        // console.log(market.market)
-        // console.log(currentPrice)
-        // console.log(ema(market.history, 20, 'close'))
-        // console.log('\n')
+        console.log(market.market)
+        console.log(currentPrice)
+        console.log(market.ema1)
+        console.log('\n')
       }
     }
     return outputArray
@@ -301,14 +316,18 @@ async function rank(markets) {
   let outputArray = []
   markets.forEach(market => {
     let marketName = market.market
+    let ema1 = ema(market.history, 1, 'close')
     let ema2 = ema(market.history, 2, 'close')
+    let ema3 = ema(market.history, 3, 'close')
     let ema20 = ema(market.history, 20, 'close')
     let ema50 = ema(market.history, 50, 'close')
     let ema200 = ema(market.history, 200, 'close')
     outputArray.push({
       'market': marketName,
-      'movement': ema20/ema50 -1,
+      'movement': ema1/ema2 -1,
+      'ema1': ema1,
       'ema2': ema2,
+      'ema3': ema3,
       'ema20': ema20,
       'ema50': ema50,
       'ema200': ema200,
