@@ -13,10 +13,10 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'BUSD': 2000  
+  'GBP': 2000  
 }
 
-let dollarMarkets = []
+let dollarMarketNames = []
 
 async function run() {
   console.log('Running\n')
@@ -37,10 +37,16 @@ async function tick() {
   tick()
 }
 
+async function getActiveCurrency() {
+  let sorted = Object.entries(wallet).sort((prev, next) => prev[1] - next[1])
+  return sorted.pop()[0]
+}
+
 async function displayWallet(activeCurrency) {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   let currentPrice
+  console.log(activeCurrency)
   if (!activeCurrency.includes('USD')) {
     currentPrice = await fetchPrice(activeCurrency + '/USDT')
   }
@@ -51,22 +57,15 @@ async function displayWallet(activeCurrency) {
 }
 
 async function fetchPrice(marketName) {
-  console.log(marketName)
   let symbolName = marketName.replace('/', '')
   let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
   let price = parseFloat(rawPrice.data.price)
   return price
 }
 
-async function getActiveCurrency() {
-  let sorted = Object.entries(wallet).sort((prev, next) => prev[1] - next[1])
-  return sorted.pop()[0]
-}
-
 async function getMarkets(currency) {
   let markets = await fetchMarkets()
-  let dollarMarkets = Object.entries(markets).filter(market => market.includes('USD'))
-  console.log('Dollar Markets: ' + dollarMarkets)
+  dollarMarketNames = Object.keys(markets).filter(market => dollarMarket(market))
   let marketNames = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
   let voluminousMarkets = await checkVolumes(marketNames)
   return voluminousMarkets
@@ -90,6 +89,10 @@ function goodMarket(market, markets, currency) {
   && !market.includes('DOWN') 
   && market.includes(currency) 
   && !market.replace("USD", "").includes("USD")
+}
+
+function dollarMarket(market) {
+  return market.includes('USDT')
 }
 
 async function checkVolumes(marketNames) {
@@ -147,15 +150,12 @@ async function tally(asset, base, tallyObject) {
 }
 
 async function checkVolume(marketNames, i) {
-  console.log(marketNames)
   let marketName = marketNames[i]
   let asset = marketName.substring(0, marketName.indexOf('/'))
-  console.log(`Checking dollar value of ${asset}`)
-  let dollarMarket = marketName.includes('USD') ? marketName : `${asset}/USDT`
-  console.log(dollarMarket)
-  if (marketNames.includes(dollarMarket)) {
-    let dollarSymbol = dollarMarket.replace('/', '')
-    let volumeDollarValue = await fetchDollarVolume(dollarSymbol)
+  let dollarMarketName = marketName.includes('USD') ? marketName : `${asset}/USDT`
+  if (dollarMarketNames.includes(dollarMarketName)) {
+    let dollarSymbolName = dollarMarketName.replace('/', '')
+    let volumeDollarValue = await fetchDollarVolume(dollarSymbolName)
     if (volumeDollarValue < 50000000) { return "Insufficient volume"} 
     if (volumeDollarValue === 'Invalid market') { return 'No dollar comparison available' }
   } else {
@@ -302,7 +302,6 @@ async function selectMarket(markets) {
 async function rank(markets) {
   let outputArray = []
   markets.forEach(market => {
-    // console.log(market)
     let marketName = market.market
     let currentPrice = market.currentPrice
     let ema1 = market.ema1
@@ -363,7 +362,6 @@ async function newSellOrder(market, activeCurrency) {
 }
 
 async function newBuyOrder(market, activeCurrency) {
-  console.log('Hi!')
   let tradeReport
   try {
     let currentPrice = await fetchPrice(market.market)
