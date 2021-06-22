@@ -5,7 +5,6 @@ const axios = require('axios')
 const fs = require('fs');
 
 const ccxt = require('ccxt');
-const { nextTick, traceDeprecation } = require('process');
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -14,8 +13,10 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'USDT': 2000  
+  'BUSD': 2000  
 }
+
+let dollarMarkets = []
 
 async function run() {
   console.log('Running\n')
@@ -24,6 +25,7 @@ async function run() {
 
 async function tick() {
   let activeCurrency = await getActiveCurrency()
+  await displayWallet(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
   if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
@@ -35,88 +37,25 @@ async function tick() {
   tick()
 }
 
-async function trade(market, activeCurrency) {
-  market.market.indexOf(activeCurrency) === 0 ?
-  await newSellOrder(market, activeCurrency) :
-  await newBuyOrder(market, activeCurrency)
-}
-
-async function newSellOrder(market, activeCurrency) {
-  let tradeReport
-  try {
-    let currentPrice = await fetchPrice(market)
-    const fee = 0.0075
-    let targetBase = market.market.replace(`${activeCurrency}/`, '')
-    let oldAssetVolume = wallet[activeCurrency]
-    if (wallet[targetBase] === undefined) { wallet[targetBase] = 0 }
-    wallet[targetBase] += oldAssetVolume * (1 - fee) * currentPrice
-    wallet[activeCurrency] -= oldAssetVolume
-    let dollarValue
-    displayWallet(currentPrice)
-    if (!targetBase.includes('USD')) {
-      dollarValue = wallet[targetBase] * await fetchPrice(`${targetBase}/USDT`)
-    } else {
-      dollarValue = wallet[targetBase]
-    }
-    tradeReport = `${timeNow()} - Sold ${n(oldAssetVolume, 8)} ${activeCurrency} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
-    fs.appendFile('trade-history.txt', tradeReport, function(err) {
-      if (err) return console.log(err);
-    })
-    console.log(tradeReport)
-    tradeReport = ''
-    displayWallet(currentPrice)  
-  } catch (error) {
-    let errol = error.message
-  }
-}
-
-async function newBuyOrder(market, activeCurrency) {
-  console.log('Hi!')
-  let tradeReport
-  try {
-    let currentPrice = await fetchPrice(market)
-    const fee = 0.0075
-    let targetAsset = market.market.replace(`/${activeCurrency}`, '')
-    let oldBaseVolume = wallet[activeCurrency]
-    if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
-    wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
-    wallet[activeCurrency] -= oldBaseVolume
-    let dollarValue
-    if (!targetAsset.includes('USD')) {
-      dollarValue = wallet[targetAsset] * await fetchPrice(`${targetAsset}/USDT`)
-    } else {
-      dollarValue = wallet[targetAsset]
-    }
-    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
-    fs.appendFile('trade-history.txt', tradeReport, function(err) {
-      if (err) return console.log(err);
-    })
-    console.log(tradeReport)
-    tradeReport = ''
-    displayWallet(currentPrice)
-  } catch (error) {
-    let errol = error.message
-  }
-}
-
-function n(n, d) {
-  return Number.parseFloat(n).toFixed(d);
-}
-
-function displayWallet(currentPrice) {
+async function displayWallet(activeCurrency) {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
+  let currentPrice
+  if (!activeCurrency.includes('USD')) {
+    currentPrice = await fetchPrice(activeCurrency + '/USDT')
+  }
   displayWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency} ${currency === 'USDT' ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
+    console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
   })
   console.log('\n')
 }
 
-async function selectMarket(markets) {
-  markets = await rank(markets)
-  bestMarket = markets[0]
-  console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
-  return bestMarket
+async function fetchPrice(marketName) {
+  console.log(marketName)
+  let symbolName = marketName.replace('/', '')
+  let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
+  let price = parseFloat(rawPrice.data.price)
+  return price
 }
 
 async function getActiveCurrency() {
@@ -126,6 +65,8 @@ async function getActiveCurrency() {
 
 async function getMarkets(currency) {
   let markets = await fetchMarkets()
+  let dollarMarkets = Object.entries(markets).filter(market => market.includes('USD'))
+  console.log('Dollar Markets: ' + dollarMarkets)
   let marketNames = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
   let voluminousMarkets = await checkVolumes(marketNames)
   return voluminousMarkets
@@ -137,18 +78,18 @@ async function fetchMarkets() {
   return markets
 }
 
+function timeNow() {
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  return prettyTime
+}
+
 function goodMarket(market, markets, currency) {
   return markets[market].active 
   && !market.includes('UP') 
   && !market.includes('DOWN') 
   && market.includes(currency) 
   && !market.replace("USD", "").includes("USD")
-}
-
-function timeNow() {
-  let currentTime = Date.now()
-  let prettyTime = new Date(currentTime).toLocaleString()
-  return prettyTime
 }
 
 async function checkVolumes(marketNames) {
@@ -184,21 +125,6 @@ async function checkVolumes(marketNames) {
   return voluminousMarkets
 }
 
-async function checkVolume(marketNames, i) {
-  let marketName = marketNames[i]
-  let asset = marketName.substring(0, marketName.indexOf('/'))
-  let dollarMarket = marketName.includes('USD') ? marketName : `${asset}/USDT`
-  if (marketNames.includes(dollarMarket)) {
-    let dollarSymbol = dollarMarket.replace('/', '')
-    let volumeDollarValue = await fetchDollarVolume(dollarSymbol)
-    if (volumeDollarValue < 50000000) { return "Insufficient volume"} 
-    if (volumeDollarValue === 'Invalid market') { return 'No dollar comparison available' }
-  } else {
-    return 'No dollar comparison available'
-  }
-  return 'Sufficient volume'
-}
-
 async function tally(asset, base, tallyObject) {
   try{
     if (Object.keys(tallyObject.assets).includes(asset)) {
@@ -220,13 +146,31 @@ async function tally(asset, base, tallyObject) {
   }
 }
 
+async function checkVolume(marketNames, i) {
+  console.log(marketNames)
+  let marketName = marketNames[i]
+  let asset = marketName.substring(0, marketName.indexOf('/'))
+  console.log(`Checking dollar value of ${asset}`)
+  let dollarMarket = marketName.includes('USD') ? marketName : `${asset}/USDT`
+  console.log(dollarMarket)
+  if (marketNames.includes(dollarMarket)) {
+    let dollarSymbol = dollarMarket.replace('/', '')
+    let volumeDollarValue = await fetchDollarVolume(dollarSymbol)
+    if (volumeDollarValue < 50000000) { return "Insufficient volume"} 
+    if (volumeDollarValue === 'Invalid market') { return 'No dollar comparison available' }
+  } else {
+    return 'No dollar comparison available'
+  }
+  return 'Sufficient volume'
+}
+
 async function fetchDollarVolume(symbol) {
   try {
     let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
-  let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
-  let totalVolume = parseFloat(twentyFourHour.data.volume)
-  volumeDollarValue = totalVolume * dollarPrice
-  return volumeDollarValue
+    let dollarPrice = parseFloat(twentyFourHour.data.weightedAvgPrice)
+    let totalVolume = parseFloat(twentyFourHour.data.volume)
+    volumeDollarValue = totalVolume * dollarPrice
+    return volumeDollarValue
   } catch (error) {
     return 'Invalid market'
   }
@@ -295,7 +239,7 @@ async function filter(markets, activeCurrency) {
     let outputArray = []
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
-      let currentPrice = await fetchPrice(market)
+      let currentPrice = await fetchPrice(market.market)
       market.ema1 = ema(market.history, 1, 'close')
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
@@ -325,19 +269,6 @@ async function filter(markets, activeCurrency) {
   } catch (error) {
     console.log(error)
   }
-
-}
-
-
-async function fetchPrice(market) {
-  try {
-    let symbolName = market.market.replace('/', '')
-    let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
-    let price = parseFloat(rawPrice.data.price)
-    return price
-  } catch {
-    let errol = error.message
-  }
 }
 
 function ema(rawData, time, parameter) {
@@ -359,6 +290,13 @@ function extractData(dataArray, key) {
     outputArray.push(obj[key])
   })
   return outputArray
+}
+
+async function selectMarket(markets) {
+  markets = await rank(markets)
+  bestMarket = markets[0]
+  console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
+  return bestMarket
 }
 
 async function rank(markets) {
@@ -387,6 +325,74 @@ async function rank(markets) {
     })
   })
   return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
+}
+
+async function trade(market, activeCurrency) {
+  market.market.indexOf(activeCurrency) === 0 ?
+  await newSellOrder(market, activeCurrency) :
+  await newBuyOrder(market, activeCurrency)
+}
+
+async function newSellOrder(market, activeCurrency) {
+  let tradeReport
+  try {
+    let currentPrice = await fetchPrice(market.market)
+    const fee = 0.0075
+    let targetBase = market.market.replace(`${activeCurrency}/`, '')
+    let oldAssetVolume = wallet[activeCurrency]
+    if (wallet[targetBase] === undefined) { wallet[targetBase] = 0 }
+    wallet[targetBase] += oldAssetVolume * (1 - fee) * currentPrice
+    wallet[activeCurrency] -= oldAssetVolume
+    let dollarValue
+    displayWallet(currentPrice)
+    if (!targetBase.includes('USD')) {
+      dollarValue = wallet[targetBase] * await fetchPrice(`${targetBase}/USDT`)
+    } else {
+      dollarValue = wallet[targetBase]
+    }
+    tradeReport = `${timeNow()} - Sold ${n(oldAssetVolume, 8)} ${activeCurrency} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })
+    console.log(tradeReport)
+    tradeReport = ''
+    displayWallet(currentPrice)  
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function newBuyOrder(market, activeCurrency) {
+  console.log('Hi!')
+  let tradeReport
+  try {
+    let currentPrice = await fetchPrice(market.market)
+    const fee = 0.0075
+    let targetAsset = market.market.replace(`/${activeCurrency}`, '')
+    let oldBaseVolume = wallet[activeCurrency]
+    if (wallet[targetAsset] === undefined) { wallet[targetAsset] = 0 }
+    wallet[targetAsset] += oldBaseVolume * (1 - fee) / currentPrice
+    wallet[activeCurrency] -= oldBaseVolume
+    let dollarValue
+    if (!targetAsset.includes('USD')) {
+      dollarValue = wallet[targetAsset] * await fetchPrice(`${targetAsset}/USDT`)
+    } else {
+      dollarValue = wallet[targetAsset]
+    }
+    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
+    fs.appendFile('trade-history.txt', tradeReport, function(err) {
+      if (err) return console.log(err);
+    })
+    console.log(tradeReport)
+    tradeReport = ''
+    displayWallet(currentPrice)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
 }
 
 run();
