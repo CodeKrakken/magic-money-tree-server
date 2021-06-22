@@ -13,7 +13,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'GBP': 2000  
+  'DOGE': 2000  
 }
 
 let dollarMarketNames = []
@@ -86,7 +86,7 @@ function goodMarket(market, markets, currency) {
   return markets[market].active 
   && !market.includes('UP') 
   && !market.includes('DOWN') 
-  // && market.includes(currency) 
+  && market.includes(currency) 
   && !market.includes('BUSD')
   && !market.includes('TUSD')
   && !market.includes('USDC')
@@ -124,7 +124,7 @@ async function checkVolumes(marketNames) {
     }
     console.log('\n')
   }
-  tallyObject.assets
+  tallyObject = Object.entries(tallyObject.assets).filter(asset => !asset.includes('USDT'))
   fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
     if (err) return console.log(err);
   })
