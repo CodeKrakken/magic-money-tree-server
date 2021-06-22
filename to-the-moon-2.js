@@ -13,7 +13,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'DOGE': 2000  
+  'GBP': 2000  
 }
 
 let dollarMarketNames = []
@@ -101,8 +101,12 @@ async function checkVolumes(marketNames) {
   let symbolNames = marketNames.map(marketname => marketname = marketname.replace('/', ''))
   let n = marketNames.length
   let tallyObject = { 
-    assets: { total: 0, unique: 0 }, 
-    bases: { total: 0, unique: 0 } 
+    assets: { 
+      // total: 0, unique: 0 
+    }, 
+    bases: { 
+      // total: 0, unique: 0 
+    } 
   }
   for (let i = 0; i < n; i ++) {
     let symbolName = symbolNames[i]
@@ -124,8 +128,14 @@ async function checkVolumes(marketNames) {
     }
     console.log('\n')
   }
-  tallyObject = Object.entries(tallyObject.assets).filter(asset => !asset.includes('USDT'))
-  fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
+  let nonUSDTMarkets = {}
+  Object.keys(tallyObject.assets).forEach(key => {
+    if (!tallyObject.assets[key].includes('USDT')) {
+      nonUSDTMarkets[key] = tallyObject[key]
+    }
+  })
+  console.log(nonUSDTMarkets)
+  fs.appendFile('all market tally.txt', JSON.stringify(nonUSDTMarkets), function(err) {
     if (err) return console.log(err);
   })
   return voluminousMarkets
@@ -139,7 +149,7 @@ async function tally(asset, base, tallyObject) {
     } else {
       tallyObject.assets[asset] = [0, base]
       tallyObject.assets[asset][0] = 1
-      tallyObject.assets.unique ++
+      // tallyObject.assets.unique ++
     }
     if (Object.keys(tallyObject.bases).includes(base)) {
       tallyObject.bases[base].push(asset)
@@ -147,10 +157,10 @@ async function tally(asset, base, tallyObject) {
     } else {
       tallyObject.bases[base] = [asset]
       tallyObject.bases[base][0] = 1
-      tallyObject.bases.unique ++
+      // tallyObject.bases.unique ++
     }
-    tallyObject.assets.total ++
-    tallyObject.bases.total ++
+    // tallyObject.assets.total ++
+    // tallyObject.bases.total ++
   } catch (error) {
     console.log(error.message)
   }
