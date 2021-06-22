@@ -86,7 +86,7 @@ function goodMarket(market, markets, currency) {
   return markets[market].active 
   && !market.includes('UP') 
   && !market.includes('DOWN') 
-  && market.includes(currency) 
+  // && market.includes(currency) 
   && !market.includes('BUSD')
   && !market.includes('TUSD')
   && !market.includes('USDC')
@@ -124,6 +124,7 @@ async function checkVolumes(marketNames) {
     }
     console.log('\n')
   }
+  tallyObject.assets
   fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
     if (err) return console.log(err);
   })
@@ -133,21 +134,25 @@ async function checkVolumes(marketNames) {
 async function tally(asset, base, tallyObject) {
   try{
     if (Object.keys(tallyObject.assets).includes(asset)) {
-      tallyObject.assets[asset] ++
+      tallyObject.assets[asset].push(base)
+      tallyObject.assets[asset][0] += 1
     } else {
-      tallyObject.assets[asset] = 1
+      tallyObject.assets[asset] = [0, base]
+      tallyObject.assets[asset][0] = 1
       tallyObject.assets.unique ++
     }
     if (Object.keys(tallyObject.bases).includes(base)) {
-      tallyObject.bases[base] ++
+      tallyObject.bases[base].push(asset)
+      tallyObject.bases[base][0] += 1
     } else {
-      tallyObject.bases[base] = 1
+      tallyObject.bases[base] = [asset]
+      tallyObject.bases[base][0] = 1
       tallyObject.bases.unique ++
     }
     tallyObject.assets.total ++
     tallyObject.bases.total ++
   } catch (error) {
-    console.log(error)
+    console.log(error.message)
   }
 }
 
