@@ -184,16 +184,16 @@ async function checkVolume(marketNames, i) {
 
 async function fetchDollarVolume(originalSymbol, dollarSymbol) {
   try {
-    let twentyFourHourDollarSymbol = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${dollarSymbol}`)
-    let dollarPrice = parseFloat(twentyFourHourDollarSymbol.data.weightedAvgPrice)
+    // let twentyFourHourDollarSymbol = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${dollarSymbol}`)
     let twentyFourHourOriginalSymbol = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${originalSymbol}`)
+    let price = parseFloat(twentyFourHourOriginalSymbol.data.weightedAvgPrice)
     let assetVolume = parseFloat(twentyFourHourOriginalSymbol.data.volume)
-    let dollarVolume = assetVolume * dollarPrice
+    let baseVolume = assetVolume * price
     console.log(originalSymbol)
     console.log(dollarSymbol)
     console.log(assetVolume)
-    console.log(dollarPrice)
-    console.log(dollarVolume)
+    console.log(price)
+    console.log(baseVolume)
     return dollarVolume
   } catch (error) {
     return 'Invalid market'
