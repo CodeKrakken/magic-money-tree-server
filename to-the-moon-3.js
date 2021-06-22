@@ -13,7 +13,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'USDT': 2000
+  'GBP': 2000
 }
 
 let dollarMarkets = []
@@ -25,8 +25,15 @@ async function run() {
 
 async function tick() {
   let activeCurrency = await getActiveCurrency()
-  console.log(activeCurrency)
-  await displayWallet(activeCurrency)
+  let currentPrice = await displayWallet(activeCurrency)
+  let allMarkets = await fetchMarkets()
+  let activeCurrencyMarkets = await getActiveCurrencyMarkets(allMarkets, activeCurrency)
+  let voluminousMarkets = await getVoluminousMarkets(activeCurrencyMarkets)
+
+
+
+
+
 }
 
 async function getActiveCurrency() {
@@ -38,7 +45,6 @@ async function displayWallet(activeCurrency) {
   let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   let currentPrice
-  console.log(activeCurrency)
   if (!activeCurrency.includes('USD')) {
     currentPrice = await fetchPrice(activeCurrency + '/USDT')
   }
@@ -46,6 +52,48 @@ async function displayWallet(activeCurrency) {
     console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
   })
   console.log('\n')
+  return currentPrice
 }
+
+async function fetchPrice(marketName) {
+  let symbolName = marketName.replace('/', '')
+  let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
+  let price = parseFloat(rawPrice.data.price)
+  return price
+}
+
+async function fetchMarkets() {
+  console.log(`Fetching overview at ${timeNow()}`)
+  let markets = await binance.load_markets()
+  return markets
+}
+
+function timeNow() {
+  let currentTime = Date.now()
+  let prettyTime = new Date(currentTime).toLocaleString()
+  return prettyTime
+}
+
+async function getActiveCurrencyMarkets(markets, currency) {
+  let activeCurrencyMarkets = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
+  return activeCurrencyMarkets
+}
+
+function goodMarket(marketName, markets, currency) {
+  console.log(marketName)
+  return markets[marketName].active 
+  && !marketName.includes('UP') 
+  && !marketName.includes('DOWN') 
+  && marketName.includes(currency) 
+  && !marketName.replace("USD", "").includes("USD")
+}
+
+async function getVoluminousMarkets(marketNames) {
+  console.log(marketNames)
+  let voluminousMarkets = []
+  let symbolNames
+  return voluminousMarkets
+}
+
 
 run()
