@@ -13,7 +13,7 @@ const binance = new ccxt.binance({
 });
 
 let wallet = {
-  'GBP': 2000  
+  'USDT': 1000  
 }
 
 let dollarMarketNames = []
@@ -24,6 +24,7 @@ async function run() {
 }
 
 async function tick() {
+  console.log('----------\n')
   let activeCurrency = await getActiveCurrency()
   await displayWallet(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
@@ -43,13 +44,13 @@ async function getActiveCurrency() {
 }
 
 async function displayWallet(activeCurrency) {
-  let displayWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
+  let nonZeroWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   let currentPrice
   if (!activeCurrency.includes('USD')) {
     currentPrice = await fetchPrice(activeCurrency + '/USDT')
   }
-  displayWallet.forEach(currency => {
+  nonZeroWallet.forEach(currency => {
     console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
   })
   console.log('\n')
@@ -70,7 +71,7 @@ async function getMarkets(currency) {
 }
 
 async function fetchMarkets() {
-  console.log(`Fetching overview at ${timeNow()}`)
+  console.log(`Fetching overview at ${timeNow()}\n`)
   let markets = await binance.load_markets()
   return markets
 }
@@ -108,7 +109,7 @@ async function checkVolumes(marketNames, currency) {
     let marketName = marketNames[i]
     let asset = marketName.substring(0, marketName.indexOf('/'))
     let base = marketName.substring(marketName.indexOf('/')+1)
-    tally(asset, base, tallyObject)
+    // tally(asset, base, tallyObject)
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
     let response = await checkVolume(marketNames, i, currency)
     if (response === "Insufficient volume" || response === "No dollar comparison available") {
@@ -121,45 +122,38 @@ async function checkVolumes(marketNames, currency) {
       console.log(announcement + `Including ${marketName}`)
       voluminousMarkets.push(marketName)
     }
-    console.log('\n')
   }
-  let nonUSDTMarkets = {}
-  Object.keys(tallyObject.assets).forEach(key => {
-    if (!tallyObject.assets[key].includes('USDT')) {
-      nonUSDTMarkets[key] = tallyObject[key]
-    }
-  })
-  console.log(nonUSDTMarkets)
-  fs.appendFile('all market tally.txt', JSON.stringify(nonUSDTMarkets), function(err) {
-    if (err) return console.log(err);
-  })
+
+  // fs.appendFile('all market tally.txt', JSON.stringify(tallyObject), function(err) {
+  //   if (err) return console.log(err);
+  // })
   return voluminousMarkets
 }
 
-async function tally(asset, base, tallyObject) {
-  try{
-    if (Object.keys(tallyObject.assets).includes(asset)) {
-      tallyObject.assets[asset].push(base)
-      tallyObject.assets[asset][0] += 1
-    } else {
-      tallyObject.assets[asset] = [0, base]
-      tallyObject.assets[asset][0] = 1
-      // tallyObject.assets.unique ++
-    }
-    if (Object.keys(tallyObject.bases).includes(base)) {
-      tallyObject.bases[base].push(asset)
-      tallyObject.bases[base][0] += 1
-    } else {
-      tallyObject.bases[base] = [asset]
-      tallyObject.bases[base][0] = 1
-      // tallyObject.bases.unique ++
-    }
-    // tallyObject.assets.total ++
-    // tallyObject.bases.total ++
-  } catch (error) {
-    console.log(error.message)
-  }
-}
+// async function tally(asset, base, tallyObject) {
+//   try{
+//     if (Object.keys(tallyObject.assets).includes(asset)) {
+//       tallyObject.assets[asset].push(base)
+//       tallyObject.assets[asset][0] += 1
+//     } else {
+//       tallyObject.assets[asset] = [0, base]
+//       tallyObject.assets[asset][0] = 1
+//       tallyObject.assets.unique ++
+//     }
+//     if (Object.keys(tallyObject.bases).includes(base)) {
+//       tallyObject.bases[base].push(asset)
+//       tallyObject.bases[base][0] += 1
+//     } else {
+//       tallyObject.bases[base] = [asset]
+//       tallyObject.bases[base][0] = 1
+//       tallyObject.bases.unique ++
+//     }
+//     tallyObject.assets.total ++
+//     tallyObject.bases.total ++
+//   } catch (error) {
+//     console.log(error.message)
+//   }
+// }
 
 async function checkVolume(marketNames, i, base) {
   let marketName = marketNames[i]
@@ -175,17 +169,17 @@ async function fetchVolume(symbol, base) {
     let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
     let price = parseFloat(twentyFourHour.data.weightedAvgPrice)
     let assetVolume = parseFloat(twentyFourHour.data.volume)
-    console.log(base)
+    // console.log(base)
     let i = symbol.indexOf(base)
-    console.log(i)
+    // console.log(i)
     // if (i === 0) {
 
     // }
     let baseVolume = symbol.indexOf(base) === 0 ? assetVolume : assetVolume * price
-    console.log(symbol)
-    console.log(assetVolume)
-    console.log(price)
-    console.log(baseVolume)
+    // console.log(symbol)
+    // console.log(assetVolume)
+    // console.log(price)
+    // console.log(baseVolume)
     return baseVolume
   } catch (error) {
     return 'Invalid market'
@@ -251,7 +245,7 @@ async function collateData(data) {
 
 async function filter(markets, activeCurrency) {
   try {
-    console.log('Filtering')
+    console.log('Filtering\n')
     let outputArray = []
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
@@ -311,7 +305,6 @@ function extractData(dataArray, key) {
 async function selectMarket(markets) {
   markets = await rank(markets)
   bestMarket = markets[0]
-  console.log(`Selected Market: ${JSON.stringify(bestMarket.market)}`)
   return bestMarket
 }
 
@@ -359,7 +352,7 @@ async function newSellOrder(market, activeCurrency) {
     wallet[targetBase] += oldAssetVolume * (1 - fee) * currentPrice
     wallet[activeCurrency] -= oldAssetVolume
     let dollarValue
-    displayWallet(currentPrice)
+    displayWallet(activeCurrency)
     if (!targetBase.includes('USD')) {
       dollarValue = wallet[targetBase] * await fetchPrice(`${targetBase}/USDT`)
     } else {
@@ -371,7 +364,7 @@ async function newSellOrder(market, activeCurrency) {
     })
     console.log(tradeReport)
     tradeReport = ''
-    displayWallet(currentPrice)  
+    displayWallet(activeCurrency)  
   } catch (error) {
     console.log(error)
   }
@@ -393,13 +386,13 @@ async function newBuyOrder(market, activeCurrency) {
     } else {
       dollarValue = wallet[targetAsset]
     }
-    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${dollarValue})\n`
+    tradeReport = `${timeNow()} - Bought ${n(wallet[targetAsset], 8)} ${targetAsset} @ ${n(currentPrice, 8)} ($${oldBaseVolume})\n\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })
     console.log(tradeReport)
     tradeReport = ''
-    displayWallet(currentPrice)
+    displayWallet(activeCurrency)
   } catch (error) {
     console.log(error)
   }
