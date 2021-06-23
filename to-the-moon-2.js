@@ -64,9 +64,8 @@ async function fetchPrice(marketName) {
 
 async function getMarkets(currency) {
   let markets = await fetchMarkets()
-  dollarMarketNames = Object.keys(markets).filter(market => dollarMarket(market))
   let marketNames = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
-  let voluminousMarkets = await checkVolumes(marketNames)
+  let voluminousMarkets = await checkVolumes(marketNames, currency)
   return voluminousMarkets
 }
 
@@ -92,20 +91,16 @@ function goodMarket(market, markets, currency) {
   && !market.includes('USDC')
 }
 
-function dollarMarket(market) {
-  return market.includes('USDT')
-}
-
-async function checkVolumes(marketNames) {
+async function checkVolumes(marketNames, currency) {
   let voluminousMarkets = []
   let symbolNames = marketNames.map(marketname => marketname = marketname.replace('/', ''))
-  let n = marketNames.length
+  let n = symbolNames.length
   let tallyObject = { 
     assets: { 
-      // total: 0, unique: 0 
+      total: 0, unique: 0 
     }, 
     bases: { 
-      // total: 0, unique: 0 
+      total: 0, unique: 0 
     } 
   }
   for (let i = 0; i < n; i ++) {
@@ -115,7 +110,7 @@ async function checkVolumes(marketNames) {
     let base = marketName.substring(marketName.indexOf('/')+1)
     tally(asset, base, tallyObject)
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
-    let response = await checkVolume(marketNames, i)
+    let response = await checkVolume(marketNames, i, currency)
     if (response === "Insufficient volume" || response === "No dollar comparison available") {
       marketNames.splice(i, 1)
       symbolNames.splice(i, 1)
@@ -166,35 +161,32 @@ async function tally(asset, base, tallyObject) {
   }
 }
 
-async function checkVolume(marketNames, i) {
+async function checkVolume(marketNames, i, base) {
   let marketName = marketNames[i]
-  let asset = marketName.substring(0, marketName.indexOf('/'))
-  let dollarMarketName = marketName.includes('USD') ? marketName : `${asset}/USDT`
-  if (dollarMarketNames.includes(dollarMarketName)) {
-    let dollarSymbolName = dollarMarketName.replace('/', '')
-    let symbolName = marketName.replace('/', '')
-    let dollarVolume = await fetchDollarVolume(symbolName, dollarSymbolName)
-    if (dollarVolume < 50000000) { return "Insufficient volume"} 
-    if (dollarVolume === 'Invalid market') { return 'No dollar comparison available' }
-  } else {
-    return 'No dollar comparison available'
-  }
+  let symbolName = marketName.replace('/', '')
+  let baseVolume = await fetchVolume(symbolName, base)
+  if (baseVolume < 50000000) { return "Insufficient volume"} 
+  if (baseVolume === 'Invalid market') { return 'Invalid Market' }
   return 'Sufficient volume'
 }
 
-async function fetchDollarVolume(originalSymbol, dollarSymbol) {
+async function fetchVolume(symbol, base) {
   try {
-    // let twentyFourHourDollarSymbol = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${dollarSymbol}`)
-    let twentyFourHourOriginalSymbol = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${originalSymbol}`)
-    let price = parseFloat(twentyFourHourOriginalSymbol.data.weightedAvgPrice)
-    let assetVolume = parseFloat(twentyFourHourOriginalSymbol.data.volume)
-    let baseVolume = assetVolume * price
-    console.log(originalSymbol)
-    console.log(dollarSymbol)
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
+    let price = parseFloat(twentyFourHour.data.weightedAvgPrice)
+    let assetVolume = parseFloat(twentyFourHour.data.volume)
+    console.log(base)
+    let i = symbol.indexOf(base)
+    console.log(i)
+    // if (i === 0) {
+
+    // }
+    let baseVolume = symbol.indexOf(base) === 0 ? assetVolume : assetVolume * price
+    console.log(symbol)
     console.log(assetVolume)
     console.log(price)
     console.log(baseVolume)
-    return dollarVolume
+    return baseVolume
   } catch (error) {
     return 'Invalid market'
   }
