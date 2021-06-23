@@ -26,8 +26,9 @@ async function run() {
 async function tick() {
   console.log('----------\n')
   let activeCurrency = await getActiveCurrency()
-  await displayWallet(activeCurrency)
+  console.log(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
+  await displayWallet(activeCurrency, marketNames)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
   if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
     let bestMarket = await selectMarket(bullishMarkets)
@@ -43,13 +44,16 @@ async function getActiveCurrency() {
   return sorted.pop()[0]
 }
 
-async function displayWallet(activeCurrency) {
+async function displayWallet(activeCurrency, marketNames) {
   let nonZeroWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet\n')
   let currentPrice
-  if (!activeCurrency.includes('USD')) {
-    currentPrice = await fetchPrice(activeCurrency + '/USDT')
+  if (activeCurrency !== 'USDT') {
+    let dollarMarketNames = marketNames.filter(name => name.includes('USDT') && name.includes(activeCurrency))
+    dollarMarketNames[0] + 53
+    currentPrice = await fetchPrice(dollarMarketNames[0])
   }
+  
   nonZeroWallet.forEach(currency => {
     console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${wallet[currency] * currentPrice}`} `)
   })
@@ -90,6 +94,7 @@ function goodMarket(market, markets, currency) {
   && !market.includes('BUSD')
   && !market.includes('TUSD')
   && !market.includes('USDC')
+  // market === 'USDT/TRY' || market === 'DOGE/TRY' || market === 'DOGE/USDT'
 }
 
 async function checkVolumes(marketNames, currency) {
@@ -161,10 +166,10 @@ async function checkVolume(marketNames, i, base) {
   let baseVolume = await fetchVolume(symbolName, base)
   let dollarPrice = 1
   if (base !== 'USDT') {
-    let dollarSymbol = `${base}/USDT`
-    dollarPrice = await fetchPrice(dollarSymbol)
+    let dollarMarket = `${base}/USDT`
+    dollarPrice = await fetchPrice(dollarMarket)
   }
-  if (baseVolume * dollarPrice < 50000000) { return "Insufficient volume"} 
+  if (baseVolume * dollarPrice < 6000000) { return "Insufficient volume"} 
   if (baseVolume === 'Invalid market') { return 'Invalid Market' }
   return 'Sufficient volume'
 }
