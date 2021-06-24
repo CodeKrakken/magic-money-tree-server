@@ -53,7 +53,7 @@ async function tick() {
       let bestMarket = await selectMarket(bullishMarkets)
       await trade(bestMarket, activeCurrency)
     } else {
-      console.log(`No bulls or bears @ ${timeNow()}`)
+      console.log(`No bulls or bears`)
     }
   }
   tick()
@@ -70,12 +70,12 @@ async function displayWallet(activeCurrency, marketNames) {
   if (activeCurrency !== 'USDT') {
     let dollarMarketNames = marketNames.filter(name => name.includes('USDT') && name.includes(activeCurrency))
     dollarMarketName = dollarMarketNames[0]
-    currentPrice = await fetchPrice(dollarMarketNames[0])
-    currentDollarVolume = wallet[currency] * currentPrice
+    currentPrice = await fetchPrice(dollarMarketName)
+    currentDollarVolume = wallet[activeCurrency] * currentPrice
   }
   
   nonZeroWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${dollarVolume}`} `)
+    console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${currentDollarVolume}`} `)
   })
   console.log('\n')
 }
@@ -194,7 +194,7 @@ async function checkVolume(marketNames, i, base) {
     let dollarMarket = `${base}/USDT`
     dollarPrice = await fetchPrice(dollarMarket)
   }
-  if (baseVolume * dollarPrice < 60000000) { return "Insufficient volume"} 
+  if (baseVolume * dollarPrice < 6000000) { return "Insufficient volume"} 
   if (baseVolume === 'Invalid market') { return 'Invalid Market' }
   return 'Sufficient volume'
 }
@@ -389,7 +389,7 @@ async function newSellOrder(market, asset) {
       lastDollarVolume = assetVolume * (1 - fee) * assetPrice
     } else {
       let assetDollarPrice = await fetchPrice(`${asset}/USDT`)
-      lastDollarVolume = assetVolume * (1 - fee) * assetPrice * assetDollarPrice
+      lastDollarVolume = assetVolume * (1 - fee) * assetDollarPrice
     }
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${lastDollarVolume})\n\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
@@ -406,7 +406,6 @@ async function newBuyOrder(market, base) {
   let tradeReport
   try {
     let assetPrice = await fetchPrice(market.market)
-    console.log(market.market)
     let asset
     if (market.market.indexOf(base) === 0) {
       asset = market.market.substring(market.market.indexOf('/')+1)
@@ -421,7 +420,7 @@ async function newBuyOrder(market, base) {
       lastDollarVolume = baseVolume * (1 - fee) / assetPrice
     } else {
       let baseDollarPrice = await fetchPrice(`${base}/USDT`)
-      lastDollarVolume = baseVolume * (1 - fee) / assetPrice * baseDollarPrice
+      lastDollarVolume = baseVolume * (1 - fee) * baseDollarPrice
     }
     tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(assetPrice, 8)} ($${lastDollarVolume})\n\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
