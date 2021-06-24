@@ -26,7 +26,6 @@ async function run() {
 async function tick() {
   console.log('----------\n')
   let activeCurrency = await getActiveCurrency()
-  console.log(activeCurrency)
   let marketNames = await getMarkets(activeCurrency)
   await displayWallet(activeCurrency, marketNames)
   let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
@@ -87,6 +86,7 @@ function timeNow() {
 }
 
 function goodMarket(market, markets, currency) {
+  if (market.includes('USDT') && market.indexOf('USDT') === 0) { return false }
   return markets[market].active 
   && !market.includes('UP') 
   && !market.includes('DOWN') 
@@ -94,7 +94,6 @@ function goodMarket(market, markets, currency) {
   && !market.includes('BUSD')
   && !market.includes('TUSD')
   && !market.includes('USDC')
-  // market === 'USDT/TRY' || market === 'DOGE/TRY' || market === 'DOGE/USDT'
 }
 
 async function checkVolumes(marketNames, currency) {
@@ -256,7 +255,7 @@ async function collateData(data) {
 
 async function filter(markets, activeCurrency) {
   try {
-    console.log('Filtering\n\n')
+    console.log('Analysing markets\n\n')
     let outputArray = []
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
@@ -265,17 +264,17 @@ async function filter(markets, activeCurrency) {
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          // ema(market.history, 1, 'close') < ema(market.history, 2, 'close') && 
-          // ema(market.history, 2, 'close') < ema(market.history, 3, 'close') && 
-          currentPrice < market.ema1
+          ema(market.history, 1, 'close') < ema(market.history, 2, 'close') && 
+          ema(market.history, 2, 'close') < ema(market.history, 3, 'close') // && 
+          // currentPrice < market.ema1
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          // ema(market.history, 1, 'close') > ema(market.history, 2, 'close') && 
-          // ema(market.history, 2, 'close') > ema(market.history, 3, 'close') && 
-          currentPrice > market.ema1
+          ema(market.history, 1, 'close') > ema(market.history, 2, 'close') && 
+          ema(market.history, 2, 'close') > ema(market.history, 3, 'close') // && 
+          // currentPrice > market.ema1
         ) {
           outputArray.push(market)
         } else {
@@ -383,7 +382,14 @@ async function newBuyOrder(market, base) {
   let tradeReport
   try {
     let assetPrice = await fetchPrice(market.market)
-    let asset = market.market.replace(`/${base}`, '')
+    console.log(market.market)
+    let asset
+    if (market.market.indexOf(base) === 0) {
+      asset = market.market.substring(market.market.indexOf('/')+1)
+    } else {
+      asset = market.market.substring(0, market.market.indexOf('/'))
+    }
+    // console.log(`ASSET: ${asset}`)
     let baseVolume = wallet[base]
     if (wallet[asset] === undefined) { wallet[asset] = 0 }
     wallet[asset] += baseVolume * (1 - fee) / assetPrice
