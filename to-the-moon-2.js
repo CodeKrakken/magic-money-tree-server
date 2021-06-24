@@ -2,6 +2,21 @@ require('dotenv').config();
 
 const fee = 0.00075
 const axios = require('axios')
+const axiosRetry = require('axios-retry')
+const retryDelay = (retryNumber = 0) => {
+  const seconds = Math.pow(2, retryNumber) * 1000;
+  const randomMs = 1000 * Math.random();
+  return seconds + randomMs;
+};
+
+axiosRetry(axios, {
+  retries: Infinity,
+  retryDelay,
+  // retry on Network Error & 5xx responses
+  retryCondition: axiosRetry.isRetryableError,
+});
+
+module.exports = axios;
 const fs = require('fs');
 
 const ccxt = require('ccxt');
@@ -60,10 +75,15 @@ async function displayWallet(activeCurrency, marketNames) {
 }
 
 async function fetchPrice(marketName) {
-  let symbolName = marketName.replace('/', '')
-  let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
-  let price = parseFloat(rawPrice.data.price)
-  return price
+  try {
+    let symbolName = marketName.replace('/', '')
+    let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
+    let price = parseFloat(rawPrice.data.price)
+    return price
+  } catch (error) {
+    console.log(error)
+  }
+
 }
 
 async function getMarkets(currency) {
@@ -264,17 +284,17 @@ async function filter(markets, activeCurrency) {
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          ema(market.history, 1, 'close') < ema(market.history, 2, 'close') && 
-          ema(market.history, 2, 'close') < ema(market.history, 3, 'close') // && 
-          // currentPrice < market.ema1
+          ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
+          ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
+          currentPrice < market.ema1
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          ema(market.history, 1, 'close') > ema(market.history, 2, 'close') && 
-          ema(market.history, 2, 'close') > ema(market.history, 3, 'close') // && 
-          // currentPrice > market.ema1
+          ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
+          ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
+          currentPrice > market.ema1
         ) {
           outputArray.push(market)
         } else {
