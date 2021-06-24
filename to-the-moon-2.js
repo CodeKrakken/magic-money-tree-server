@@ -188,7 +188,7 @@ async function checkVolume(marketNames, i, base) {
     let dollarMarket = `${base}/USDT`
     dollarPrice = await fetchPrice(dollarMarket)
   }
-  if (baseVolume * dollarPrice < 6000000) { return "Insufficient volume"} 
+  if (baseVolume * dollarPrice < 60000000) { return "Insufficient volume"} 
   if (baseVolume === 'Invalid market') { return 'Invalid Market' }
   return 'Sufficient volume'
 }
@@ -286,7 +286,7 @@ async function filter(markets, activeCurrency) {
         if (
           ema(market.history, 20, 'close') < ema(market.history, 50, 'close') && 
           ema(market.history, 50, 'close') < ema(market.history, 200, 'close') && 
-          currentPrice < market.ema1
+          currentPrice < market.ema20
         ) {
           outputArray.push(market)
         }
@@ -294,7 +294,7 @@ async function filter(markets, activeCurrency) {
         if (
           ema(market.history, 20, 'close') > ema(market.history, 50, 'close') && 
           ema(market.history, 50, 'close') > ema(market.history, 200, 'close') && 
-          currentPrice > market.ema1
+          currentPrice > market.ema20
         ) {
           outputArray.push(market)
         } else {
