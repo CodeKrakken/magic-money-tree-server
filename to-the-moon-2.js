@@ -32,7 +32,7 @@ let wallet = {
   'USDT': 1000  
 }
 
-let entryVolume = 0
+let entryVolume = 1000
 let relativeVolume = 1
 let currentPrice = 0
 let lastMarket
@@ -87,7 +87,7 @@ async function displayWallet(activeCurrency, marketNames) {
   }
   
   nonZeroWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentPrice} = $${currentDollarVolume}`} `)
+    console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${dollarPrice} = $${currentDollarVolume}`} `)
   })
   console.log('\n')
 }
@@ -409,7 +409,7 @@ async function newSellOrder(market, asset) {
     if (wallet[base] === undefined) { wallet[base] = 0 }
     wallet[base] += assetVolume * (1 - fee) * assetPrice
     wallet[asset] -= assetVolume
-    entryVolume = assetVolume * (1 - fee)
+    entryVolume = assetVolume
     lastCurrency = asset
     lastMarket = market
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
@@ -437,7 +437,7 @@ async function newBuyOrder(market, base) {
     if (wallet[asset] === undefined) { wallet[asset] = 0 }
     wallet[asset] += baseVolume * (1 - fee) / assetPrice
     wallet[base] -= baseVolume
-    entryVolume = baseVolume * (1 - fee)
+    entryVolume = baseVolume
     lastCurrency = base
     lastMarket = market
     tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
