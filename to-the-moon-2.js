@@ -1,7 +1,8 @@
 require('dotenv').config();
 
-const fee = 0.00075
+const fee = 0.00150
 const minimumDollarVolume = 28000000
+const minimumMovement = 0.5
 const axios = require('axios')
 const axiosRetry = require('axios-retry')
 const retryDelay = (retryNumber = 0) => {
@@ -32,7 +33,7 @@ let wallet = {
   'USDT': 1000  
 }
 
-let entryVolume = 0
+let targetVolume = 0
 let relativeVolume = 1
 let lastMarket
 let currentDollarVolume = 1000
@@ -49,11 +50,11 @@ async function tick() {
   await displayWallet(activeCurrency, marketNames)
   if (lastMarket !== undefined) { 
     await trackMovement(activeCurrency)
-    console.log(`Entry Volume: ${entryVolume}`)
+    console.log(`Target Volume: ${targetVolume}`)
     console.log(`Current Relative Volume: ${relativeVolume}\n`)
   }
 
-  if (relativeVolume > entryVolume / (1 - fee)) {
+  if (relativeVolume > targetVolume / (1 - fee)) {
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
     if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
       let bestMarket = await selectMarket(bullishMarkets)
@@ -220,7 +221,7 @@ async function checkMarket(marketName, base) {
     dollarPrice = await fetchPrice(dollarMarket)
   }
   if (baseVolume * dollarPrice < minimumDollarVolume) { return "Insufficient volume"} 
-  if (Math.abs(change) < 0.5) { return "Insufficient movement" }
+  if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
   if (baseVolume === 'Invalid market') { return 'Invalid Market' }
   return 'Sufficient volume'
 }
@@ -401,7 +402,7 @@ async function newSellOrder(market, asset) {
     if (wallet[base] === undefined) { wallet[base] = 0 }
     wallet[base] += assetVolume * (1 - fee) * assetPrice
     wallet[asset] -= assetVolume
-    entryVolume = assetVolume
+    targetVolume = assetVolume / (1 - fee)
     lastCurrency = asset
     lastMarket = market
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
@@ -429,7 +430,7 @@ async function newBuyOrder(market, base) {
     if (wallet[asset] === undefined) { wallet[asset] = 0 }
     wallet[asset] += baseVolume * (1 - fee) / assetPrice
     wallet[base] -= baseVolume
-    entryVolume = baseVolume
+    targetVolume = baseVolume / (1 - fee) 
     lastCurrency = base
     lastMarket = market
     tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
