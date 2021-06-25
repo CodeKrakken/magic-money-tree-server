@@ -34,7 +34,6 @@ let wallet = {
 
 let entryVolume = 0
 let relativeVolume = 1
-let currentPrice = 0
 let lastMarket
 let currentDollarVolume = 1000
 
@@ -77,12 +76,11 @@ async function getActiveCurrency() {
 async function displayWallet(activeCurrency, marketNames) {
   let nonZeroWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet')
+  let dollarPrice
   if (activeCurrency !== 'USDT') {
     let dollarMarkets = marketNames.filter(marketName => marketName.includes('USDT') && marketName.includes(activeCurrency))
     let dollarMarket = dollarMarkets[0]
-    let dollarPrice = await fetchPrice(dollarMarket)
-    console.log(activeCurrency)
-    console.log(dollarPrice)
+    dollarPrice = await fetchPrice(dollarMarket)
     currentDollarVolume = wallet[activeCurrency] * dollarPrice
   }
   
