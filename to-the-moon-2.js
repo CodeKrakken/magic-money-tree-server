@@ -32,7 +32,7 @@ let wallet = {
   'USDT': 1000  
 }
 
-let entryVolume = 1000
+let entryVolume = 0
 let relativeVolume = 1
 let currentPrice = 0
 let lastMarket
