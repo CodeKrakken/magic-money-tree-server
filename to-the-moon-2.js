@@ -82,6 +82,8 @@ async function displayWallet(activeCurrency, marketNames) {
     let dollarMarkets = marketNames.filter(marketName => marketName.includes('USDT') && marketName.includes(activeCurrency))
     let dollarMarket = dollarMarkets[0]
     dollarPrice = await fetchPrice(dollarMarket)
+    console.log(wallet[activeCurrency])
+    console.log(dollarPrice)
     currentDollarVolume = wallet[activeCurrency] * dollarPrice
   }
   
@@ -301,22 +303,23 @@ async function filter(markets, activeCurrency) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market.market)
       market.ema1 = ema(market.history, 1, 'close')
-      market.ema2 = ema(market.history, 2, 'close')
-      market.ema3 = ema(market.history, 3, 'close')
-      market.ema8 = ema(market.history, 8, 'close')
-      market.ema21 = ema(market.history, 20, 'close')
+      market.ema20 = ema(market.history, 20, 'close')
+      market.ema50 = ema(market.history, 50, 'close')
+      market.ema200 = ema(market.history, 200, 'close')
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          market.ema1 < market.ema2 &&
-          market.ema2 < market.ema3 
+          market.ema1 < market.ema20 &&
+          market.ema20 < market.ema50 &&
+          market.ema50 < market.ema200 
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          market.ema1 > market.ema2 &&
-          market.ema2 > market.ema3 
+          market.ema1 > market.ema20 &&
+          market.ema20 > market.ema50 &&
+          market.ema50 > market.ema200 
         ) {
           outputArray.push(market)
         } else {
