@@ -37,6 +37,7 @@ let targetVolume = 0
 let relativeVolume = 1
 let lastMarket
 let currentDollarVolume = 1000
+let currentMarket = ''
 
 async function run() {
   console.log('Running\n')
@@ -61,7 +62,7 @@ async function tick() {
       await trade(bestMarket, activeCurrency)
     } else {
       console.log(`No bulls or bears\n`)
-      if (lastMarket !== undefined) {
+      if (lastMarket !== undefined && currentMarket !== '' && currentMarket.ema1 < currentMarket.ema2) {
         trade(lastMarket, activeCurrency)
       }
     }
@@ -82,6 +83,7 @@ async function displayWallet(activeCurrency, marketNames) {
     let dollarMarkets = marketNames.filter(marketName => marketName.includes('USDT') && marketName.includes(activeCurrency))
     let dollarMarket = dollarMarkets[0]
     dollarPrice = await fetchPrice(dollarMarket)
+    console.log(activeCurrency)
     console.log(wallet[activeCurrency])
     console.log(dollarPrice)
     currentDollarVolume = wallet[activeCurrency] * dollarPrice
@@ -303,23 +305,29 @@ async function filter(markets, activeCurrency) {
       let market = markets[i]
       let currentPrice = await fetchPrice(market.market)
       market.ema1 = ema(market.history, 1, 'close')
-      market.ema20 = ema(market.history, 20, 'close')
-      market.ema50 = ema(market.history, 50, 'close')
+      market.ema2 = ema(market.history, 2, 'close')
+      market.ema3 = ema(market.history, 3, 'close')
+      market.ema5 = ema(market.history, 5, 'close')
+      market.ema8 = ema(market.history, 8, 'close')
+      market.ema13 = ema(market.history, 13, 'close')
+      market.ema21 = ema(market.history, 21, 'close')
+      market.ema55 = ema(market.history, 55, 'close')
       market.ema200 = ema(market.history, 200, 'close')
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          market.ema1 < market.ema20 &&
-          market.ema20 < market.ema50 &&
-          market.ema50 < market.ema200 
+
+          market.ema8 < market.ema13 &&
+          market.ema13 < market.ema21 &&
+          market.ema21 < market.ema55
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          market.ema1 > market.ema20 &&
-          market.ema20 > market.ema50 &&
-          market.ema50 > market.ema200 
+          market.ema8 > market.ema13 &&
+          market.ema13 > market.ema21 &&
+          market.ema21 > market.ema55 
         ) {
           outputArray.push(market)
         } else {
@@ -405,9 +413,10 @@ async function newSellOrder(market, asset) {
     if (wallet[base] === undefined) { wallet[base] = 0 }
     wallet[base] += assetVolume * (1 - fee) * assetPrice
     wallet[asset] -= assetVolume
-    targetVolume = assetVolume / (1 - fee)
+    targetVolume = assetVolume / (1 - fee) * assetPrice
     lastCurrency = asset
     lastMarket = market
+    currentMarket = ''
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
@@ -436,6 +445,7 @@ async function newBuyOrder(market, base) {
     targetVolume = baseVolume / (1 - fee) 
     lastCurrency = base
     lastMarket = market
+    currentMarket = market
     tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
