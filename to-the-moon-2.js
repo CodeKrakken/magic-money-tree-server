@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const fee = 0.00075
+const profit = 0.00025
 const minimumDollarVolume = 28000000
 const minimumMovement = 0.5
 const axios = require('axios')
@@ -433,7 +434,7 @@ async function newBuyOrder(market, base) {
     if (wallet[asset] === undefined) { wallet[asset] = 0 }
     wallet[base] -= baseVolume
     wallet[asset] += baseVolume * (1 - fee) / assetPrice
-    targetDollarVolume = currentDollarVolume * (1 + fee)
+    targetDollarVolume = currentDollarVolume * (1 + fee + profit)
     targetDollarPrice = targetDollarVolume / wallet[asset]
     currentMarket = market
     tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
