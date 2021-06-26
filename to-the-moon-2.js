@@ -47,19 +47,20 @@ async function run() {
 
 async function tick() {
   console.log('\n----------\n\n')
-  let activeCurrency = await getActiveCurrency()
+  activeCurrency = await getActiveCurrency()
   let marketNames = await getMarkets(activeCurrency)
   await displayWallet(activeCurrency, marketNames)
-  if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume) {
+  if (currentMarket === '') {
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
     if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
       let bestMarket = await selectMarket(bullishMarkets)
       await trade(bestMarket, activeCurrency)
     } else {
       console.log(`No bulls or bears\n`)
-      if (currentMarket !== '') {
-        trade(currentMarket, activeCurrency)
-      }
+    }
+  } else if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume) {
+    if (currentMarket !== '') {
+      trade(currentMarket, activeCurrency)
     }
   }
   tick()
@@ -205,7 +206,7 @@ async function checkMarkets(marketNames, currency) {
 async function checkMarket(marketName, base) {
   let symbolName = marketName.replace('/', '')
   let twentyFourHour = await fetch24Hour(symbolName, base)
-  if (twentyFourHour !== undefined) {
+  if (twentyFourHour.data !== undefined) {
     let price = parseFloat(twentyFourHour.data.weightedAvgPrice)
     let assetVolume = parseFloat(twentyFourHour.data.volume)
     let change = parseFloat(twentyFourHour.data.priceChangePercent)
@@ -312,16 +313,19 @@ async function filter(markets, activeCurrency) {
       market.currentPrice = currentPrice
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-
-          market.ema1 < market.ema3 &&
-          market.ema3 < market.ema8
+          market.ema1 < market.ema8 &&
+          market.ema8 < market.ema13 &&
+          market.ema13 < market.ema21 &&
+          market.ema21 < market.ema55
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          market.ema1 > market.ema3 &&
-          market.ema3 > market.ema8
+          market.ema1 > market.ema8 &&
+          market.ema8 > market.ema13 &&
+          market.ema13 > market.ema21 &&
+          market.ema21 > market.ema55
         ) {
           outputArray.push(market)
         } else {
@@ -410,6 +414,7 @@ async function newSellOrder(market, asset) {
     currentMarket = ''
     targetVolume = 0
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
+    activeCurrency = base
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
     })
