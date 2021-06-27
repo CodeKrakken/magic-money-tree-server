@@ -58,7 +58,8 @@ async function tick() {
     } else {
       console.log(`No bulls or bears\n`)
     }
-  } else if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume) {
+  } else {
+  // if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume) {
     if (currentMarket !== '') {
       trade(currentMarket, activeCurrency)
     }
@@ -84,6 +85,9 @@ async function displayWallet(activeCurrency, marketNames) {
     console.log(currentDollarPrice)
   }
   currentDollarVolume = wallet[activeCurrency] * currentDollarPrice
+  console.log(wallet[activCurrency])
+  console.log(currentDollarPrice)
+  console.log(currentDollarVolume)
   
   nonZeroWallet.forEach(currency => {
     console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentDollarPrice} = $${currentDollarVolume}`} `)
@@ -439,6 +443,8 @@ async function newBuyOrder(market, base) {
     if (wallet[asset] === undefined) { wallet[asset] = 0 }
     wallet[base] -= baseVolume
     wallet[asset] += baseVolume * (1 - fee) / assetPrice
+    currentDollarPrice = fetchPrice()
+    currentDollarVolume = wallet[asset] * currentDollarPrice
     targetDollarVolume = currentDollarVolume * (1 + fee + profit)
     targetDollarPrice = targetDollarVolume / wallet[asset]
     currentMarket = market
