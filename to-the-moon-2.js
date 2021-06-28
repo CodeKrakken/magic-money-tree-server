@@ -342,6 +342,16 @@ async function filter(markets, activeCurrency) {
           ema34 < ema55
         ) {
           outputArray.push(market)
+        } else {
+          console.log(ema1)
+          console.log(ema2)
+          console.log(ema3)
+          console.log(ema5)
+          console.log(ema8)
+          console.log(ema13)
+          console.log(ema21)
+          console.log(ema34)
+          console.log(ema55)
         }
       } else {
         if (
