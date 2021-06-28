@@ -59,12 +59,12 @@ async function tick() {
       console.log(`No bulls or bears\n`)
     }
   } else {
+    let currentPrice = await fetchPrice(currentMarket.market)
     currentMarketArray = await fetchAllHistory([currentMarket.market])
-    console.log(currentMarketArray)
     currentMarket.history = currentMarketArray[0].history
-    currentMarket.ema1 = ema(currentMarket.history, 1, 'close')
-    currentMarket.ema2 = ema(currentMarket.history, 2, 'close')
-    if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentMarket.ema1 <= currentMarket.ema2) {
+    currentMarket.ema1 = ema(currentMarket.history, 1, 'average')
+    currentMarket.ema2 = ema(currentMarket.history, 2, 'average')
+    if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentPrice <= currentMarket.ema1) {
       trade(currentMarket, activeCurrency, marketNames)
     }
   }
@@ -258,6 +258,7 @@ async function fetchAllHistory(marketNames) {
     try {
       let marketName = marketNames[i]
       let symbolName = marketName.replace('/', '')
+      console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
       let symbolHistory = await fetchOneHistory(symbolName)
       let symbolObject = {
         'history': symbolHistory,
@@ -282,13 +283,15 @@ async function fetchOneHistory(symbolName) {
 async function collateData(data) {
   let history = []
   data.history.forEach(period => {
+    let average = (period[1] + period[2] + period[3] + period[4])/4
     history.push({
       'startTime': period[0],
       'open': period[1],
       'high': period[2],
       'low': period[3],
-      'close': period[4],
-      'endTime': period[6]
+      'average': period[4],
+      'endTime': period[6],
+      'average': average
     })
   })
   let outputObject = {
@@ -304,34 +307,41 @@ async function filter(markets, activeCurrency) {
     let outputArray = []
     for (let i = 0; i < markets.length; i++) {
       let market = markets[i]
-      let currentPrice = await fetchPrice(market.market)
-      market.ema1 = ema(market.history, 1, 'close')
-      market.ema2 = ema(market.history, 2, 'close')
-      market.ema3 = ema(market.history, 3, 'close')
-      market.ema5 = ema(market.history, 5, 'close')
-      market.ema8 = ema(market.history, 8, 'close')
-      market.ema13 = ema(market.history, 13, 'close')
-      market.ema21 = ema(market.history, 21, 'close')
-      market.ema55 = ema(market.history, 55, 'close')
-      market.ema200 = ema(market.history, 200, 'close')
-      market.currentPrice = currentPrice
+      const currentPrice = await fetchPrice(market.market)
+      const ema1 = ema(market.history, 1, 'average')
+      const ema2 = ema(market.history, 2, 'average')
+     const ema3 = ema(market.history, 3, 'average')
+     const ema5 = ema(market.history, 5, 'average')
+     const ema8 = ema(market.history, 8, 'average')
+     const ema13 = ema(market.history, 13, 'average')
+     const ema21 = ema(market.history, 21, 'average')
+     const ema34 = ema(market.history, 34, 'average')
+     const ema55 = ema(market.history, 55, 'average')
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-          market.ema1 < market.ema8 &&
-          market.ema8 < market.ema13 &&
-          market.ema13 < market.ema21 &&
-          market.ema21 < market.ema55
-          // market.ema1 < market.ema2
+         currentPrice < ema1 &&
+          ema1 < ema2 &&
+          ema2 < ema3 &&
+          ema3 < ema5 &&
+          ema5 < ema8 &&
+          ema8 < ema13 &&
+          ema13 < ema21 &&
+          ema21 < ema34 &&
+          ema34 < ema55
         ) {
           outputArray.push(market)
         }
       } else {
         if (
-          market.ema1 > market.ema8 &&
-          market.ema8 > market.ema13 &&
-          market.ema13 > market.ema21 &&
-          market.ema21 > market.ema55
-          // market.ema1 > market.ema2
+          currentPrice > ema1 &&
+          ema1 > ema2 &&
+          ema2 > ema3 &&
+          ema3 > ema5 &&
+          ema5 > ema8 &&
+          ema8 > ema13 &&
+          ema13 > ema21 &&
+          ema21 > ema34 &&
+          ema34 > ema55
         ) {
           outputArray.push(market)
         } else {
@@ -381,11 +391,10 @@ async function rank(markets) {
     let marketName = market.market
     let currentPrice = market.currentPrice
     let ema1 = market.ema1
-    let ema2 = ema(market.history, 2, 'close')
-    let ema3 = ema(market.history, 3, 'close')
-    let ema20 = ema(market.history, 20, 'close')
-    let ema50 = ema(market.history, 50, 'close')
-    let ema200 = ema(market.history, 200, 'close')
+    let ema2 = ema(market.history, 2, 'average')
+    let ema3 = ema(market.history, 3, 'average')
+    let ema20 = ema(market.history, 20, 'average')
+    let ema50 = ema(market.history, 50, 'average')
     let history = market.history
     outputArray.push({
       'market': marketName,
@@ -396,7 +405,6 @@ async function rank(markets) {
       'ema3': ema3,
       'ema20': ema20,
       'ema50': ema50,
-      'ema200': ema200,
       'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString(),
       'history': history
     })
