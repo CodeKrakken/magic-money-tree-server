@@ -55,6 +55,7 @@ async function tick() {
     marketNames = await getMarkets(activeCurrency)
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
     if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
+      console.log(bullishMarkets)
       let bestMarket = bullishMarkets[0]
       await trade(bestMarket, activeCurrency, marketNames)
     } else {
@@ -320,23 +321,23 @@ async function filter(markets, activeCurrency) {
     for (let i = 0; i < n; i++) {
       let market = markets[i]
       console.log(`Fetching current price of market ${i+1}/${n} - ${market.market}`)
-      const currentPrice = await fetchPrice(market.market)
-      const ema1 = ema(market.history, 1, 'average')
-      const ema2 = ema(market.history, 2, 'average')
-      const ema3 = ema(market.history, 3, 'average')
-      const ema5 = ema(market.history, 5, 'average')
-      const ema8 = ema(market.history, 8, 'average')
-      const ema13 = ema(market.history, 13, 'average')
-      const ema21 = ema(market.history, 21, 'average')
-      const ema34 = ema(market.history, 34, 'average')
-      const ema55 = ema(market.history, 55, 'average')
+      market.currentPrice = await fetchPrice(market.market)
+      market.ema1 = ema(market.history, 1, 'average')
+      market.ema2 = ema(market.history, 2, 'average')
+      market.ema3 = ema(market.history, 3, 'average')
+      market.ema5 = ema(market.history, 5, 'average')
+      market.ema8 = ema(market.history, 8, 'average')
+      market.ema13 = ema(market.history, 13, 'average')
+      market.ema21 = ema(market.history, 21, 'average')
+      market.ema34 = ema(market.history, 34, 'average')
+      market.ema55 = ema(market.history, 55, 'average')
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-         currentPrice < ema1 &&
-          ema1 < ema2 &&
-          ema2 < ema3 &&
-          ema3 < ema5 &&
-          ema5 < ema8 // &&
+         market.currentPrice < market.ema1 &&
+          market.ema1 < market.ema2 &&
+          market.ema2 < market.ema3 &&
+          market.ema3 < market.ema5 &&
+          market.ema5 < market.ema8 // &&
           // ema8 < ema13 &&
           // ema13 < ema21 &&
           // ema21 < ema34 &&
@@ -344,35 +345,35 @@ async function filter(markets, activeCurrency) {
         ) {
           outputArray.push(market)
         } else {
-          console.log(ema1)
-          console.log(ema2)
-          console.log(ema3)
-          console.log(ema5)
-          console.log(ema8)
-          console.log(ema13)
-          console.log(ema21)
-          console.log(ema34)
-          console.log(ema55)
+          // console.log(ema1)
+          // console.log(ema2)
+          // console.log(ema3)
+          // console.log(ema5)
+          // console.log(ema8)
+          // console.log(ema13)
+          // console.log(ema21)
+          // console.log(ema34)
+          // console.log(ema55)
         }
       } else {
         if (
-          currentPrice > ema1 &&
-          ema1 > ema2 &&
-          ema2 > ema3 &&
-          ema3 > ema5 &&
-          ema5 > ema8 // &&
+          market.currentPrice > market.ema1 &&
+          market.ema1 > market.ema2 &&
+          market.ema2 > market.ema3 &&
+          market.ema3 > market.ema5 &&
+          market.ema5 > market.ema8 // &&
           // ema8 > ema13 &&
           // ema13 > ema21 &&
           // ema21 > ema34 &&
           // ema34 > ema55
         ) {
-          market.movement = currentPrice/ema55 -1
+          market.movement = market.currentPrice/market.ema55 -1
           outputArray.push(market)
         }
       }
     }
     console.log('\n')
-    return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
+    return outputArray.sort((a, b) => Math.abs(a.movement) - Math.abs(b.movement))
   } catch (error) {
     console.log(error)
   }
