@@ -58,8 +58,12 @@ async function tick() {
     } else {
       console.log(`No bulls or bears\n`)
     }
-  } else if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentMarket.ema1 <= currentMarket.ema2) {
-    if (currentMarket !== '') {
+  } else {
+    currentMarketArray = await fetchAllHistory([currentMarket])
+    currentMarket.history = currentMarketArray[0]
+    currentMarket.ema1 = ema(currentMarket.history, 1, 'close')
+    currentMarket.ema2 = ema(currentMarket.history, 2, 'close')
+    if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentMarket.ema1 <= currentMarket.ema2) {
       trade(currentMarket, activeCurrency, marketNames)
     }
   }
@@ -68,7 +72,6 @@ async function tick() {
 
 async function getActiveCurrency() {
   let sorted = Object.entries(wallet).sort((prev, next) => prev[1] - next[1])
-  console.log(sorted)
   return sorted.pop()[0]
 }
 
@@ -86,7 +89,10 @@ async function displayWallet(activeCurrency, marketNames) {
     console.log(`${wallet[currency]} ${currency} ${currency.includes('USD') ? '' : `@ ${currentDollarPrice} = $${currentDollarVolume}`} `)
     if (currentMarket !== '') {
       console.log(`Target price: ${targetDollarPrice} = $${targetDollarVolume}`)
+      console.log(`EMA1: ${currentMarket.ema1}`)
+      console.log(`EMA2: ${currentMarket.ema2}`)
     }
+
   })
   console.log('\n')
 }
@@ -379,6 +385,7 @@ async function rank(markets) {
     let ema20 = ema(market.history, 20, 'close')
     let ema50 = ema(market.history, 50, 'close')
     let ema200 = ema(market.history, 200, 'close')
+    let history = market.history
     outputArray.push({
       'market': marketName,
       'currentPrice': currentPrice,
@@ -389,7 +396,8 @@ async function rank(markets) {
       'ema20': ema20,
       'ema50': ema50,
       'ema200': ema200,
-      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString()
+      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString(),
+      'history': history
     })
   })
   return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
