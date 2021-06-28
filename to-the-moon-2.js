@@ -59,8 +59,9 @@ async function tick() {
       console.log(`No bulls or bears\n`)
     }
   } else {
-    currentMarketArray = await fetchAllHistory([currentMarket])
-    currentMarket.history = currentMarketArray[0]
+    currentMarketArray = await fetchAllHistory([currentMarket.market])
+    console.log(currentMarketArray)
+    currentMarket.history = currentMarketArray[0].history
     currentMarket.ema1 = ema(currentMarket.history, 1, 'close')
     currentMarket.ema2 = ema(currentMarket.history, 2, 'close')
     if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentMarket.ema1 <= currentMarket.ema2) {
@@ -257,7 +258,7 @@ async function fetchAllHistory(marketNames) {
     try {
       let marketName = marketNames[i]
       let symbolName = marketName.replace('/', '')
-      let symbolHistory = await fetchOneHistory(symbolName)  
+      let symbolHistory = await fetchOneHistory(symbolName)
       let symbolObject = {
         'history': symbolHistory,
         'market': marketName
