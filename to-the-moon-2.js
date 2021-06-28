@@ -48,7 +48,8 @@ async function run() {
 async function tick() {
   console.log('\n----------\n\n')
   activeCurrency = await getActiveCurrency()
-  let marketNames = await getMarkets(activeCurrency)
+  marketNames = await getMarkets(activeCurrency)
+  if (currentMarket !== '') { marketNames.push(currentMarket) }
   await displayWallet(activeCurrency, marketNames)
   if (currentMarket === '') {
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
@@ -281,15 +282,23 @@ async function fetchOneHistory(symbolName) {
 }
 
 async function collateData(data) {
+
   let history = []
+
   data.history.forEach(period => {
-    let average = (period[1] + period[2] + period[3] + period[4])/4
+
+    let average = (parseFloat(period[1]) 
+                 + parseFloat(period[2]) 
+                 + parseFloat(period[3]) 
+                 + parseFloat(period[4])
+                 )/4
+
     history.push({
       'startTime': period[0],
       'open': period[1],
       'high': period[2],
       'low': period[3],
-      'average': period[4],
+      'close': period[4],
       'endTime': period[6],
       'average': average
     })
@@ -310,13 +319,13 @@ async function filter(markets, activeCurrency) {
       const currentPrice = await fetchPrice(market.market)
       const ema1 = ema(market.history, 1, 'average')
       const ema2 = ema(market.history, 2, 'average')
-     const ema3 = ema(market.history, 3, 'average')
-     const ema5 = ema(market.history, 5, 'average')
-     const ema8 = ema(market.history, 8, 'average')
-     const ema13 = ema(market.history, 13, 'average')
-     const ema21 = ema(market.history, 21, 'average')
-     const ema34 = ema(market.history, 34, 'average')
-     const ema55 = ema(market.history, 55, 'average')
+      const ema3 = ema(market.history, 3, 'average')
+      const ema5 = ema(market.history, 5, 'average')
+      const ema8 = ema(market.history, 8, 'average')
+      const ema13 = ema(market.history, 13, 'average')
+      const ema21 = ema(market.history, 21, 'average')
+      const ema34 = ema(market.history, 34, 'average')
+      const ema55 = ema(market.history, 55, 'average')
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
          currentPrice < ema1 &&
@@ -330,6 +339,17 @@ async function filter(markets, activeCurrency) {
           ema34 < ema55
         ) {
           outputArray.push(market)
+        } else {
+          console.log(currentPrice)
+          console.log(ema1)
+          console.log(ema2)
+          console.log(ema3)
+          console.log(ema5)
+          console.log(ema8)
+          console.log(ema13)
+          console.log(ema21)
+          console.log(ema34)
+          console.log(ema55)
         }
       } else {
         if (
@@ -345,6 +365,16 @@ async function filter(markets, activeCurrency) {
         ) {
           outputArray.push(market)
         } else {
+          console.log(currentPrice)
+          console.log(ema1)
+          console.log(ema2)
+          console.log(ema3)
+          console.log(ema5)
+          console.log(ema8)
+          console.log(ema13)
+          console.log(ema21)
+          console.log(ema34)
+          console.log(ema55)
           // console.log(market.market)
           // console.log(currentPrice)
           // console.log(market.ema1)
@@ -429,7 +459,7 @@ async function newSellOrder(market, asset) {
     wallet[asset] -= assetVolume
     currentMarket = ''
     targetVolume = 0
-    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume})\n\n`
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(assetPrice, 8)} ($${currentDollarVolume * (1 - fee)})\n\n`
     activeCurrency = base
     fs.appendFile('trade-history.txt', tradeReport, function(err) {
       if (err) return console.log(err);
