@@ -55,7 +55,7 @@ async function tick() {
     marketNames = await getMarkets(activeCurrency)
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
     if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
-      let bestMarket = await selectMarket(bullishMarkets)
+      let bestMarket = bullishMarkets[0]
       await trade(bestMarket, activeCurrency, marketNames)
     } else {
       console.log(`No bulls or bears\n`)
@@ -66,7 +66,8 @@ async function tick() {
     let currentPrice = await fetchPrice(currentMarket.market)
     currentMarket.ema1 = ema(currentMarket.history, 1, 'average')
     currentMarket.ema2 = ema(currentMarket.history, 2, 'average')
-    if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && currentPrice <= currentMarket.ema1) {
+    if ( // wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && 
+      currentPrice <= currentMarket.ema1) {
       await trade(currentMarket, activeCurrency, marketNames)
     }
   }
@@ -335,11 +336,11 @@ async function filter(markets, activeCurrency) {
           ema1 < ema2 &&
           ema2 < ema3 &&
           ema3 < ema5 &&
-          ema5 < ema8 &&
-          ema8 < ema13 &&
-          ema13 < ema21 &&
-          ema21 < ema34 &&
-          ema34 < ema55
+          ema5 < ema8 // &&
+          // ema8 < ema13 &&
+          // ema13 < ema21 &&
+          // ema21 < ema34 &&
+          // ema34 < ema55
         ) {
           outputArray.push(market)
         } else {
@@ -359,18 +360,19 @@ async function filter(markets, activeCurrency) {
           ema1 > ema2 &&
           ema2 > ema3 &&
           ema3 > ema5 &&
-          ema5 > ema8 &&
-          ema8 > ema13 &&
-          ema13 > ema21 &&
-          ema21 > ema34 &&
-          ema34 > ema55
+          ema5 > ema8 // &&
+          // ema8 > ema13 &&
+          // ema13 > ema21 &&
+          // ema21 > ema34 &&
+          // ema34 > ema55
         ) {
+          market.movement = currentPrice/ema55 -1
           outputArray.push(market)
         }
       }
     }
     console.log('\n')
-    return outputArray
+    return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
   } catch (error) {
     console.log(error)
   }
@@ -403,32 +405,33 @@ async function selectMarket(markets) {
   return bestMarket
 }
 
-async function rank(markets) {
-  let outputArray = []
-  markets.forEach(market => {
-    let marketName = market.market
-    let currentPrice = market.currentPrice
-    let ema1 = ema(market.history, 1, 'average')
-    let ema2 = ema(market.history, 2, 'average')
-    let ema3 = ema(market.history, 3, 'average')
-    let ema20 = ema(market.history, 20, 'average')
-    let ema50 = ema(market.history, 50, 'average')
-    let history = market.history
-    outputArray.push({
-      'market': marketName,
-      'currentPrice': currentPrice,
-      'movement': currentPrice/ema50 -1,
-      'ema1': ema1,
-      'ema2': ema2,
-      'ema3': ema3,
-      'ema20': ema20,
-      'ema50': ema50,
-      'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString(),
-      'history': history
-    })
-  })
-  return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
-}
+// async function rank(markets) {
+//   let outputArray = []
+//   markets.forEach(market => {
+//     console.log(market)
+//     let marketName = market.market
+//     let currentPrice = market.currentPrice
+//     let ema1 = ema(market.history, 1, 'average')
+//     let ema2 = ema(market.history, 2, 'average')
+//     let ema3 = ema(market.history, 3, 'average')
+//     let ema20 = ema(market.history, 20, 'average')
+//     let ema50 = ema(market.history, 50, 'average')
+//     let history = market.history
+//     outputArray.push({
+//       'market': marketName,
+//       'currentPrice': currentPrice,
+//       'movement': currentPrice/ema50 -1,
+//       'ema1': ema1,
+//       'ema2': ema2,
+//       'ema3': ema3,
+//       'ema20': ema20,
+//       'ema50': ema50,
+//       'fetched': new Date(market.history[market.history.length-1].endTime - 59000).toLocaleString(),
+//       'history': history
+//     })
+//   })
+//   return outputArray.sort((a, b) => Math.abs(b.movement) - Math.abs(a.movement))
+// }
 
 async function trade(market, activeCurrency, marketNames) {
   market.market.indexOf(activeCurrency) === 0 ?
