@@ -61,7 +61,12 @@ async function tick(wallet) {
   await displayWallet(wallet, activeCurrency)
   
   if (activeCurrency === 'USDT') {
-    let markets = await getMarkets()
+    
+    let marketNames = await getMarkets()
+    let exchangeHistory = await fetchAllHistory(marketNames)
+    let bulls = await getBulls(exchangeHistory)
+
+
   }
 
 }
@@ -164,13 +169,12 @@ async function getVoluminousMarkets(marketNames) {
 
     let symbolName = symbolNames[i]
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
-    let response = await checkVolumeAndChange(symbolName)
+    let response = await checkVolume(symbolName)
 
     if (
 
       response === "Insufficient volume" || 
       response === "No dollar comparison available" || 
-      response === "Insufficient movement" ||
       response === "No Response"
 
     ) 
@@ -195,7 +199,7 @@ async function getVoluminousMarkets(marketNames) {
 
 
 
-async function checkVolumeAndChange(symbolName) {
+async function checkVolume(symbolName) {
 
   let twentyFourHour = await fetch24Hour(symbolName)
   
@@ -203,10 +207,8 @@ async function checkVolumeAndChange(symbolName) {
 
     let price = parseFloat(twentyFourHour.data.weightedAvgPrice)
     let assetVolume = parseFloat(twentyFourHour.data.volume)
-    let change = parseFloat(twentyFourHour.data.priceChangePercent)
 
     if (assetVolume * price < minimumDollarVolume) { return 'Insufficient volume' }
-    if (change < minimumMovement) { return "Insufficient movement" }
     return 'Sufficient volume'
   
   } else {
@@ -214,19 +216,166 @@ async function checkVolumeAndChange(symbolName) {
     return "No Response"
 
   }
-
 }
 
 
 
 async function fetch24Hour(symbolName) {
+
   try {
+
     let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbolName}`)
     return twentyFourHour
+
   } catch (error) {
+
     return 'Invalid market'
+
   }
 }
+
+
+async function getBulls(marketNames) {
+
+  try {
+
+    console.log('Fetching history\n')
+    
+
+    
+  } catch (error) {
+    
+
+
+  }
+
+
+}
+
+
+
+async function fetchAllHistory(marketNames) {
+
+  let n = marketNames.length
+  let returnArray = []
+
+  for (let i = 0; i < n; i ++) {
+
+    try {
+
+      let marketName = marketNames[i]
+      let symbolName = marketName.replace('/', '')
+      let symbolHistory = await fetchOneHistory(symbolName)
+
+      let symbolObject = {
+
+        'history': symbolHistory,
+        'market': marketName
+
+      }
+
+      symbolObject = await annotateData(symbolObject)
+      let announcement = `Fetching history of market ${i+1}/${n} - ${marketName}`
+      let outcome
+
+      if (volatileMarket(symbolObject.history) === false) {
+
+        outcome = 'Insufficient volatility'
+
+      } else {
+
+        outcome = `Including ${marketName}`
+        await returnArray.push(symbolObject)
+
+      }
+
+      console.log(announcement + outcome)
+
+    } catch (error) {
+
+      marketNames.splice(i, 1)
+      i --
+      n --
+
+    }
+  }
+
+  console.log('\n')
+  return returnArray
+
+}
+
+
+
+async function fetchOneHistory(symbolName) {
+  let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`)
+  return history.data
+}
+
+
+
+async function annotateData(data) {
+
+  let history = []
+
+  data.history.forEach(period => {
+
+    let average = (
+
+      parseFloat(period[1]) +
+      parseFloat(period[2]) +
+      parseFloat(period[3]) +
+      parseFloat(period[4])
+
+    )/4
+
+    history.push(
+      {
+        'startTime': period[0],
+        'open'     : period[1],
+        'high'     : period[2],
+        'low'      : period[3],
+        'close'    : period[4],
+        'endTime'  : period[6],
+        'average'  : average
+      }
+    )
+  })
+
+  let outputObject = {
+
+    'history': history,
+    'market': data.market
+
+  }
+
+  return outputObject
+}
+
+
+
+async function volatileMarket(market) {
+
+  let data = extractData(market, 'average')
+  let standardDeviation = math.std(data)
+  return standardDeviation < 1
+
+}
+
+
+
+function extractData(dataArray, key) {
+
+  let outputArray = []
+
+  dataArray.forEach(obj => {
+    outputArray.push(obj[key])
+  })
+
+  return outputArray
+
+}
+
 
 
 run();
