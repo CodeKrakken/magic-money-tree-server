@@ -254,7 +254,7 @@ async function sortByVolatility(markets) {
   for (let i = 0; i < n; i++) {
 
     let market = markets[i]
-    let data = extractData(market, 'average')
+    let data = extractData(market.history, 'average')
     market.volatility = math.std(data)
 
   }
@@ -273,7 +273,7 @@ async function getBulls(markets) {
 
     for (let i = 0; i < n; i++) {
 
-      let market = market[i]
+      let market = markets[i]
       console.log(`Fetching current price of market ${i+1}/${n} - ${market.market}`)
       market.currentPrice = await fetchPrice(market.market)
       market.ema1 = ema(market.history, 1, 'average')
