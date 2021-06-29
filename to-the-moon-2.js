@@ -1,9 +1,10 @@
 require('dotenv').config();
 
+const math = require('mathjs');
 const fee = 0.00075
 const profit = 0.00025
 const minimumDollarVolume = 28000000
-const minimumMovement = 0.6
+const minimumMovement = 0
 const axios = require('axios')
 const axiosRetry = require('axios-retry')
 const retryDelay = (retryNumber = 0) => {
@@ -55,6 +56,7 @@ async function tick() {
     marketNames = await getMarkets(activeCurrency)
     let bullishMarkets = await getBullishMarkets(marketNames, activeCurrency)
     if (bullishMarkets !== undefined && bullishMarkets.length > 0) {
+      
       console.log(bullishMarkets)
       let bestMarket = bullishMarkets[0]
       await trade(bestMarket, activeCurrency, marketNames)
@@ -65,9 +67,9 @@ async function tick() {
     currentMarketArray = await fetchAllHistory([currentMarket.market])
     currentMarket.history = currentMarketArray[0].history
     let currentPrice = await fetchPrice(currentMarket.market)
-    currentMarket.ema1 = ema(currentMarket.history, 1, 'average')
-    currentMarket.ema2 = ema(currentMarket.history, 2, 'average')
-    if ( // wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && 
+    currentMarket.ema1 = ema(currentMarket.history, 1, 'low')
+    currentMarket.ema2 = ema(currentMarket.history, 2, 'high')
+    if (wallet[activeCurrency] * currentDollarPrice > targetDollarVolume && 
       currentPrice <= currentMarket.ema1) {
       await trade(currentMarket, activeCurrency, marketNames)
     }
@@ -117,8 +119,8 @@ async function fetchPrice(marketName) {
 async function getMarkets(currency) {
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(market => goodMarket(market, markets, currency))
-  let voluminousMarkets = await checkMarkets(marketNames, currency)
-  return voluminousMarkets
+  let voluminousMarketNames = await checkMarkets(marketNames, currency)
+  return voluminousMarketNames
 }
 
 async function fetchMarkets() {
@@ -162,7 +164,7 @@ async function checkMarkets(marketNames, currency) {
     // tally(marketName, tallyObject)
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
 
-    let response = await checkMarket(marketNames[i], currency)
+    let response = await checkVolume(marketNames[i], currency)
     if (response === "Insufficient volume" || 
         response === "No dollar comparison available" || 
         response === "Insufficient movement" ||
@@ -211,7 +213,7 @@ async function checkMarkets(marketNames, currency) {
 //   }
 // }
 
-async function checkMarket(marketName, base) {
+async function checkVolume(marketName, base) {
   let symbolName = marketName.replace('/', '')
   let twentyFourHour = await fetch24Hour(symbolName, base)
   if (twentyFourHour.data !== undefined) {
@@ -243,11 +245,19 @@ async function fetch24Hour(symbol, base) {
   }
 }
 
+async function volatileMarket(market) {
+    let data = extractData(market, 'average')
+    let standardDeviation = math.std(data)
+    return standardDeviation < 1
+  }
+
+
 async function getBullishMarkets(marketNames, activeCurrency) {
   try {
     console.log('Fetching history\n')
     let exchangeHistory = await fetchAllHistory(marketNames)
     let bullishMarkets = await filter(exchangeHistory, activeCurrency)
+    console.log(bullishMarkets)
     return bullishMarkets
   } catch (error) {
     console.log(error.message)
@@ -261,13 +271,20 @@ async function fetchAllHistory(marketNames) {
     try {
       let marketName = marketNames[i]
       let symbolName = marketName.replace('/', '')
-      console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
       let symbolHistory = await fetchOneHistory(symbolName)
       let symbolObject = {
         'history': symbolHistory,
         'market': marketName
       }
-      symbolObject = await collateData(symbolObject)
+      symbolObject = await annotateData(symbolObject)
+      let announcement = `Fetching history of market ${i+1}/${n} - ${marketName}`
+      let outcome
+      if (volatileMarket(symbolObject.history) === false) {
+        outcome = 'Insufficient volatility'
+      } else {
+        outcome = 'Adding market'
+      }
+
       await returnArray.push(symbolObject)
     } catch (error) {
       marketNames.splice(i, 1)
@@ -284,7 +301,7 @@ async function fetchOneHistory(symbolName) {
   return history.data
 }
 
-async function collateData(data) {
+async function annotateData(data) {
 
   let history = []
 
@@ -333,42 +350,57 @@ async function filter(markets, activeCurrency) {
       market.ema55 = ema(market.history, 55, 'average')
       if (market.market.indexOf(activeCurrency) === 0) {
         if (
-         market.currentPrice < market.ema1 &&
-          market.ema1 < market.ema2 &&
-          market.ema2 < market.ema3 &&
-          market.ema3 < market.ema5 &&
-          market.ema5 < market.ema8 // &&
-          // ema8 < ema13 &&
-          // ema13 < ema21 &&
-          // ema21 < ema34 &&
-          // ema34 < ema55
+         market.currentPrice < market.ema1 // &&
+          // market.ema1 < market.ema2 &&
+          // market.ema2 < market.ema3 &&
+          // market.ema3 < market.ema5 &&
+          // market.ema5 < market.ema8 &&
+          // market.ema8 < market.ema13 &&
+          // market.ema13 < market.ema21 &&
+          // market.ema21 < market.ema34 &&
+          // market.ema21 < market.ema55 &&
+          // market.ema55 < market.ema233
         ) {
+          market.movement = market.ema1/market.ema55 -1
           outputArray.push(market)
         } else {
-          // console.log(ema1)
-          // console.log(ema2)
-          // console.log(ema3)
-          // console.log(ema5)
-          // console.log(ema8)
-          // console.log(ema13)
-          // console.log(ema21)
-          // console.log(ema34)
-          // console.log(ema55)
+          console.log(currentPrice)
+          console.log(market.ema1)
+          // console.log(market.ema2)
+          // console.log(market.ema3)
+          // console.log(market.ema5)
+          // console.log(market.ema8)
+          // console.log(market.ema13)
+          // console.log(market.ema21)
+          // console.log(market.ema34)
+          // console.log(market.ema55)
         }
       } else {
         if (
-          market.currentPrice > market.ema1 &&
-          market.ema1 > market.ema2 &&
-          market.ema2 > market.ema3 &&
-          market.ema3 > market.ema5 &&
-          market.ema5 > market.ema8 // &&
-          // ema8 > ema13 &&
-          // ema13 > ema21 &&
-          // ema21 > ema34 &&
-          // ema34 > ema55
+          market.currentPrice > market.ema1 // &&
+          // market.ema1 > market.ema2 &&
+          // market.ema2 > market.ema3 &&
+          // market.ema3 > market.ema5 &&
+          // market.ema5 > market.ema8 &&
+          // market.ema8 > market.ema13 &&
+          // market.ema13 > market.ema21 &&
+          // market.ema21 > market.ema34 &&
+          // market.ema21 > market.ema55 &&
+          // market.ema55 > market.ema233
         ) {
-          market.movement = market.currentPrice/market.ema55 -1
+          market.movement = market.ema1/market.ema55 -1
           outputArray.push(market)
+        } else {
+          console.log(market.currentPrice)
+          console.log(market.ema1)
+          // console.log(market.ema2)
+          // console.log(market.ema3)
+          // console.log(market.ema5)
+          // console.log(market.ema8)
+          // console.log(market.ema13)
+          // console.log(market.ema21)
+          // console.log(market.ema34)
+          // console.log(market.ema55)
         }
       }
     }
@@ -393,6 +425,7 @@ function ema(rawData, time, parameter) {
 }
 
 function extractData(dataArray, key) {
+  console.log(dataArray)
   let outputArray = []
   dataArray.forEach(obj => {
     outputArray.push(obj[key])
