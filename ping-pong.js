@@ -65,9 +65,23 @@ async function tick(wallet) {
     let marketNames = await getMarketNames()
     let markets = await fetchAllHistory(marketNames)
     markets = await sortByVolatility(markets)
-    console.log(markets)
     let bulls = await getBulls(markets)
+    
+    bulls.forEach(bull => {
 
+      console.log(bull.name)
+      console.log(`Average Price: ${bull.averageAverage}`)
+      console.log(`Deviation: ${bull.deviation}`)
+      console.log(`Volatility: ${bull.volatility}`)
+      console.log(`Current Price: ${bull.currentPrice}`)
+      console.log(`EMA1: ${bull.ema1}`)
+      console.log(`EMA2: ${bull.ema2}`)
+      console.log(`EMA3 ${bull.ema3}`)
+      console.log(`EMA5: ${bull.ema5}`)
+      console.log(`EMA8: ${bull.ema8}`)
+      console.log('\n')
+
+    })
 
   }
 
@@ -216,11 +230,8 @@ async function checkVolume(symbolName) {
   
   if (twentyFourHour.data !== undefined) {
 
-    let price = parseFloat(twentyFourHour.data.weightedAvgPrice)
-    let assetVolume = parseFloat(twentyFourHour.data.volume)
-
-    if (assetVolume * price < minimumDollarVolume) { return 'Insufficient volume' }
-    return 'Sufficient volume'
+    return twentyFourHour.data.quoteVolume > minimumDollarVolume ? 
+    'Sufficient volume' : 'Insufficient volume'
   
   } else {
 
@@ -255,7 +266,9 @@ async function sortByVolatility(markets) {
 
     let market = markets[i]
     let data = extractData(market.history, 'average')
-    market.volatility = math.std(data)
+    market.averageAverage = calculateAverage(data)
+    market.deviation = math.std(data)
+    market.volatility = 100 - (market.averageAverage - market.deviation) / market.averageAverage * 100
 
   }
   
@@ -274,8 +287,8 @@ async function getBulls(markets) {
     for (let i = 0; i < n; i++) {
 
       let market = markets[i]
-      console.log(`Fetching current price of market ${i+1}/${n} - ${market.market}`)
-      market.currentPrice = await fetchPrice(market.market)
+      console.log(`Fetching current price of market ${i+1}/${n} - ${market.name}`)
+      market.currentPrice = await fetchPrice(market.name)
       market.ema1 = ema(market.history, 1, 'average')
       market.ema2 = ema(market.history, 2, 'average')
       market.ema3 = ema(market.history, 3, 'average')
@@ -283,7 +296,7 @@ async function getBulls(markets) {
       market.ema8 = ema(market.history, 8, 'average')
 
       if (
-        market.currentPrice > market.ema1 
+        market.currentPrice > 0 // market.ema1 
         // && market.ema1 > market.ema2
         // && market.ema2 > market.ema3
         // && market.ema3 > market.ema5
@@ -329,7 +342,7 @@ async function fetchAllHistory(marketNames) {
       let symbolObject = {
 
         'history': symbolHistory,
-        'market': marketName
+        'name': marketName
 
       }
 
@@ -391,7 +404,7 @@ async function annotateData(data) {
   let outputObject = {
 
     'history': history,
-    'market': data.market
+    'name': data.name
 
   }
 
@@ -421,7 +434,6 @@ function ema(rawData, time, parameter) {
 
 function extractData(dataArray, key) {
 
-  console.log(dataArray)
   let outputArray = []
 
   dataArray.forEach(obj => {
@@ -434,4 +446,18 @@ function extractData(dataArray, key) {
 
 
 
+function calculateAverage(array) {
+
+  let total = 0
+  let n = array.length
+
+  for (let i = 0; i < n; i++) {
+    // 
+    total += parseFloat(array[i])
+    console.log(total)
+    console.log(array[i])
+  }
+
+  return total/parseFloat(n)
+}
 run();

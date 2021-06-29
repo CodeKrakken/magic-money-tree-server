@@ -387,8 +387,7 @@ async function filter(markets, activeCurrency) {
           // market.ema21 > market.ema34 &&
           // market.ema21 > market.ema55 &&
           // market.ema55 > market.ema233
-        ) 
-        {
+        ) {
           market.movement = market.ema1/market.ema55 -1
           outputArray.push(market)
         } else {
