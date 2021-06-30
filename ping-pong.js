@@ -528,10 +528,22 @@ async function newBuyOrder(wallet, market) {
 
 async function trySell(wallet, activeCurrency) {
 
-  let currentMarket = `${activeCurrency}/USDT`
-  currentMarket.history = await fetchOneHistory(currentMarket)
+  let currentMarket = {}
+  currentMarket.name = `${activeCurrency}/USDT`
+  let currentSymbolName = `${activeCurrency}USDT`
+  currentMarket.history = await fetchOneHistory(currentSymbolName)
+  currentMarket.currentPrice = await fetchPrice(currentSymbolName)
+  currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
+  currentMarket.ema2High = ema(currentMarket.history, 2, 'high')
   console.log(currentMarket)
 
+  if (
+    wallet[activeCurrency] * currentPrice > wallet.targetVolume 
+    && currentPrice <= currentMarket.ema1Low
+  )
+  {
+    await newSellOrder(wallet, currentMarket)
+  }
 }
 
 
