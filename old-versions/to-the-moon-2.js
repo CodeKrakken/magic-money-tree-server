@@ -246,10 +246,10 @@ async function fetch24Hour(symbol, base) {
 }
 
 async function volatileMarket(market) {
-    let data = extractData(market, 'average')
-    let standardDeviation = math.std(data)
-    return standardDeviation < 1
-  }
+  let data = extractData(market, 'average')
+  let standardDeviation = math.std(data)
+  return standardDeviation < 1
+}
 
 
 async function getBullishMarkets(marketNames, activeCurrency) {

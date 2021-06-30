@@ -64,24 +64,10 @@ async function tick(wallet) {
     
     let marketNames = await getMarketNames()
     let markets = await fetchAllHistory(marketNames)
-    markets = await sortByVolatility(markets)
+    markets = await sortByVolatility(markets, 8)
     let bulls = await getBulls(markets)
+    await displayBulls(bulls)
     
-    bulls.forEach(bull => {
-
-      console.log(bull.name)
-      console.log(`Average Price: ${bull.averageAverage}`)
-      console.log(`Deviation: ${bull.deviation}`)
-      console.log(`Volatility: ${bull.volatility}`)
-      console.log(`Current Price: ${bull.currentPrice}`)
-      console.log(`EMA1: ${bull.ema1}`)
-      console.log(`EMA2: ${bull.ema2}`)
-      console.log(`EMA3 ${bull.ema3}`)
-      console.log(`EMA5: ${bull.ema5}`)
-      console.log(`EMA8: ${bull.ema8}`)
-      console.log('\n')
-
-    })
 
   }
 
@@ -258,21 +244,22 @@ async function fetch24Hour(symbolName) {
 
 
 
-async function sortByVolatility(markets) {
+async function sortByVolatility(markets, t) {
 
   let n = markets.length
 
   for (let i = 0; i < n; i++) {
 
     let market = markets[i]
-    let data = extractData(market.history, 'average')
+    let historySlice = market.history.slice(market.history.length - t)
+    let data = extractData(historySlice, 'average')
     market.averageAverage = calculateAverage(data)
     market.deviation = math.std(data)
     market.volatility = 100 - (market.averageAverage - market.deviation) / market.averageAverage * 100
 
   }
   
-  return markets.sort((a, b) => a.volatility - b.volatility)
+  return markets.sort((a, b) => b.volatility - a.volatility)
 }
 
 
@@ -452,12 +439,34 @@ function calculateAverage(array) {
   let n = array.length
 
   for (let i = 0; i < n; i++) {
-    // 
+    
     total += parseFloat(array[i])
-    console.log(total)
-    console.log(array[i])
   }
 
   return total/parseFloat(n)
 }
+
+
+
+function displayBulls(bulls) {
+
+  bulls.forEach(bull => {
+
+    console.log(bull.name)
+    console.log(`Average Price: ${bull.averageAverage}`)
+    console.log(`Deviation: ${bull.deviation}`)
+    console.log(`Volatility: ${bull.volatility}`)
+    console.log(`Current Price: ${bull.currentPrice}`)
+    console.log(`EMA1: ${bull.ema1}`)
+    console.log(`EMA2: ${bull.ema2}`)
+    console.log(`EMA3 ${bull.ema3}`)
+    console.log(`EMA5: ${bull.ema5}`)
+    console.log(`EMA8: ${bull.ema8}`)
+    console.log('\n')
+
+  })
+}
+
+
+
 run();
