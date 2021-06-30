@@ -48,7 +48,7 @@ const fee = 0.00075
 async function run() {
 
   console.log('Running\n')
-  let wallet = { 'USDT': 1000 }
+  let wallet = { 'GBP': 1000 }
   tick(wallet)
 
 }
@@ -67,7 +67,8 @@ async function tick(wallet) {
 
   } else {
 
-    trySell(wallet)
+    trySell(wallet, activeCurrency)
+
   }
 }
 
@@ -87,11 +88,13 @@ async function displayWallet(wallet, activeCurrency) {
   let nonZeroWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
   console.log('Wallet')
   let dollarVolume
+  let dollarPrice
 
   if (activeCurrency !== 'USDT') {
 
     let dollarMarket = `${activeCurrency}/USDT`
-    let dollarPrice = await fetchPrice(dollarMarket)
+    let dollarSymbol = `${activeCurrency}USDT`
+    dollarPrice = await fetchPrice(dollarSymbol)
     dollarVolume = wallet[activeCurrency] * dollarPrice
 
   }
@@ -523,9 +526,11 @@ async function newBuyOrder(wallet, market) {
 
 
 
-async function trySell() {
+async function trySell(wallet, activeCurrency) {
 
-
+  let currentMarket = `${activeCurrency}/USDT`
+  currentMarket.history = await fetchOneHistory(currentMarket)
+  console.log(currentMarket)
 
 }
 
