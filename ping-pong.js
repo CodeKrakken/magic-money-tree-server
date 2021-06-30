@@ -63,18 +63,18 @@ async function tick(wallet) {
   
   if (activeCurrency === 'USDT') {
     
-    let marketNames = await getMarketNames()
-    let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
-    let markets = await fetchAllHistory(voluminousMarketNames)
-    markets = await sortByVolatility(markets, 8)
-    let bulls = await getBulls(markets)
-    await displayBulls(bulls)
+    let markets = updateMarkets()
 
-    if (bulls.length > 0) {
-
-      let bestMarket = bulls[0]
+    if (markets.length > 0) {
+      
+      await displayMarkets(markets)
+      let bestMarket = markets[0]
       await newBuyOrder(wallet, bestMarket)
 
+    } else {
+
+      
+      console.log('No viable markets\n')
     }
   }
 }
@@ -128,13 +128,23 @@ async function fetchPrice(marketName) {
   }
 }
 
+async function updateMarkets() {
+
+  let marketNames = await getMarketNames()
+  let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
+  let markets = await fetchAllHistory(voluminousMarketNames)
+  markets = await sortByVolatility(markets, 8)
+  let bulls = await getBulls(markets)
+  return bulls
+  
+}
+
 
 
 async function getMarketNames() {
 
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
-  console.log(`136 ${marketNames}`)
   return marketNames
 
 }
@@ -162,7 +172,7 @@ function timeNow() {
 
 
 function goodMarketName(marketName, markets) {
-  console.log(`164 ${marketName}`)
+
   return markets[marketName].active
   && marketName.includes('USDT') 
   && !marketName.includes('USDT/')
@@ -180,7 +190,6 @@ async function getVoluminousMarketNames(marketNames) {
 
   let voluminousMarketNames = []
   let symbolNames = marketNames.map(marketName => marketName = marketName.replace('/', ''))
-  console.log(`183 ${marketNames}`)
   let n = symbolNames.length
 
   for (let i = 0; i < n; i++) {
@@ -259,7 +268,6 @@ async function sortByVolatility(markets, t) {
   for (let i = 0; i < n; i++) {
 
     let market = markets[i]
-    console.log(`259 ${market}`)
     let historySlice = market.history.slice(market.history.length - t)
     let data = extractData(historySlice, 'average')
     market.averageAverage = calculateAverage(data)
@@ -346,7 +354,6 @@ async function fetchAllHistory(marketNames) {
       symbolObject = await annotateData(symbolObject)
       console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
       await returnArray.push(symbolObject)
-      console.log(`344 ${symbolObject.name}`)
 
     } catch (error) {
 
@@ -459,20 +466,20 @@ function calculateAverage(array) {
 
 
 
-function displayBulls(bulls) {
+function displayMarkets(markets) {
 
-  bulls.forEach(bull => {
+  markets.forEach(market => {
 
-    console.log(bull.name)
-    console.log(`Average Price: ${bull.averageAverage}`)
-    console.log(`Deviation: ${bull.deviation}`)
-    console.log(`Volatility: ${bull.volatility}`)
-    console.log(`Current Price: ${bull.currentPrice}`)
-    console.log(`EMA1: ${bull.ema1}`)
-    console.log(`EMA2: ${bull.ema2}`)
-    console.log(`EMA3 ${bull.ema3}`)
-    console.log(`EMA5: ${bull.ema5}`)
-    console.log(`EMA8: ${bull.ema8}`)
+    console.log(market.name)
+    console.log(`Average Price: ${market.averageAverage}`)
+    console.log(`Deviation: ${market.deviation}`)
+    console.log(`Volatility: ${market.volatility}`)
+    console.log(`Current Price: ${market.currentPrice}`)
+    console.log(`EMA1: ${market.ema1}`)
+    console.log(`EMA2: ${market.ema2}`)
+    console.log(`EMA3 ${market.ema3}`)
+    console.log(`EMA5: ${market.ema5}`)
+    console.log(`EMA8: ${market.ema8}`)
     console.log('\n')
 
   })
