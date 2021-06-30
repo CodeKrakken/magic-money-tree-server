@@ -272,6 +272,7 @@ async function sortByVolatility(markets, t) {
 }
 
 
+
 async function getBulls(markets) {
 
   try {
