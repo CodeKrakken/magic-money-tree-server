@@ -63,18 +63,11 @@ async function tick(wallet) {
   
   if (activeCurrency === 'USDT') {
     
-    let markets = await updateMarkets()
-    if (markets.length > 0) {
+    tryBuy(wallet)
 
-      await displayMarkets(markets)
-      let bestMarket = markets[0]
-      await newBuyOrder(wallet, bestMarket)
+  } else {
 
-    } else {
-
-      
-      console.log('No viable markets\n')
-    }
+    trySell(wallet)
   }
 }
 
@@ -108,6 +101,23 @@ async function displayWallet(wallet, activeCurrency) {
   })
 
   console.log('\n')
+}
+
+
+async function tryBuy(wallet) {
+
+  let markets = await updateMarkets()
+
+  if (markets.length > 0) {
+
+    await displayMarkets(markets)
+    let bestMarket = markets[0]
+    await newBuyOrder(wallet, bestMarket)
+
+  } else {
+
+    console.log('No viable markets\n')
+  }
 }
 
 
@@ -509,6 +519,14 @@ async function newBuyOrder(wallet, market) {
     console.log(error)
 
   }
+}
+
+
+
+async function trySell() {
+
+
+
 }
 
 
