@@ -63,10 +63,9 @@ async function tick(wallet) {
   
   if (activeCurrency === 'USDT') {
     
-    let markets = updateMarkets()
-
+    let markets = await updateMarkets()
     if (markets.length > 0) {
-      
+
       await displayMarkets(markets)
       let bestMarket = markets[0]
       await newBuyOrder(wallet, bestMarket)
