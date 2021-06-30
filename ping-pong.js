@@ -41,6 +41,7 @@ const binance = new ccxt.binance({
 
 const minimumDollarVolume = 28000000
 const minimumMovement = 0
+const fee = 0.00075
 
 // Functions
 
@@ -63,14 +64,19 @@ async function tick(wallet) {
   if (activeCurrency === 'USDT') {
     
     let marketNames = await getMarketNames()
-    let markets = await fetchAllHistory(marketNames)
+    let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
+    let markets = await fetchAllHistory(voluminousMarketNames)
     markets = await sortByVolatility(markets, 8)
     let bulls = await getBulls(markets)
     await displayBulls(bulls)
-    
 
+    if (bulls.length > 0) {
+
+      let bestMarket = bulls[0]
+      await newBuyOrder(wallet, bestMarket)
+
+    }
   }
-
 }
 
 
@@ -128,8 +134,8 @@ async function getMarketNames() {
 
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
-  let voluminousMarketNames = await getVoluminousMarkets(marketNames)
-  return voluminousMarketNames
+  console.log(`136 ${marketNames}`)
+  return marketNames
 
 }
 
@@ -156,7 +162,7 @@ function timeNow() {
 
 
 function goodMarketName(marketName, markets) {
-
+  console.log(`164 ${marketName}`)
   return markets[marketName].active
   && marketName.includes('USDT') 
   && !marketName.includes('USDT/')
@@ -170,15 +176,17 @@ function goodMarketName(marketName, markets) {
 
 
 
-async function getVoluminousMarkets(marketNames) {
+async function getVoluminousMarketNames(marketNames) {
 
   let voluminousMarketNames = []
   let symbolNames = marketNames.map(marketName => marketName = marketName.replace('/', ''))
+  console.log(`183 ${marketNames}`)
   let n = symbolNames.length
 
   for (let i = 0; i < n; i++) {
 
     let symbolName = symbolNames[i]
+    let marketName = marketNames[i]
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
     let response = await checkVolume(symbolName)
 
@@ -198,8 +206,8 @@ async function getVoluminousMarkets(marketNames) {
 
     } else {
 
-      console.log(announcement + `Including ${symbolName}`)
-      voluminousMarketNames.push(symbolName)
+      console.log(announcement + `Including ${marketName}`)
+      voluminousMarketNames.push(marketName)
     }
   }
 
@@ -251,6 +259,7 @@ async function sortByVolatility(markets, t) {
   for (let i = 0; i < n; i++) {
 
     let market = markets[i]
+    console.log(`259 ${market}`)
     let historySlice = market.history.slice(market.history.length - t)
     let data = extractData(historySlice, 'average')
     market.averageAverage = calculateAverage(data)
@@ -283,7 +292,7 @@ async function getBulls(markets) {
       market.ema8 = ema(market.history, 8, 'average')
 
       if (
-        market.currentPrice > 0 // market.ema1 
+        market.currentPrice > market.ema1 
         // && market.ema1 > market.ema2
         // && market.ema2 > market.ema3
         // && market.ema3 > market.ema5
@@ -336,6 +345,7 @@ async function fetchAllHistory(marketNames) {
       symbolObject = await annotateData(symbolObject)
       console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
       await returnArray.push(symbolObject)
+      console.log(`344 ${symbolObject.name}`)
 
     } catch (error) {
 
@@ -465,6 +475,39 @@ function displayBulls(bulls) {
     console.log('\n')
 
   })
+}
+
+
+
+async function newBuyOrder(wallet, market) {
+  
+  try {
+
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash+1)
+    let currentPrice = await fetchPrice(market.name)
+    let baseVolume = wallet[base]
+    if (wallet[asset] === undefined) { wallet[asset] = 0 }
+    wallet[base] -= baseVolume
+    wallet[asset] += baseVolume * (1 - fee) / currentPrice
+    wallet.targetVolume = baseVolume * (1 + fee)
+    wallet.targetPrice = wallet.targetVolume / wallet[asset]
+    let tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+    console.log(tradeReport)
+    tradeReport = ''
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
 }
 
 
