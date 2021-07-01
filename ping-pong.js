@@ -245,7 +245,6 @@ async function getVoluminousMarketNames(marketNames) {
   }
 
   console.log('\n')
-  console.log(voluminousMarketNames)
   return voluminousMarketNames
 
 }
@@ -259,8 +258,8 @@ async function checkVolume(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     return twentyFourHour.data.quoteVolume > minimumDollarVolume ? 
-    `Sufficient volume (${twentyFourHour.data.quoteVolume})` : 
-    `Insufficient volume (${twentyFourHour.data.quoteVolume})`
+    `Sufficient volume` : 
+    `Insufficient volume`
   
   } else {
 
@@ -326,14 +325,15 @@ async function getBulls(markets) {
       market.ema5 = ema(market.history, 5, 'average')
       market.ema8 = ema(market.history, 8, 'average')
       market.ema89 = ema(market.history, 89, 'average')
-      // Checking 89 EMA would avoid Ong Syndrome.
+
       if (
         market.currentPrice > market.ema1 
-        && market.ema1 //  > market.ema2
-        // && market.ema2 > market.ema3
+        && market.ema1 > market.ema2
+        && market.ema2 > market.ema3
+        && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
         // && market.ema3 > market.ema5
         // && market.ema5 > market.ema8
-        > market.ema89
+        && market.ema1 > market.ema89
       )
       {
         outputArray.push(market)
@@ -569,14 +569,14 @@ async function trySell(wallet, activeCurrency) {
 
   currentMarket = await annotateData(currentMarket)
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-  currentMarket.ema1Open = ema(currentMarket.history, 1, 'open')
-  currentMarket.ema1Close = ema(currentMarket.history, 1, 'close')
+  currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
+  currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
 
 
   if (
 
     currentMarket.currentPrice > wallet.targetPrice &&
-    currentMarket.ema1Open > currentMarket.ema1Close
+    currentMarket.ema2Average > currentMarket.ema1Average
 
   )
   {
@@ -624,8 +624,8 @@ function displayStatus(wallet, market) {
 
   console.log(`Target price  - ${wallet.targetPrice}`)
   console.log(`Current price - ${market.currentPrice}`)
-  console.log(`EMA1 (close)  - ${market.ema1Close}\n`)
-  console.log(`EMA1 (open)   - ${market.ema1Open}\n`)
+  console.log(`EMA1 (average)  - ${market.ema1Average}`)
+  console.log(`EMA2 (average)   - ${market.ema2Average}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
