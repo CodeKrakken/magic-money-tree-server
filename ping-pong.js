@@ -66,8 +66,9 @@ async function run() {
 async function tick(wallet) {
 
   console.log('\n----------\n\n')
-  activeCurrency = await getActiveCurrency(wallet)
-  console.log(`Active currency: ${activeCurrency}`)
+  console.log(`Tick at ${timeNow()}`)
+  let activeCurrency = await getActiveCurrency(wallet)
+  console.log(`Active currency: ${activeCurrency}\n`)
   await displayWallet(wallet, activeCurrency)
   
   if (activeCurrency === 'USDT') {
@@ -570,11 +571,10 @@ async function trySell(wallet, activeCurrency) {
   currentMarket = await annotateData(currentMarket)
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
   currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
-  currentMarket.ema2High = ema(currentMarket.history, 2, 'high')
 
   if (
 
-    wallet.currencies[activeCurrency] * currentMarket.currentPrice > wallet.targetVolume 
+    currentMarket.currentPrice > wallet.targetPrice
     && currentMarket.currentPrice <= currentMarket.ema1Low
 
   )
@@ -624,8 +624,8 @@ async function newSellOrder(wallet, market ) {
 function displayStatus(wallet, market) {
 
   console.log(`Target price - ${wallet.targetPrice}`)
-  console.log(`Target volume - ${wallet.targetVolume}`)
-  console.log(market)
+  console.log(`Current price - ${wallet.currentPrice}`)
+  console.log(`EMA1 (low) - ${wallet.ema1Low}`)
 
 }
 
