@@ -41,7 +41,7 @@ const binance = new ccxt.binance({
 
 const minimumDollarVolume = 28000000
 const fee = 0.00075
-const volatilityDuration = 8
+const volatilityDuration = 2
 
 // Functions
 
@@ -322,13 +322,15 @@ async function getBulls(markets) {
       market.ema3 = ema(market.history, 3, 'average')
       market.ema5 = ema(market.history, 5, 'average')
       market.ema8 = ema(market.history, 8, 'average')
-
+      market.ema89 = ema(market.history, 89, 'average')
+      // Checking 89 EMA would avoid Ong Syndrome.
       if (
         market.currentPrice > market.ema1 
-        // && market.ema1 > market.ema2
+        && market.ema1 //  > market.ema2
         // && market.ema2 > market.ema3
         // && market.ema3 > market.ema5
         // && market.ema5 > market.ema8
+        > market.ema89
       )
       {
         outputArray.push(market)
@@ -523,8 +525,8 @@ async function newBuyOrder(wallet, market) {
     wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
     let targetVolume = baseVolume * (1 + fee)
     wallet.targetPrice = targetVolume / wallet.currencies[asset]
-    console.log(`Target Price - ${wallet.targetPrice}`)
     let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+    console.log(`Target Price - ${wallet.targetPrice}`)
     await recordTrade(tradeReport)
     console.log(tradeReport)
     tradeReport = ''
@@ -564,12 +566,14 @@ async function trySell(wallet, activeCurrency) {
 
   currentMarket = await annotateData(currentMarket)
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-  currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
+  currentMarket.ema1Open = ema(currentMarket.history, 1, 'open')
+  currentMarket.ema1Close = ema(currentMarket.history, 1, 'close')
+
 
   if (
 
     currentMarket.currentPrice > wallet.targetPrice &&
-    currentMarket.currentPrice <= currentMarket.ema1Low
+    currentMarket.ema1Open > currentMarket.ema1Close
 
   )
   {
@@ -618,13 +622,14 @@ function displayStatus(wallet, market) {
 
   console.log(`Target price  - ${wallet.targetPrice}`)
   console.log(`Current price - ${market.currentPrice}`)
-  console.log(`EMA1 (low)    - ${market.ema1Low}\n`)
+  console.log(`EMA1 (close)  - ${market.ema1Close}\n`)
+  console.log(`EMA1 (open)   - ${market.ema1Open}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
     console.log('Holding - target price not met')
 
-  } else if (market.currentPrice > market.ema1Low) {
+  } else if (market.currentPrice > market.ema1Average) {
 
     console.log('Holding - price is rising')
 
