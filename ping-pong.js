@@ -96,6 +96,10 @@ async function displayWallet(wallet, activeCurrency) {
     let dollarSymbol = `${activeCurrency}USDT`
     dollarPrice = await fetchPrice(dollarSymbol)
     dollarVolume = wallet[activeCurrency] * dollarPrice
+    
+    if (wallet.targetVolume === undefined) {
+      wallet.targetVolume = dollarVolume
+    }
 
   }
   
@@ -431,7 +435,7 @@ async function annotateData(data) {
 
 
 function ema(rawData, time, parameter) {
-
+  
   let data = extractData(rawData, parameter)
   const k = 2/(time + 1)
   let emaData = []
@@ -532,14 +536,26 @@ async function trySell(wallet, activeCurrency) {
   currentMarket.name = `${activeCurrency}/USDT`
   let currentSymbolName = `${activeCurrency}USDT`
   currentMarket.history = await fetchOneHistory(currentSymbolName)
+
+  currentMarket = {
+
+    'history': currentMarket.history,
+    'name': currentMarket.name
+
+  }
+
+  currentMarket = await annotateData(currentMarket)
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
   currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
   currentMarket.ema2High = ema(currentMarket.history, 2, 'high')
-  console.log(currentMarket)
+  console.log(wallet[activeCurrency])
+  console.log(currentMarket.currentPrice)
+  console.log(wallet.targetVolume)
+  console.log(currentMarket.ema1Low)
 
   if (
-    wallet[activeCurrency] * currentPrice > wallet.targetVolume 
-    && currentPrice <= currentMarket.ema1Low
+    wallet[activeCurrency] * currentMarket.currentPrice > wallet.targetVolume 
+    && currentMarket.currentPrice <= currentMarket.ema1Low
   )
   {
     await newSellOrder(wallet, currentMarket)
