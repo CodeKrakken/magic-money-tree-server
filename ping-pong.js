@@ -40,8 +40,8 @@ const binance = new ccxt.binance({
 // Config
 
 const minimumDollarVolume = 28000000
-const minimumMovement = 0
 const fee = 0.00075
+const volatilityDuration = 8
 
 // Functions
 
@@ -156,7 +156,7 @@ async function updateMarkets() {
   let marketNames = await getMarketNames()
   let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
   let markets = await fetchAllHistory(voluminousMarketNames)
-  markets = await sortByVolatility(markets, 8)
+  markets = await sortByVolatility(markets, volatilityDuration)
   let bulls = await getBulls(markets)
   return bulls
   
@@ -331,7 +331,6 @@ async function getBulls(markets) {
         // && market.ema5 > market.ema8
       )
       {
-        market.movement = market.ema1/market.ema8 -1
         outputArray.push(market)
 
       } else {
@@ -569,7 +568,7 @@ async function trySell(wallet, activeCurrency) {
 
   if (
 
-    // currentMarket.currentPrice > wallet.targetPrice &&
+    currentMarket.currentPrice > wallet.targetPrice &&
     currentMarket.currentPrice <= currentMarket.ema1Low
 
   )
