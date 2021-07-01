@@ -231,6 +231,7 @@ async function getVoluminousMarketNames(marketNames) {
 
     {
       symbolNames.splice(i, 1)
+      marketNames.splice(i, 1)
       i--
       n--
 
