@@ -224,9 +224,8 @@ async function getVoluminousMarketNames(marketNames) {
 
     if (
 
-      response === "Insufficient volume" || 
-      response === "No dollar comparison available" || 
-      response === "No Response"
+      response.includes("Insufficient volume") || 
+      response === "No response"
 
     ) 
 
@@ -234,16 +233,18 @@ async function getVoluminousMarketNames(marketNames) {
       symbolNames.splice(i, 1)
       i--
       n--
-      console.log(announcement + response)
 
     } else {
 
-      console.log(announcement + `Including ${marketName}`)
       voluminousMarketNames.push(marketName)
     }
+
+    console.log(announcement + response)
+
   }
 
   console.log('\n')
+  console.log(voluminousMarketNames)
   return voluminousMarketNames
 
 }
@@ -257,11 +258,12 @@ async function checkVolume(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     return twentyFourHour.data.quoteVolume > minimumDollarVolume ? 
-    'Sufficient volume' : 'Insufficient volume'
+    `Sufficient volume (${twentyFourHour.data.quoteVolume})` : 
+    `Insufficient volume (${twentyFourHour.data.quoteVolume})`
   
   } else {
 
-    return "No Response"
+    return "No response"
 
   }
 }
@@ -588,23 +590,22 @@ async function trySell(wallet, activeCurrency) {
 
 
 
-async function newSellOrder(wallet, market ) {
+async function newSellOrder(wallet, market) {
 
   let tradeReport
 
   try {
     
-    let currentPrice = await fetchPrice(market.name)
     let slash = market.name.indexOf('/')
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]
 
     if (wallet.currencies[base] === undefined) { wallet.currencies[base] = 0 }
-    wallet.currencies[base] += assetVolume * (1 - fee) * currentPrice
+    wallet.currencies[base] += assetVolume * (1 - fee) * market.currentPrice
     wallet.currencies[asset] -= assetVolume
     wallet.targetPrice = undefined
-    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(currentPrice, 8)} ($${wallet.currencies[base]})\n\n`
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]})\n\n`
     recordTrade(tradeReport)
     console.log(tradeReport)
     tradeReport = ''
