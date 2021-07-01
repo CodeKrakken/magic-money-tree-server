@@ -48,7 +48,15 @@ const fee = 0.00075
 async function run() {
 
   console.log('Running\n')
-  let wallet = { 'GBP': 1000 }
+  
+  let wallet = { 
+  
+    currencies: {
+      'USDT': 1000 
+    }
+  
+  }
+
   tick(wallet)
 
 }
@@ -59,24 +67,27 @@ async function tick(wallet) {
 
   console.log('\n----------\n\n')
   activeCurrency = await getActiveCurrency(wallet)
+  console.log(`Active currency: ${activeCurrency}`)
   await displayWallet(wallet, activeCurrency)
   
   if (activeCurrency === 'USDT') {
     
-    tryBuy(wallet)
+    await tryBuy(wallet)
 
   } else {
 
-    trySell(wallet, activeCurrency)
+    await trySell(wallet, activeCurrency)
 
   }
+
+  tick(wallet)
 }
 
 
 
 async function getActiveCurrency(wallet) {
 
-  let sorted = Object.entries(wallet).sort((prev, next) => prev[1] - next[1])
+  let sorted = Object.entries(wallet.currencies).sort((prev, next) => prev[1] - next[1])
   return sorted.pop()[0]
 
 }
@@ -85,26 +96,21 @@ async function getActiveCurrency(wallet) {
 
 async function displayWallet(wallet, activeCurrency) {
 
-  let nonZeroWallet = Object.keys(wallet).filter(currency => wallet[currency] > 0)
+  let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
   console.log('Wallet')
   let dollarVolume
   let dollarPrice
 
   if (activeCurrency !== 'USDT') {
 
-    let dollarMarket = `${activeCurrency}/USDT`
     let dollarSymbol = `${activeCurrency}USDT`
     dollarPrice = await fetchPrice(dollarSymbol)
-    dollarVolume = wallet[activeCurrency] * dollarPrice
-    
-    if (wallet.targetVolume === undefined) {
-      wallet.targetVolume = dollarVolume
-    }
+    dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
 
   }
   
   nonZeroWallet.forEach(currency => {
-    console.log(`${wallet[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
+    console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
   })
 
   console.log('\n')
@@ -486,16 +492,16 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(market.name)
-    console.log(`Average Price: ${market.averageAverage}`)
-    console.log(`Deviation: ${market.deviation}`)
-    console.log(`Volatility: ${market.volatility}`)
-    console.log(`Current Price: ${market.currentPrice}`)
-    console.log(`EMA1: ${market.ema1}`)
-    console.log(`EMA2: ${market.ema2}`)
-    console.log(`EMA3 ${market.ema3}`)
-    console.log(`EMA5: ${market.ema5}`)
-    console.log(`EMA8: ${market.ema8}`)
+    console.log(`Market - ${market.name}`)
+    console.log(`Average Price - ${market.averageAverage}`)
+    console.log(`Deviation - ${market.deviation}`)
+    console.log(`Volatility - ${market.volatility}`)
+    console.log(`Current Price - ${market.currentPrice}`)
+    console.log(`EMA1 - ${market.ema1}`)
+    console.log(`EMA2 - ${market.ema2}`)
+    console.log(`EMA3 -${market.ema3}`)
+    console.log(`EMA5 - ${market.ema5}`)
+    console.log(`EMA8 - ${market.ema8}`)
     console.log('\n')
 
   })
@@ -511,14 +517,17 @@ async function newBuyOrder(wallet, market) {
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash+1)
     let currentPrice = await fetchPrice(market.name)
-    let baseVolume = wallet[base]
-    if (wallet[asset] === undefined) { wallet[asset] = 0 }
-    wallet[base] -= baseVolume
-    wallet[asset] += baseVolume * (1 - fee) / currentPrice
+    let baseVolume = wallet.currencies[base]
+    if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
+    wallet.currencies[base] -= baseVolume
+    wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
     wallet.targetVolume = baseVolume * (1 + fee)
-    wallet.targetPrice = wallet.targetVolume / wallet[asset]
-    let tradeReport = `${timeNow()} - Bought ${n(wallet[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
-    console.log(tradeReport)
+    wallet.targetPrice = wallet.targetVolume / wallet.currencies[asset]
+    console.log(`Target Volume - ${wallet.targetVolume}`)
+    console.log(`Target Price - ${wallet.targetPrice}`)
+    let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+    await recordTrade(tradeReport)
+    console.log(recordTrade)
     tradeReport = ''
 
   } catch (error) {
@@ -530,7 +539,21 @@ async function newBuyOrder(wallet, market) {
 
 
 
+function recordTrade(report) {
+
+  fs.appendFile('trade-history.txt', report, function(err) {
+    if (err) return console.log(err);
+  })
+
+} 
+
+
+
 async function trySell(wallet, activeCurrency) {
+
+  if (wallet.targetVolume === undefined) {
+    wallet.targetVolume = wallet.currencies[activeCurrency]
+  }
 
   let currentMarket = {}
   currentMarket.name = `${activeCurrency}/USDT`
@@ -548,21 +571,63 @@ async function trySell(wallet, activeCurrency) {
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
   currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
   currentMarket.ema2High = ema(currentMarket.history, 2, 'high')
-  console.log(wallet[activeCurrency])
-  console.log(currentMarket.currentPrice)
-  console.log(wallet.targetVolume)
-  console.log(currentMarket.ema1Low)
 
   if (
-    wallet[activeCurrency] * currentMarket.currentPrice > wallet.targetVolume 
+
+    wallet.currencies[activeCurrency] * currentMarket.currentPrice > wallet.targetVolume 
     && currentMarket.currentPrice <= currentMarket.ema1Low
+
   )
   {
     await newSellOrder(wallet, currentMarket)
+  
+  } else {
+
+    displayStatus(wallet, currentMarket)
+
   }
 }
 
 
+
+async function newSellOrder(wallet, market ) {
+
+  let tradeReport
+
+  try {
+    
+    let currentPrice = await fetchPrice(market.name)
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash + 1)
+    let assetVolume = wallet.currencies[asset]
+
+    if (wallet.currencies[base] === undefined) { wallet.currencies[base] = 0 }
+    wallet.currencies[base] += assetVolume * (1 - fee) * currentPrice
+    wallet.currencies[asset] -= assetVolume
+    wallet.targetVolume = undefined
+    wallet.targetPrice = undefined
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(currentPrice, 8)} ($${wallet.currencies[base]})\n\n`
+    recordTrade(tradeReport)
+    console.log(tradeReport)
+    tradeReport = ''
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
+function displayStatus(wallet, market) {
+
+  console.log(`Target price - ${wallet.targetPrice}`)
+  console.log(`Target volume - ${wallet.targetVolume}`)
+  console.log(market)
+
+}
 
 function n(n, d) {
   return Number.parseFloat(n).toFixed(d);
