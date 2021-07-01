@@ -47,7 +47,7 @@ const fee = 0.00075
 
 async function run() {
 
-  console.log('Running\n')
+  console.log('Running')
   
   let wallet = { 
   
@@ -65,12 +65,13 @@ async function run() {
 
 async function tick(wallet) {
 
-  console.log('\n----------\n\n')
-  console.log(`Tick at ${timeNow()}`)
+  console.log('\n\n----------\n\n')
+  console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  console.log(`Active currency: ${activeCurrency}\n`)
   await displayWallet(wallet, activeCurrency)
-  
+  // console.log(`Active currency - ${activeCurrency}\n`)
+  console.log('\n')
+
   if (activeCurrency === 'USDT') {
     
     await tryBuy(wallet)
@@ -114,7 +115,6 @@ async function displayWallet(wallet, activeCurrency) {
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
   })
 
-  console.log('\n')
 }
 
 
@@ -500,7 +500,7 @@ function displayMarkets(markets) {
     console.log(`Current Price - ${market.currentPrice}`)
     console.log(`EMA1 - ${market.ema1}`)
     console.log(`EMA2 - ${market.ema2}`)
-    console.log(`EMA3 -${market.ema3}`)
+    console.log(`EMA3 - ${market.ema3}`)
     console.log(`EMA5 - ${market.ema5}`)
     console.log(`EMA8 - ${market.ema8}`)
     console.log('\n')
@@ -528,7 +528,7 @@ async function newBuyOrder(wallet, market) {
     console.log(`Target Price - ${wallet.targetPrice}`)
     let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
     await recordTrade(tradeReport)
-    console.log(recordTrade)
+    console.log(tradeReport)
     tradeReport = ''
 
   } catch (error) {
@@ -574,8 +574,8 @@ async function trySell(wallet, activeCurrency) {
 
   if (
 
-    currentMarket.currentPrice > wallet.targetPrice
-    && currentMarket.currentPrice <= currentMarket.ema1Low
+    // currentMarket.currentPrice > wallet.targetPrice &&
+    currentMarket.currentPrice <= currentMarket.ema1Low
 
   )
   {
@@ -623,9 +623,19 @@ async function newSellOrder(wallet, market ) {
 
 function displayStatus(wallet, market) {
 
-  console.log(`Target price - ${wallet.targetPrice}`)
-  console.log(`Current price - ${wallet.currentPrice}`)
-  console.log(`EMA1 (low) - ${wallet.ema1Low}`)
+  console.log(`Target price  - ${wallet.targetPrice}`)
+  console.log(`Current price - ${market.currentPrice}`)
+  console.log(`EMA1 (low)    - ${market.ema1Low}\n`)
+
+  if (wallet.targetPrice > market.currentPrice) {
+
+    console.log('Holding - target price not met')
+
+  } else if (market.currentPrice > market.ema1Low) {
+
+    console.log('Holding - price is rising')
+
+  }
 
 }
 
