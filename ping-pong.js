@@ -577,7 +577,7 @@ async function trySell(wallet, activeCurrency) {
 
     currentMarket.currentPrice > wallet.targetPrice &&
     currentMarket.ema2Average > currentMarket.ema1Average
-
+    // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
   )
   {
     await newSellOrder(wallet, currentMarket)
