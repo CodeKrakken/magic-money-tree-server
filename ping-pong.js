@@ -43,7 +43,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 0.5
-const stopLossThreshold = 0.995
+const stopLossThreshold = 0.98
 
 // Functions
 
