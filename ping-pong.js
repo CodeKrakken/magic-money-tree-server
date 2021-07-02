@@ -43,6 +43,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 0.5
+const stopLossThreshold = 0.995
 
 // Functions
 
@@ -111,7 +112,7 @@ async function displayWallet(wallet, activeCurrency) {
 
     if (dollarPrice === 'No response') {
 
-      'Currency information unavailable  - starting new tick'
+      console.log('Currency information unavailable  - starting new tick')
       tick(wallet)
 
     } else {
@@ -583,6 +584,7 @@ async function newBuyOrder(wallet, market) {
       wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
+      wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
@@ -616,12 +618,12 @@ async function trySell(wallet, activeCurrency) {
   let currentSymbolName = `${activeCurrency}USDT`
   let response = await fetchOneHistory(currentSymbolName)
 
-  if (response === 'No response') { 
+  // if (response === 'No response') { 
     
-    console.log('No response - starting new tick')
-    tick(wallet) 
+  //   console.log('No response - starting new tick')
+  //   tick(wallet) 
 
-  } else {
+  // } else {
 
     currentMarket.history = response
 
@@ -643,14 +645,14 @@ async function trySell(wallet, activeCurrency) {
     if (
 
       currentMarket.currentPrice > wallet.targetPrice &&
-      currentMarket.ema2Average > currentMarket.ema1Average
+      currentMarket.currentPrice < currentMarket.ema1Average
       // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
     )
     {
       sellType = 'Take Profit'
       await newSellOrder(wallet, currentMarket, sellType)
     
-    } else if (currentMarket.ema1Average < wallet.targetPrice * 0.98) {
+    } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
 
       sellType = 'Stop Loss'
       await newSellOrder(wallet, currentMarket, sellType)
@@ -661,7 +663,7 @@ async function trySell(wallet, activeCurrency) {
       displayStatus(wallet, currentMarket)
 
     }
-  }
+  // }
 }
 
 
@@ -697,10 +699,11 @@ async function newSellOrder(wallet, market, sellType) {
 
 function displayStatus(wallet, market) {
 
-  console.log(`Target price  - ${wallet.targetPrice}`)
-  console.log(`Current price - ${market.currentPrice}`)
+  console.log(`Target price    - ${wallet.targetPrice}`)
+  console.log(`Current price   - ${market.currentPrice}`)
   console.log(`EMA1 (average)  - ${market.ema1Average}`)
-  console.log(`EMA2 (average)   - ${market.ema2Average}\n`)
+  console.log(`EMA2 (average)  - ${market.ema2Average}`)
+  console.log(`Stop Loss price - ${wallet.stopLossPrice}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
