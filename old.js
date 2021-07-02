@@ -42,8 +42,6 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
-const minimumMovement = 0.5
-const stopLossThreshold = 0.98
 
 // Functions
 
@@ -109,17 +107,7 @@ async function displayWallet(wallet, activeCurrency) {
 
     let dollarSymbol = `${activeCurrency}USDT`
     dollarPrice = await fetchPrice(dollarSymbol)
-
-    if (dollarPrice === 'No response') {
-
-      console.log('Currency information unavailable  - starting new tick')
-      tick(wallet)
-
-    } else {
-      
-      dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
-
-    }
+    dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
 
   }
   
@@ -166,8 +154,8 @@ async function fetchPrice(marketName) {
 async function updateMarkets() {
 
   let marketNames = await getMarketNames()
-  let viableMarketNames = await getViableMarketNames(marketNames)
-  let markets = await fetchAllHistory(viableMarketNames)
+  let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
+  let markets = await fetchAllHistory(voluminousMarketNames)
   markets = await sortByVolatility(markets, volatilityDuration)
   let bulls = await getBulls(markets)
   return bulls
@@ -221,7 +209,7 @@ function goodMarketName(marketName, markets) {
 
 
 
-async function getViableMarketNames(marketNames) {
+async function getVoluminousMarketNames(marketNames) {
 
   let voluminousMarketNames = []
   let symbolNames = marketNames.map(marketName => marketName = marketName.replace('/', ''))
@@ -232,9 +220,9 @@ async function getViableMarketNames(marketNames) {
     let symbolName = symbolNames[i]
     let marketName = marketNames[i]
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
-    let response = await checkVolumeAndMovement(symbolName)
+    let response = await checkVolume(symbolName)
 
-    if (response.includes("Insufficient") || response === "No response") 
+    if (response.includes("Insufficient volume") || response === "No response") 
 
     {
       symbolNames.splice(i, 1)
@@ -258,16 +246,15 @@ async function getViableMarketNames(marketNames) {
 
 
 
-async function checkVolumeAndMovement(symbolName) {
+async function checkVolume(symbolName) {
 
   let twentyFourHour = await fetch24Hour(symbolName)
   
   if (twentyFourHour.data !== undefined) {
 
-    let change = parseFloat(twentyFourHour.data.priceChangePercent)
-    if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
-    if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
-    return 'Sufficient volume and movement'
+    return twentyFourHour.data.quoteVolume > minimumDollarVolume ? 
+    `Sufficient volume` : 
+    `Insufficient volume`
   
   } else {
 
@@ -325,44 +312,32 @@ async function getBulls(markets) {
     for (let i = 0; i < n; i++) {
 
       let market = markets[i]
-      let response = await fetchPrice(market.name)
+      console.log(`Fetching current price of market ${i+1}/${n} - ${market.name}`)
+      market.currentPrice = await fetchPrice(market.name)
+      market.ema1 = ema(market.history, 1, 'average')
+      market.ema2 = ema(market.history, 2, 'average')
+      market.ema3 = ema(market.history, 3, 'average')
+      market.ema5 = ema(market.history, 5, 'average')
+      market.ema8 = ema(market.history, 8, 'average')
+      market.ema89 = ema(market.history, 89, 'average')
 
-      if (response === 'No response') {
-
-        console.log(`No response for market ${i+1}/${n} - ${market.name}`)
-        markets.splice(i, 1)
-        i --
-        n --
+      if (
+        market.currentPrice > market.ema1 
+        && market.ema1 > market.ema2
+        && market.ema2 > market.ema3
+        && market.ema3 > market.ema5
+        && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
+        // && market.ema3 > market.ema5
+        // && market.ema5 > market.ema8
+        && market.ema5 > market.ema89
+      )
+      {
+        outputArray.push(market)
 
       } else {
 
-        market.currentPrice = response
-        console.log(`Fetched current price of market ${i+1}/${n} - ${market.name}`)
-        market.ema1 = ema(market.history, 1, 'average')
-        market.ema2 = ema(market.history, 2, 'average')
-        market.ema3 = ema(market.history, 3, 'average')
-        market.ema5 = ema(market.history, 5, 'average')
-        market.ema8 = ema(market.history, 8, 'average')
-        market.ema89 = ema(market.history, 89, 'average')
-
-        if (
-          market.currentPrice > market.ema1 
-          && market.ema1 > market.ema2
-          && market.ema2 > market.ema3
-          && market.ema3 > market.ema5
-          && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
-          // && market.ema3 > market.ema5
-          // && market.ema5 > market.ema8
-          && market.ema5 > market.ema89
-        )
-        {
-          outputArray.push(market)
-
-        } else {
-
-          // console.log(market.currentPrice)
-          // console.log(market.ema1)
-        }
+        // console.log(market.currentPrice)
+        // console.log(market.ema1)
       }
     }
 
@@ -390,31 +365,18 @@ async function fetchAllHistory(marketNames) {
 
       let marketName = marketNames[i]
       let symbolName = marketName.replace('/', '')
-      let response = await fetchOneHistory(symbolName)
+      let symbolHistory = await fetchOneHistory(symbolName)
 
-      if (response === 'No response') { 
+      let symbolObject = {
 
-        console.log(`No response for market ${i+1}/${n} - ${marketName}`)
-        marketNames.splice(i, 1)
-        i --
-        n --
-
-      } else {
-
-        let symbolHistory = response
-
-        let symbolObject = {
-  
-          'history': symbolHistory,
-          'name': marketName
-  
-        }
-  
-        symbolObject = await annotateData(symbolObject)
-        console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
-        await returnArray.push(symbolObject)
+        'history': symbolHistory,
+        'name': marketName
 
       }
+
+      symbolObject = await annotateData(symbolObject)
+      console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
+      await returnArray.push(symbolObject)
 
     } catch (error) {
 
@@ -433,18 +395,8 @@ async function fetchAllHistory(marketNames) {
 
 
 async function fetchOneHistory(symbolName) {
-
-  try {
-    
-    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
-    return history.data
-
-  } catch (error) {
-    
-    return 'No response'
-
-  }
-
+  let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`)
+  return history.data
 }
 
 
@@ -565,31 +517,18 @@ async function newBuyOrder(wallet, market) {
     let slash = market.name.indexOf('/')
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash+1)
-
-
-    let response = await fetchPrice(market.name)
-
-    if (response === 'No response') {
-
-      console.log(`No response - starting new tick`)
-      tick(wallet)
-
-    } else {
-
-      let currentPrice = response
-      let baseVolume = wallet.currencies[base]
-      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
-      wallet.currencies[base] -= baseVolume
-      wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
-      let targetVolume = baseVolume * (1 + fee)
-      wallet.targetPrice = targetVolume / wallet.currencies[asset]
-      wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
-      await recordTrade(tradeReport)
-      console.log(tradeReport)
-      console.log(`Target Price - ${wallet.targetPrice}`)
-      tradeReport = ''
-    }
+    let currentPrice = await fetchPrice(market.name)
+    let baseVolume = wallet.currencies[base]
+    if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
+    wallet.currencies[base] -= baseVolume
+    wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
+    let targetVolume = baseVolume * (1 + fee)
+    wallet.targetPrice = targetVolume / wallet.currencies[asset]
+    let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+    await recordTrade(tradeReport)
+    console.log(tradeReport)
+    console.log(`Target Price - ${wallet.targetPrice}`)
+    tradeReport = ''
 
   } catch (error) {
     
@@ -624,36 +563,35 @@ async function trySell(wallet, activeCurrency) {
 
   }
 
-    currentMarket = await annotateData(currentMarket)
-    currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-    currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
-    currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
-    currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
+  currentMarket = await annotateData(currentMarket)
+  currentMarket.currentPrice = await fetchPrice(currentSymbolName)
+  currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
+  currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
+  currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
 
-    let sellType = ''
+  let sellType = ''
 
-    if (
+  if (
 
-      currentMarket.currentPrice > wallet.targetPrice &&
-      currentMarket.currentPrice < currentMarket.ema1Average
-      // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
-    )
-    {
-      sellType = 'Take Profit'
-      await newSellOrder(wallet, currentMarket, sellType)
-    
-    } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
+    currentMarket.currentPrice > wallet.targetPrice &&
+    currentMarket.ema2Average > currentMarket.ema1Average
+    // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
+  )
+  {
+    sellType = 'Take Profit'
+    await newSellOrder(wallet, currentMarket, sellType)
+  
+  } else if (currentMarket.ema1Average < wallet.targetPrice * 0.98) {
 
-      sellType = 'Stop Loss'
-      await newSellOrder(wallet, currentMarket, sellType)
-    }
-    
-    else {
+    sellType = 'Stop Loss'
+    await newSellOrder(wallet, currentMarket, sellType)
+  }
+  
+  else {
 
-      displayStatus(wallet, currentMarket)
+    displayStatus(wallet, currentMarket)
 
-    }
-  // }
+  }
 }
 
 
@@ -689,11 +627,10 @@ async function newSellOrder(wallet, market, sellType) {
 
 function displayStatus(wallet, market) {
 
-  console.log(`Target price    - ${wallet.targetPrice}`)
-  console.log(`Current price   - ${market.currentPrice}`)
+  console.log(`Target price  - ${wallet.targetPrice}`)
+  console.log(`Current price - ${market.currentPrice}`)
   console.log(`EMA1 (average)  - ${market.ema1Average}`)
-  console.log(`EMA2 (average)  - ${market.ema2Average}`)
-  console.log(`Stop Loss price - ${wallet.stopLossPrice}\n`)
+  console.log(`EMA2 (average)   - ${market.ema2Average}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
