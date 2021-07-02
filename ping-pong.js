@@ -111,7 +111,8 @@ async function displayWallet(wallet, activeCurrency) {
 
     if (dollarPrice === 'No response') {
 
-      dollarVolume = 'unavailable'
+      'Currency information unavailable  - starting new tick'
+      tick(wallet)
 
     } else {
       
