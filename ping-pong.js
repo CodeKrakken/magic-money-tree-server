@@ -42,6 +42,7 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
+const minimumMovement = 0.5
 
 // Functions
 
@@ -164,8 +165,8 @@ async function fetchPrice(marketName) {
 async function updateMarkets() {
 
   let marketNames = await getMarketNames()
-  let voluminousMarketNames = await getVoluminousMarketNames(marketNames)
-  let markets = await fetchAllHistory(voluminousMarketNames)
+  let viableMarketNames = await getViableMarketNames(marketNames)
+  let markets = await fetchAllHistory(viableMarketNames)
   markets = await sortByVolatility(markets, volatilityDuration)
   let bulls = await getBulls(markets)
   return bulls
@@ -219,7 +220,7 @@ function goodMarketName(marketName, markets) {
 
 
 
-async function getVoluminousMarketNames(marketNames) {
+async function getViableMarketNames(marketNames) {
 
   let voluminousMarketNames = []
   let symbolNames = marketNames.map(marketName => marketName = marketName.replace('/', ''))
@@ -230,9 +231,9 @@ async function getVoluminousMarketNames(marketNames) {
     let symbolName = symbolNames[i]
     let marketName = marketNames[i]
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
-    let response = await checkVolume(symbolName)
+    let response = await checkVolumeAndMovement(symbolName)
 
-    if (response.includes("Insufficient volume") || response === "No response") 
+    if (response.includes("Insufficient") || response === "No response") 
 
     {
       symbolNames.splice(i, 1)
@@ -256,15 +257,16 @@ async function getVoluminousMarketNames(marketNames) {
 
 
 
-async function checkVolume(symbolName) {
+async function checkVolumeAndMovement(symbolName) {
 
   let twentyFourHour = await fetch24Hour(symbolName)
   
   if (twentyFourHour.data !== undefined) {
 
-    return twentyFourHour.data.quoteVolume > minimumDollarVolume ? 
-    `Sufficient volume` : 
-    `Insufficient volume`
+    let change = parseFloat(twentyFourHour.data.priceChangePercent)
+    if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
+    if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
+    return 'Sufficient volume and movement'
   
   } else {
 
