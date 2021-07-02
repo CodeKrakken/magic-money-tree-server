@@ -222,12 +222,7 @@ async function getVoluminousMarketNames(marketNames) {
     let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
     let response = await checkVolume(symbolName)
 
-    if (
-
-      response.includes("Insufficient volume") || 
-      response === "No response"
-
-    ) 
+    if (response.includes("Insufficient volume") || response === "No response") 
 
     {
       symbolNames.splice(i, 1)
@@ -274,7 +269,7 @@ async function fetch24Hour(symbolName) {
 
   try {
 
-    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbolName}`)
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbolName}`, { timeout: 10000 })
     return twentyFourHour
 
   } catch (error) {
@@ -330,10 +325,11 @@ async function getBulls(markets) {
         market.currentPrice > market.ema1 
         && market.ema1 > market.ema2
         && market.ema2 > market.ema3
+        && market.ema3 > market.ema5
         && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
         // && market.ema3 > market.ema5
         // && market.ema5 > market.ema8
-        && market.ema1 > market.ema89
+        && market.ema5 > market.ema89
       )
       {
         outputArray.push(market)
@@ -529,9 +525,9 @@ async function newBuyOrder(wallet, market) {
     let targetVolume = baseVolume * (1 + fee)
     wallet.targetPrice = targetVolume / wallet.currencies[asset]
     let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
-    console.log(`Target Price - ${wallet.targetPrice}`)
     await recordTrade(tradeReport)
     console.log(tradeReport)
+    console.log(`Target Price - ${wallet.targetPrice}`)
     tradeReport = ''
 
   } catch (error) {
@@ -571,7 +567,9 @@ async function trySell(wallet, activeCurrency) {
   currentMarket.currentPrice = await fetchPrice(currentSymbolName)
   currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
   currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
+  currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
 
+  let sellType = ''
 
   if (
 
@@ -580,9 +578,16 @@ async function trySell(wallet, activeCurrency) {
     // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
   )
   {
-    await newSellOrder(wallet, currentMarket)
+    sellType = 'Take Profit'
+    await newSellOrder(wallet, currentMarket, sellType)
   
-  } else {
+  } else if (currentMarket.ema1Average < wallet.targetPrice * 0.98) {
+
+    sellType = 'Stop Loss'
+    await newSellOrder(wallet, currentMarket, sellType)
+  }
+  
+  else {
 
     displayStatus(wallet, currentMarket)
 
@@ -591,7 +596,7 @@ async function trySell(wallet, activeCurrency) {
 
 
 
-async function newSellOrder(wallet, market) {
+async function newSellOrder(wallet, market, sellType) {
 
   let tradeReport
 
@@ -606,7 +611,7 @@ async function newSellOrder(wallet, market) {
     wallet.currencies[base] += assetVolume * (1 - fee) * market.currentPrice
     wallet.currencies[asset] -= assetVolume
     wallet.targetPrice = undefined
-    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]})\n\n`
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]}) [${sellType}]\n\n`
     recordTrade(tradeReport)
     console.log(tradeReport)
     tradeReport = ''
