@@ -667,12 +667,12 @@ async function trySell(wallet, activeCurrency) {
       //   sellType = 'Stop Loss'
       //   await newSellOrder(wallet, currentMarket, sellType)
 
-      } else if (
-        currentTime - wallet.boughtTime >= timeOut &&
-        currentMarket.currentPrice < currentMarket.ema1Close) {
+      // } else if (
+      //   currentTime - wallet.boughtTime >= timeOut &&
+      //   currentMarket.currentPrice < currentMarket.ema1Close) {
 
-        sellType = 'Timeout'
-        await newSellOrder(wallet, currentMarket, sellType)
+      //   sellType = 'Timeout'
+      //   await newSellOrder(wallet, currentMarket, sellType)
 
       } else {
   
