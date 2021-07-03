@@ -351,7 +351,7 @@ async function getBulls(markets) {
           market.currentPrice > market.ema1 
           && market.ema1 > market.ema2
           && market.ema2 > market.ema3
-          && market.ema3 > market.ema5
+          // && market.ema3 > market.ema5
           && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
           // && market.ema3 > market.ema5
           // && market.ema5 > market.ema8
@@ -655,7 +655,7 @@ async function trySell(wallet, activeCurrency) {
       if (
   
         currentMarket.currentPrice > wallet.targetPrice &&
-        currentMarket.currentPrice < currentMarket.ema1High
+        currentMarket.currentPrice < currentMarket.ema1Close
         // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
       )
       {
