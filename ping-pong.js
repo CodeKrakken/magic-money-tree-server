@@ -304,10 +304,10 @@ async function sortByVolatility(markets, t) {
 
     let market = markets[i]
     let historySlice = market.history.slice(market.history.length - t)
-    let data = extractData(historySlice, 'average')
-    market.averageAverage = calculateAverage(data)
+    let data = extractData(historySlice, 'close')
+    market.averageClose = calculateAverage(data)
     market.deviation = math.std(data)
-    market.volatility = 100 - (market.averageAverage - market.deviation) / market.averageAverage * 100
+    market.volatility = 100 - (market.averageClose - market.deviation) / market.averageClose * 100
 
   }
   
@@ -340,12 +340,12 @@ async function getBulls(markets) {
 
         market.currentPrice = response
         console.log(`Fetched current price of market ${i+1}/${n} - ${market.name}`)
-        market.ema1 = ema(market.history, 1, 'average')
-        market.ema2 = ema(market.history, 2, 'average')
-        market.ema3 = ema(market.history, 3, 'average')
-        market.ema5 = ema(market.history, 5, 'average')
-        market.ema8 = ema(market.history, 8, 'average')
-        market.ema89 = ema(market.history, 89, 'average')
+        market.ema1 = ema(market.history, 1, 'close')
+        market.ema2 = ema(market.history, 2, 'close')
+        market.ema3 = ema(market.history, 3, 'close')
+        market.ema5 = ema(market.history, 5, 'close')
+        market.ema8 = ema(market.history, 8, 'close')
+        market.ema89 = ema(market.history, 89, 'close')
 
         if (
           market.currentPrice > market.ema1 
@@ -552,7 +552,7 @@ function displayMarkets(markets) {
   markets.forEach(market => {
 
     console.log(`Market - ${market.name}`)
-    console.log(`Average Price - ${market.averageAverage}`)
+    console.log(`Average Price - ${market.averageClose}`)
     console.log(`Deviation - ${market.deviation}`)
     console.log(`Volatility - ${market.volatility}`)
     console.log(`Current Price - ${market.currentPrice}`)
@@ -642,9 +642,9 @@ async function trySell(wallet, activeCurrency) {
     
       currentMarket = await annotateData(currentMarket)
       currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-      currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
-      currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
-      currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
+      currentMarket.ema1Close = ema(currentMarket.history, 1, 'close')
+      currentMarket.ema2Close = ema(currentMarket.history, 2, 'close')
+      currentMarket.ema3Close = ema(currentMarket.history, 3, 'close')
   
       let sellType = ''
       let currentTime = Date.now()
@@ -654,21 +654,21 @@ async function trySell(wallet, activeCurrency) {
       if (
   
         currentMarket.currentPrice > wallet.targetPrice &&
-        currentMarket.currentPrice < currentMarket.ema1Average
+        currentMarket.ema1Close < currentMarket.ema2Close
         // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
       )
       {
         sellType = 'Take Profit'
         await newSellOrder(wallet, currentMarket, sellType)
       
-      } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
+      } else if (currentMarket.ema1Close <= wallet.stopLossPrice) {
   
         sellType = 'Stop Loss'
         await newSellOrder(wallet, currentMarket, sellType)
 
       } else if (
         currentTime - wallet.boughtTime >= timeOut &&
-        currentMarket.currentPrice < currentMarket.ema1Average) {
+        currentMarket.currentPrice < currentMarket.ema1Close) {
 
         sellType = 'Timeout'
         await newSellOrder(wallet, currentMarket, sellType)
@@ -722,15 +722,15 @@ function displayStatus(wallet, market) {
 
   console.log(`Target price    - ${wallet.targetPrice}`)
   console.log(`Current price   - ${market.currentPrice}`)
-  console.log(`EMA1 (average)  - ${market.ema1Average}`)
-  console.log(`EMA2 (average)  - ${market.ema2Average}`)
+  console.log(`EMA1 (close)  - ${market.ema1Close}`)
+  console.log(`EMA2 (close)  - ${market.ema2Close}`)
   console.log(`Stop Loss price - ${wallet.stopLossPrice}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
     console.log('Holding - target price not met')
 
-  } else if (market.currentPrice > market.ema1Average) {
+  } else if (market.currentPrice > market.ema1Close) {
 
     console.log('Holding - price is rising')
 
