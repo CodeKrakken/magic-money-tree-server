@@ -42,7 +42,7 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
-const minimumMovement = 1
+const minimumMovement = 2
 const stopLossThreshold = 0.99
 const timeOut = 60 * 60 * 1000 // minutes * seconds * miliseconds === 1 hour
 
@@ -662,10 +662,10 @@ async function trySell(wallet, activeCurrency) {
         sellType = 'Take Profit'
         await newSellOrder(wallet, currentMarket, sellType)
       
-      } else if (currentMarket.ema1Close <= wallet.stopLossPrice) {
+      // } else if (currentMarket.ema1Close <= wallet.stopLossPrice) {
   
-        sellType = 'Stop Loss'
-        await newSellOrder(wallet, currentMarket, sellType)
+      //   sellType = 'Stop Loss'
+      //   await newSellOrder(wallet, currentMarket, sellType)
 
       } else if (
         currentTime - wallet.boughtTime >= timeOut &&
