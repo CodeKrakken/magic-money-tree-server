@@ -44,6 +44,7 @@ const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 1
 const stopLossThreshold = 0.98
+const timeOut = 60 * 60 * 1000 // minutes * seconds * miliseconds === 1 hour
 
 // Functions
 
@@ -593,6 +594,8 @@ async function newBuyOrder(wallet, market) {
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
+      wallet.boughtTime = Date.now()
+      console.log(`597 - bought time - ${wallet.boughtTime}`)
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
@@ -644,6 +647,9 @@ async function trySell(wallet, activeCurrency) {
       currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
   
       let sellType = ''
+      let currentTime = Date.now()
+      console.log(`649 - current time - ${currentTime}`)
+      console.log(`650 - bought time - ${wallet.boughtTime}`)
   
       if (
   
@@ -658,6 +664,11 @@ async function trySell(wallet, activeCurrency) {
       } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
   
         sellType = 'Stop Loss'
+        await newSellOrder(wallet, currentMarket, sellType)
+
+      } else if (currentTime - wallet.boughtTime >= timeOut) {
+
+        sellType = 'Timeout'
         await newSellOrder(wallet, currentMarket, sellType)
 
       } else {
