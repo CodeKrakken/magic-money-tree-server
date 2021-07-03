@@ -43,7 +43,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 1
-const stopLossThreshold = 0.98
+const stopLossThreshold = 0.99
 const timeOut = 60 * 60 * 1000 // minutes * seconds * miliseconds === 1 hour
 
 // Functions
