@@ -42,7 +42,7 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
-const minimumMovement = 0.5
+const minimumMovement = 1
 const stopLossThreshold = 0.98
 
 // Functions
@@ -265,6 +265,7 @@ async function checkVolumeAndMovement(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     let change = parseFloat(twentyFourHour.data.priceChangePercent)
+    console.log(`${symbolName} movement - ${change}%`)
     if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
     if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
     return 'Sufficient volume and movement'
@@ -451,40 +452,48 @@ async function fetchOneHistory(symbolName) {
 
 async function annotateData(data) {
 
-  let history = []
+  try {
 
-  data.history.forEach(period => {
+    let history = []
 
-    let average = (
+    data.history.forEach(period => {
+  
+      let average = (
+  
+        parseFloat(period[1]) +
+        parseFloat(period[2]) +
+        parseFloat(period[3]) +
+        parseFloat(period[4])
+  
+      )/4
+  
+      history.push(
+        {
+          'startTime': period[0],
+          'open'     : period[1],
+          'high'     : period[2],
+          'low'      : period[3],
+          'close'    : period[4],
+          'endTime'  : period[6],
+          'average'  : average
+        }
+      )
+    })
+  
+    let outputObject = {
+  
+      'history': history,
+      'name': data.name
+  
+    }
+  
+    return outputObject
 
-      parseFloat(period[1]) +
-      parseFloat(period[2]) +
-      parseFloat(period[3]) +
-      parseFloat(period[4])
+  } catch(error) {
 
-    )/4
-
-    history.push(
-      {
-        'startTime': period[0],
-        'open'     : period[1],
-        'high'     : period[2],
-        'low'      : period[3],
-        'close'    : period[4],
-        'endTime'  : period[6],
-        'average'  : average
-      }
-    )
-  })
-
-  let outputObject = {
-
-    'history': history,
-    'name': data.name
+    console.log(error.message)
 
   }
-
-  return outputObject
 }
 
 
@@ -612,48 +621,56 @@ function recordTrade(report) {
 
 async function trySell(wallet, activeCurrency) {
 
-  let currentMarket = {}
-  currentMarket.name = `${activeCurrency}/USDT`
-  let currentSymbolName = `${activeCurrency}USDT`
-  currentMarket.history = await fetchOneHistory(currentSymbolName)
+  try {
 
-  currentMarket = {
+    let currentMarket = {}
+    currentMarket.name = `${activeCurrency}/USDT`
+    let currentSymbolName = `${activeCurrency}USDT`
+    currentMarket.history = await fetchOneHistory(currentSymbolName)
+  
+    currentMarket = {
+  
+      'history': currentMarket.history,
+      'name': currentMarket.name
+  
+    }
+  
+      currentMarket = await annotateData(currentMarket)
+      currentMarket.currentPrice = await fetchPrice(currentSymbolName)
+      currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
+      currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
+      currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
+  
+      let sellType = ''
+  
+      if (
+  
+        currentMarket.currentPrice > wallet.targetPrice &&
+        currentMarket.currentPrice < currentMarket.ema1Average
+        // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
+      )
+      {
+        sellType = 'Take Profit'
+        await newSellOrder(wallet, currentMarket, sellType)
+      
+      } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
+  
+        sellType = 'Stop Loss'
+        await newSellOrder(wallet, currentMarket, sellType)
+      }
+      
+      else {
+  
+        displayStatus(wallet, currentMarket)
+  
+      }
 
-    'history': currentMarket.history,
-    'name': currentMarket.name
+
+  } catch (error) {
+
+    console.log(error.message)
 
   }
-
-    currentMarket = await annotateData(currentMarket)
-    currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-    currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
-    currentMarket.ema2Average = ema(currentMarket.history, 2, 'average')
-    currentMarket.ema3Average = ema(currentMarket.history, 3, 'average')
-
-    let sellType = ''
-
-    if (
-
-      currentMarket.currentPrice > wallet.targetPrice &&
-      currentMarket.currentPrice < currentMarket.ema1Average
-      // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
-    )
-    {
-      sellType = 'Take Profit'
-      await newSellOrder(wallet, currentMarket, sellType)
-    
-    } else if (currentMarket.ema1Average <= wallet.stopLossPrice) {
-
-      sellType = 'Stop Loss'
-      await newSellOrder(wallet, currentMarket, sellType)
-    }
-    
-    else {
-
-      displayStatus(wallet, currentMarket)
-
-    }
-  // }
 }
 
 
