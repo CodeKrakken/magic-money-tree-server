@@ -627,14 +627,16 @@ async function trySell(wallet, activeCurrency) {
     currentMarket.name = `${activeCurrency}/USDT`
     let currentSymbolName = `${activeCurrency}USDT`
     currentMarket.history = await fetchOneHistory(currentSymbolName)
+
+    if (currentMarket.history !== undefined) {
+
+      currentMarket = {
   
-    currentMarket = {
-  
-      'history': currentMarket.history,
-      'name': currentMarket.name
-  
-    }
-  
+        'history': currentMarket.history,
+        'name': currentMarket.name
+    
+      }
+    
       currentMarket = await annotateData(currentMarket)
       currentMarket.currentPrice = await fetchPrice(currentSymbolName)
       currentMarket.ema1Average = ema(currentMarket.history, 1, 'average')
@@ -657,19 +659,18 @@ async function trySell(wallet, activeCurrency) {
   
         sellType = 'Stop Loss'
         await newSellOrder(wallet, currentMarket, sellType)
-      }
-      
-      else {
+
+      } else {
   
         displayStatus(wallet, currentMarket)
   
       }
-
-
+  
+    } 
+  
   } catch (error) {
-
+  
     console.log(error.message)
-
   }
 }
 
