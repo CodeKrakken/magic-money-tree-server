@@ -642,7 +642,7 @@ async function trySell(wallet, activeCurrency) {
     
       currentMarket = await annotateData(currentMarket)
       currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-      currentMarket.ema1Close = ema(currentMarket.history, 1, 'close')
+      currentMarket.ema1Low = ema(currentMarket.history, 1, 'low')
       currentMarket.ema1High = ema(currentMarket.history, 1, 'high')
       currentMarket.ema2Close = ema(currentMarket.history, 2, 'close')
       currentMarket.ema3Close = ema(currentMarket.history, 3, 'close')
@@ -655,14 +655,14 @@ async function trySell(wallet, activeCurrency) {
       if (
   
         currentMarket.currentPrice > wallet.targetPrice &&
-        currentMarket.currentPrice < currentMarket.ema1Close
+        currentMarket.currentPrice < currentMarket.ema1Low
         // Maybe try comparing intervals between ema1 and ema2 with ema2 and ema3, for super responsive selling
       )
       {
         sellType = 'Take Profit'
         await newSellOrder(wallet, currentMarket, sellType)
       
-      // } else if (currentMarket.ema1Close <= wallet.stopLossPrice) {
+      // } else if (currentMarket.ema1Low <= wallet.stopLossPrice) {
   
       //   sellType = 'Stop Loss'
       //   await newSellOrder(wallet, currentMarket, sellType)
