@@ -169,9 +169,9 @@ async function updateMarkets() {
   let marketNames = await getMarketNames()
   let viableMarketNames = await getViableMarketNames(marketNames)
   let markets = await fetchAllHistory(viableMarketNames)
-  markets = await sortByVolatility(markets, volatilityDuration)
-  let bulls = await getBulls(markets)
-  return bulls
+  markets = await sortByArc(markets)
+  // let bulls = await getBulls(markets)
+  return markets
   
 }
 
@@ -266,7 +266,6 @@ async function checkVolumeAndMovement(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     let change = parseFloat(twentyFourHour.data.priceChangePercent)
-    console.log(`${symbolName} movement - ${change}%`)
     if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
     if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
     return 'Sufficient volume and movement'
@@ -296,22 +295,59 @@ async function fetch24Hour(symbolName) {
 
 
 
-async function sortByVolatility(markets, t) {
+// async function sortByVolatility(markets) {
+
+//   let n = markets.length
+
+//   for (let i = 0; i < n; i++) {
+
+//     let market = markets[i]
+//     let historySlice = market.history.slice(market.history.length - volatilityDuration)
+//     let data = extractData(historySlice, 'close')
+//     market.averageClose = calculateAverage(data)
+//     market.deviation = math.std(data)
+//     market.volatility = 100 - (market.averageClose - market.deviation) / market.averageClose * 100
+
+//   }
+  
+//   return markets.sort((a, b) => b.volatility - a.volatility)
+// }
+
+
+
+
+
+async function sortByArc(markets) {
 
   let n = markets.length
 
   for (let i = 0; i < n; i++) {
 
     let market = markets[i]
-    let historySlice = market.history.slice(market.history.length - t)
-    let data = extractData(historySlice, 'close')
-    market.averageClose = calculateAverage(data)
-    market.deviation = math.std(data)
-    market.volatility = 100 - (market.averageClose - market.deviation) / market.averageClose * 100
+    let m = market.history.length
+    markets[i].shape = 0
+    let recordHigh = 0
+    let recordLow = Infinity
+
+    for (let t = 0; t < m; t++) {
+
+      let period = market.history[t]
+
+      if (period['high'] > recordHigh) { 
+
+        markets[i].shape ++ 
+        recordHigh = period['high']
+      }
+
+      if (period['low'] < recordLow) { 
+
+        markets[i].shape -- 
+        recordLow = period['low']
+      }
+    }
 
   }
-  
-  return markets.sort((a, b) => b.volatility - a.volatility)
+  return markets.sort((a, b) => b.shape - a.shape)
 }
 
 
@@ -556,6 +592,7 @@ function displayMarkets(markets) {
     console.log(`Deviation - ${market.deviation}`)
     console.log(`Volatility - ${market.volatility}`)
     console.log(`Current Price - ${market.currentPrice}`)
+    console.log(`Wave Shape - ${market.shape}`)
     console.log(`EMA1 - ${market.ema1}`)
     console.log(`EMA2 - ${market.ema2}`)
     console.log(`EMA3 - ${market.ema3}`)
@@ -595,7 +632,6 @@ async function newBuyOrder(wallet, market) {
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
-      console.log(`597 - bought time - ${wallet.boughtTime}`)
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
@@ -649,8 +685,6 @@ async function trySell(wallet, activeCurrency) {
   
       let sellType = ''
       let currentTime = Date.now()
-      console.log(`649 - current time - ${currentTime}`)
-      console.log(`650 - bought time - ${wallet.boughtTime}`)
   
       if (
   
@@ -724,7 +758,6 @@ function displayStatus(wallet, market) {
   console.log(`Target price    - ${wallet.targetPrice}`)
   console.log(`Current price   - ${market.currentPrice}`)
   console.log(`EMA1 (close)  - ${market.ema1Close}`)
-  console.log(`Stop Loss price - ${wallet.stopLossPrice}\n`)
 
   if (wallet.targetPrice > market.currentPrice) {
 
