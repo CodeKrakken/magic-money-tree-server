@@ -351,7 +351,7 @@ async function getBulls(markets) {
           market.currentPrice > market.ema1 
           && market.ema1 > market.ema2
           && market.ema2 > market.ema3
-          // && market.ema3 > market.ema5
+          && market.ema3 > market.ema5
           && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
           // && market.ema3 > market.ema5
           // && market.ema5 > market.ema8
