@@ -352,7 +352,7 @@ async function getBulls(markets) {
           && market.ema1 > market.ema2
           && market.ema2 > market.ema3
           && market.ema3 > market.ema5
-          && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
+          // && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
           // && market.ema3 > market.ema5
           // && market.ema5 > market.ema8
           && market.ema5 > market.ema89
@@ -614,7 +614,7 @@ async function newBuyOrder(wallet, market) {
 
 function recordTrade(report) {
 
-  fs.appendFile('trade-history.txt', report, function(err) {
+  fs.appendFile('trade-history-2.txt', report, function(err) {
     if (err) return console.log(err);
   })
 
