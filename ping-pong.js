@@ -44,7 +44,7 @@ const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 2
 const stopLossThreshold = 0.99
-const timeOut = 60 * 60 * 1000 // minutes * seconds * miliseconds === 1 hour
+const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
 
