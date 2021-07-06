@@ -51,14 +51,16 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 async function run() {
 
   console.log('Running')
+
+  let wallet = {}
+
+  let balancesRaw = await binance.fetchBalance()
+  // wallet[config.asset] = balancesRaw.free[config.asset]
+  // wallet[config.base] = balancesRaw.free[config.base]
   
-  let wallet = { 
-  
-    currencies: {
-      'USDT': 1000 
-    }
-  
-  }
+  wallet.currencies = balancesRaw.free
+
+  console.log(wallet)
 
   let markets
   let currentMarket
@@ -409,7 +411,7 @@ async function getBulls(markets) {
 
       } else {
 
-        market.currentPrice = response
+        market.prices[market.name] = response
         console.log(`Fetched current price of market ${i+1}/${n} - ${market.name}`)
         market.ema1 = ema(market.history, 1, 'close')
         market.ema2 = ema(market.history, 2, 'close')
@@ -659,6 +661,8 @@ async function newBuyOrder(wallet, market) {
 
     } else {
 
+      // await binance.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
+
       let currentPrice = response
       let baseVolume = wallet.currencies[base]
       if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
@@ -767,6 +771,8 @@ async function newSellOrder(wallet, market, sellType) {
 
   try {
     
+    // await binance.createMarketSellOrder(market, oldAssetVolume)
+
     let slash = market.name.indexOf('/')
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash + 1)
