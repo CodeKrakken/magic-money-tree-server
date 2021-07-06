@@ -82,7 +82,7 @@ async function tick(wallet, markets, currentMarket) {
     
     markets = await tryBuy(wallet)
     currentMarket = markets[0]
-    console.log(`Current Market: ${currentMarket}`)
+    console.log('Current Market - ' + currentMarket.name)
 
   } else {
 
@@ -94,6 +94,7 @@ async function tick(wallet, markets, currentMarket) {
     markets = await fetchAllHistory(marketNames)
     markets = await sortByArc(markets)
     await displayMarkets(markets)
+    upMarkets = markets.filter(market => market.lastMove === 'up')
     let bestMarket = markets[0]
     
     if (bestMarket.name !== currentMarket.name) {
@@ -101,7 +102,7 @@ async function tick(wallet, markets, currentMarket) {
       let currentSymbolName = currentMarket.name.replace('/', '')
       currentMarket.currentPrice = await fetchPrice(currentSymbolName)
       await newSellOrder(wallet, currentMarket, 'Switch')
-      await newBuyOrder(wallet, bestMarket)
+      currentMarket = await newBuyOrder(wallet, bestMarket)
 
     }
     
@@ -379,7 +380,6 @@ async function sortByArc(markets) {
     }
 
   }
-  markets = markets.filter(market => market.lastMove === 'up')
   return markets.sort((a, b) => b.shape - a.shape)
 }
 
