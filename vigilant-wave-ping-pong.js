@@ -367,6 +367,7 @@ async function sortByArc(markets) {
         markets[i].shape ++ 
         recordHigh = period['high']
         markets[i].lastMove = 'up'
+        markets[i].timeStamp = timeNow()
 
       }
 
@@ -375,6 +376,7 @@ async function sortByArc(markets) {
         markets[i].shape -- 
         recordLow = period['low']
         markets[i].lastMove = 'down'
+        markets[i].timeStamp = timeNow()
 
       }
     }
@@ -621,17 +623,17 @@ function displayMarkets(markets) {
   markets.forEach(market => {
 
     console.log(`Market - ${market.name}`)
-    console.log(`Average Price - ${market.averageClose}`)
-    console.log(`Deviation - ${market.deviation}`)
-    console.log(`Volatility - ${market.volatility}`)
-    console.log(`Current Price - ${market.currentPrice}`)
+    // console.log(`Average Price - ${market.averageClose}`)
+    // console.log(`Deviation - ${market.deviation}`)
+    // console.log(`Volatility - ${market.volatility}`)
+    // console.log(`Current Price - ${market.currentPrice}`)
     console.log(`Wave Shape - ${market.shape}`)
     console.log(`Last move - ${market.lastMove}`)
-    console.log(`EMA1 - ${market.ema1}`)
-    console.log(`EMA2 - ${market.ema2}`)
-    console.log(`EMA3 - ${market.ema3}`)
-    console.log(`EMA5 - ${market.ema5}`)
-    console.log(`EMA8 - ${market.ema8}`)
+    // console.log(`EMA1 - ${market.ema1}`)
+    // console.log(`EMA2 - ${market.ema2}`)
+    // console.log(`EMA3 - ${market.ema3}`)
+    // console.log(`EMA5 - ${market.ema5}`)
+    // console.log(`EMA8 - ${market.ema8}`)
     console.log('\n')
 
   })
