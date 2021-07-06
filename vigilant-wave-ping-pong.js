@@ -96,11 +96,11 @@ async function tick(wallet, markets, currentMarket) {
     await displayMarkets(markets)
     upMarkets = markets.filter(market => market.lastMove === 'up')
     let bestMarket = markets[0]
-    
-    if (bestMarket.name !== currentMarket.name) {
+    let currentSymbolName = currentMarket.name.replace('/', '')
+    currentMarket.currentPrice = await fetchPrice(currentSymbolName)
 
-      let currentSymbolName = currentMarket.name.replace('/', '')
-      currentMarket.currentPrice = await fetchPrice(currentSymbolName)
+    if (bestMarket.name !== currentMarket.name && currentMarket.currentPrice > wallet.targetPrice) {
+
       await newSellOrder(wallet, currentMarket, 'Switch')
       currentMarket = await newBuyOrder(wallet, bestMarket)
 
