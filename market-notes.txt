@@ -1,5 +1,0 @@
-SNT: [ 2, 'ETH', 'BTC' ]
-GAS: [ 1, 'BTC' ],
- YOYOW: [ 1, 'BTC' ],
- SNGLS: [ 1, 'BTC' ],
- BQX: [ 2, 'BTC', 'ETH' ],

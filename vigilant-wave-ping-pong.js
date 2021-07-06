@@ -80,11 +80,17 @@ async function tick(wallet, markets, currentMarket) {
 
   if (activeCurrency === 'USDT') {
     
-    currentMarket = await tryBuy(wallet)
+    markets = await tryBuy(wallet)
+    currentMarket = markets[0]
+    console.log(`Current Market: ${currentMarket}`)
 
   } else {
 
-    let marketNames = Object.keys(markets)
+    let marketNames = []
+    markets.forEach(market => {
+      marketNames.push(market.name)
+    })
+
     markets = await fetchAllHistory(marketNames)
     markets = await sortByArc(markets)
     await displayMarkets(markets)
@@ -92,6 +98,8 @@ async function tick(wallet, markets, currentMarket) {
     
     if (bestMarket.name !== currentMarket.name) {
 
+      let currentSymbolName = currentMarket.name.replace('/', '')
+      currentMarket.currentPrice = await fetchPrice(currentSymbolName)
       await newSellOrder(wallet, currentMarket, 'Switch')
       await newBuyOrder(wallet, bestMarket)
 
@@ -163,7 +171,7 @@ async function tryBuy(wallet) {
     console.log('No viable markets\n')
   }
 
-  return currentMarket
+  return markets
 
 }
 
@@ -357,16 +365,21 @@ async function sortByArc(markets) {
 
         markets[i].shape ++ 
         recordHigh = period['high']
+        markets[i].lastMove = 'up'
+
       }
 
       if (period['low'] < recordLow) { 
 
         markets[i].shape -- 
         recordLow = period['low']
+        markets[i].lastMove = 'down'
+
       }
     }
 
   }
+  markets = markets.filter(market => market.lastMove === 'up')
   return markets.sort((a, b) => b.shape - a.shape)
 }
 
@@ -613,6 +626,7 @@ function displayMarkets(markets) {
     console.log(`Volatility - ${market.volatility}`)
     console.log(`Current Price - ${market.currentPrice}`)
     console.log(`Wave Shape - ${market.shape}`)
+    console.log(`Last move - ${market.lastMove}`)
     console.log(`EMA1 - ${market.ema1}`)
     console.log(`EMA2 - ${market.ema2}`)
     console.log(`EMA3 - ${market.ema3}`)
