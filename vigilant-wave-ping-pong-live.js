@@ -57,8 +57,6 @@ async function run() {
   let balancesRaw = await binance.fetchBalance()
   // wallet[config.asset] = balancesRaw.free[config.asset]
   // wallet[config.base] = balancesRaw.free[config.base]
-
-  console.log(balancesRaw.free)
   
   wallet.currencies = balancesRaw.free
 
@@ -76,7 +74,9 @@ async function tick(wallet, markets, currentMarket) {
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  await displayWallet(wallet, activeCurrency)
+  let allMarkets = await fetchMarkets()
+  allMarketNames = Object.keys(allMarkets)
+  await displayWallet(wallet, allMarketNames)
   // console.log(`Active currency - ${activeCurrency}\n`)
   console.log('\n')
 
@@ -84,7 +84,6 @@ async function tick(wallet, markets, currentMarket) {
     
     markets = await tryBuy(wallet)
     currentMarket = markets[0]
-    console.log('Current Market - ' + currentMarket.name)
 
   } else {
 
@@ -130,33 +129,44 @@ async function getActiveCurrency(wallet) {
 
 
 
-async function displayWallet(wallet, activeCurrency) {
+async function displayWallet(wallet, marketNames) {
 
-  let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
-  console.log('Wallet')
-  let dollarVolume
-  let dollarPrice
+  try {
 
-  for (let i = 0; i < nonZeroWallet.length; i ++) {
+    let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
+    console.log('\nWallet\n')
+    let dollarVolume
+    let dollarPrice
 
-    let currency = nonZeroWallet[i]
+    for (let i = 0; i < nonZeroWallet.length; i ++) {
+
+      let currency = nonZeroWallet[i]
+        
+      if (currency === 'USDT') {
+
+        dollarPrice = 1
+        dollarVolume = wallet.currencies[currency] * dollarPrice
       
-    if (currency === 'USDT') {
+      } else {
 
-      dollarPrice = 1
-      dollarVolume = wallet.currencies[currency] * dollarPrice
+        let dollarSymbolArray = marketNames.filter(marketName => marketName.includes(currency) && marketName.includes('USDT'))
+        let dollarSymbol = dollarSymbolArray[0]
+        dollarPrice = await fetchPrice(dollarSymbol)
+        dollarVolume = wallet.currencies[currency] * dollarPrice
     
-    } else {
-
-      let dollarSymbol = `${currency}USDT`
-      dollarPrice = await fetchPrice(dollarSymbol)
-      dollarVolume = wallet.currencies[currency] * dollarPrice
-  
+      }
+    
+      console.log(`${wallet.currencies[currency]} ${currency} @ ${dollarPrice} = $${dollarVolume}`)
+      // console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
     }
-  
-    console.log(`${wallet.currencies[currency]} ${currency} @ ${dollarPrice} = $${dollarVolume}`)
-    // console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
+    
+  } catch (error) {
+
+    let errol = error
+    
   }
+
+  
 
 }
 
@@ -213,6 +223,7 @@ async function updateMarkets() {
 
 async function getMarketNames() {
 
+  console.log(`Fetching overview`)
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
   return marketNames
@@ -223,7 +234,6 @@ async function getMarketNames() {
 
 async function fetchMarkets() {
 
-  console.log(`Fetching overview at ${timeNow()}\n`)
   let markets = await binance.load_markets()
   return markets
 
@@ -676,10 +686,9 @@ async function newBuyOrder(wallet, market) {
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\nTarget Price - ${wallet.targetPrice}`
       await recordTrade(tradeReport)
       console.log(tradeReport)
-      console.log(`Target Price - ${wallet.targetPrice}`)
       tradeReport = ''
       return market
     }
@@ -695,7 +704,7 @@ async function newBuyOrder(wallet, market) {
 
 function recordTrade(report) {
 
-  fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
+  fs.appendFile(`${process.env.COMPUTER} trade-history-live.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 
