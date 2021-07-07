@@ -87,6 +87,7 @@ async function tick(wallet, markets, currentMarket) {
   } else {
 
     let marketNames = []
+    
     markets.forEach(market => {
       marketNames.push(market.name)
     })

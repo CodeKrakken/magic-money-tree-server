@@ -40,7 +40,7 @@ const binance = new ccxt.binance({
 // Config
 
 const minimumDollarVolume = 28000000
-const fee = 0.00075
+const fee = 0.0015
 const volatilityDuration = 2
 const minimumMovement = 2
 const stopLossThreshold = 0.99
@@ -51,29 +51,26 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 async function run() {
 
   console.log('Running')
-
   let wallet = {}
-
   let markets
   let currentMarket
+  let allMarkets = await fetchMarkets()
 
-  tick(wallet, markets, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket)
 
 }
 
 
 
-async function tick(wallet, markets, currentMarket) {
+async function tick(wallet, markets, allMarkets, currentMarket) {
 
   let balancesRaw = await binance.fetchBalance()
-  
   wallet.currencies = balancesRaw.free
 
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  let allMarkets = await fetchMarkets()
-  allMarketNames = Object.keys(allMarkets)
+  let allMarketNames = Object.keys(allMarkets)
   await displayWallet(wallet, allMarketNames)
   // console.log(`Active currency - ${activeCurrency}\n`)
   console.log('\n')
@@ -85,17 +82,44 @@ async function tick(wallet, markets, currentMarket) {
 
   } else {
 
+    // console.log(allMarketNames)
+
     let marketNames = []
+    let updated = false
+
+    if (markets === undefined) {
+
+      markets = await updateMarkets()
+      updated = true
+    }
+
+    if (currentMarket === undefined) {
+      
+      let currentSymbolName = `${activeCurrency}/USDT`
+
+      console.log(currentSymbolName)
+
+      let currentMarketArray = Object.entries(allMarkets).filter(market => market.symbol === currentSymbolName)
+      console.log(markets)
+      currentMarket = markets[currentSymbolName]
+      console.log(currentMarket)
+
+    }
+
     markets.forEach(market => {
       marketNames.push(market.name)
     })
 
-    markets = await fetchAllHistory(marketNames)
-    markets = await sortByArc(markets)
+    if (updated === false) {
+
+      markets = await fetchAllHistory(marketNames)
+      markets = await sortByArc(markets)
+
+    }
+
     await displayMarkets(markets)
-    upMarkets = markets.filter(market => market.lastMove === 'up')
     let bestMarket = markets[0]
-    let currentSymbolName = currentMarket.name.replace('/', '')
+    // let currentSymbolName = currentMarket.name.replace('/', '')
     currentMarket.currentPrice = await fetchPrice(currentSymbolName)
 
     if (
@@ -113,7 +137,7 @@ async function tick(wallet, markets, currentMarket) {
 
   }
 
-  tick(wallet, markets, currentMarket)
+  tick(wallet, markets, allMarketNames, currentMarket)
 }
 
 
@@ -221,7 +245,7 @@ async function updateMarkets() {
 
 async function getMarketNames() {
 
-  console.log(`Fetching overview`)
+  console.log(`Fetching overview\n`)
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
   return marketNames
@@ -505,9 +529,9 @@ async function fetchAllHistory(marketNames) {
 
     } catch (error) {
 
-      marketNames.splice(i, 1)
-      i --
-      n --
+      // marketNames.splice(i, 1)
+      // i --
+      // n --
 
     }
   }
@@ -678,8 +702,8 @@ async function newBuyOrder(wallet, market) {
       // if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
       // wallet.currencies[base] -= baseVolume
       // wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
-      let targetVolume = baseVolume * (1 + fee)
-      wallet.targetPrice = targetVolume / wallet.currencies[asset]
+      let targetVolume = currentPrice * (1 + fee)
+      wallet.targetPrice = targetVolume / currentPrice
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
 
