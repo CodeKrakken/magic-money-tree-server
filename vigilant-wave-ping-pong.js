@@ -157,6 +157,7 @@ async function displayWallet(wallet, activeCurrency) {
   
   nonZeroWallet.forEach(currency => {
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
+    console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
   })
 
 }
@@ -252,6 +253,7 @@ function goodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
+  && !marketName.includes('BNB')
 
 }
 
