@@ -54,12 +54,6 @@ async function run() {
 
   let wallet = {}
 
-  let balancesRaw = await binance.fetchBalance()
-  // wallet[config.asset] = balancesRaw.free[config.asset]
-  // wallet[config.base] = balancesRaw.free[config.base]
-  
-  wallet.currencies = balancesRaw.free
-
   let markets
   let currentMarket
 
@@ -70,6 +64,10 @@ async function run() {
 
 
 async function tick(wallet, markets, currentMarket) {
+
+  let balancesRaw = await binance.fetchBalance()
+  
+  wallet.currencies = balancesRaw.free
 
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
@@ -663,7 +661,7 @@ async function newBuyOrder(wallet, market) {
 
     let slash = market.name.indexOf('/')
     let asset = market.name.substring(0, slash)
-    let base = market.name.substring(slash+1)
+    let base = market.name.substring(slash + 1)
 
 
     let response = await fetchPrice(market.name)
@@ -675,17 +673,18 @@ async function newBuyOrder(wallet, market) {
 
     } else {
 
-      // await binance.createMarketBuyOrder(market, oldBaseVolume / currentPrice)
-
       let currentPrice = response
       let baseVolume = wallet.currencies[base]
-      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
-      wallet.currencies[base] -= baseVolume
-      wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
+      // if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
+      // wallet.currencies[base] -= baseVolume
+      // wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
+
+      await binance.createMarketBuyOrder(market.name, baseVolume / currentPrice)
+
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\nTarget Price - ${wallet.targetPrice}`
       await recordTrade(tradeReport)
       console.log(tradeReport)
@@ -784,17 +783,18 @@ async function newSellOrder(wallet, market, sellType) {
 
   try {
     
-    // await binance.createMarketSellOrder(market, oldAssetVolume)
-
     let slash = market.name.indexOf('/')
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]
 
-    if (wallet.currencies[base] === undefined) { wallet.currencies[base] = 0 }
-    wallet.currencies[base] += assetVolume * (1 - fee) * market.currentPrice
-    wallet.currencies[asset] -= assetVolume
+    // if (wallet.currencies[base] === undefined) { wallet.currencies[base] = 0 }
+    // wallet.currencies[base] += assetVolume * (1 - fee) * market.currentPrice
+    // wallet.currencies[asset] -= assetVolume
     wallet.targetPrice = undefined
+
+    await binance.createMarketSellOrder(market, assetVolume)
+
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]}) [${sellType}]\n\n`
     recordTrade(tradeReport)
     console.log(tradeReport)

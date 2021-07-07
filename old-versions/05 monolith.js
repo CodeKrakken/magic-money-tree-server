@@ -20,8 +20,8 @@ let dataObject = {}
 let wallet = {}
 
 // Uncomment next 2 lines for emulation mode
-wallet[config.asset] = 0
-wallet[config.base] = 200
+// wallet[config.asset] = 0
+// wallet[config.base] = 200
 
 let currentPriceRaw
 let currentPrice
@@ -126,8 +126,8 @@ function updateInfo() {
 
 
   // Comment out next 2 lines for emulation mode
-  // wallet[config.asset] = balancesRaw.free[config.asset]
-  // wallet[config.base] = balancesRaw.free[config.base]
+  wallet[config.asset] = balancesRaw.free[config.asset]
+  wallet[config.base] = balancesRaw.free[config.base]
   
   dataObject.wallet = wallet
   dataObject.orders = orders
