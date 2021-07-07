@@ -82,46 +82,34 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
 
   } else {
 
-    // console.log(allMarketNames)
-
-    let marketNames = []
-    let updated = false
-
     if (markets === undefined) {
 
       markets = await updateMarkets()
-      updated = true
-    }
 
-    if (currentMarket === undefined) {
-      
-      let currentSymbolName = `${activeCurrency}/USDT`
+    } else {
 
-      console.log(currentSymbolName)
+      let marketNames = []
 
-      let currentMarketArray = Object.entries(allMarkets).filter(market => market.symbol === currentSymbolName)
-      console.log(markets)
-      currentMarket = markets[currentSymbolName]
-      console.log(currentMarket)
-
-    }
-
-    markets.forEach(market => {
-      marketNames.push(market.name)
-    })
-
-    if (updated === false) {
+      markets.forEach(market => {
+        marketNames.push(market.name)
+      })
 
       markets = await fetchAllHistory(marketNames)
       markets = await sortByArc(markets)
 
     }
 
+    if (currentMarket === undefined) {
+      
+      currentMarket = { name: `${activeCurrency}/USDT` }
+
+    }
+
     await displayMarkets(markets)
     let bestMarket = markets[0]
     // let currentSymbolName = currentMarket.name.replace('/', '')
-    currentMarket.currentPrice = await fetchPrice(currentSymbolName)
-
+    currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+    
     if (
       bestMarket !== undefined && 
       bestMarket.name !== currentMarket.name && 
