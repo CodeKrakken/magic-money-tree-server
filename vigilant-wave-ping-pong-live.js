@@ -71,6 +71,8 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
   let allMarketNames = Object.keys(allMarkets)
+  console.log(`allMarketNames`)
+  console.log(allMarketNames)
   await displayWallet(wallet, allMarketNames)
   // console.log(`Active currency - ${activeCurrency}\n`)
   console.log('\n')
@@ -119,13 +121,15 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
       await newSellOrder(wallet, currentMarket, 'Switch')
       currentMarket = await newBuyOrder(wallet, bestMarket)
 
+    } else {
+      console.log('Tick completed')
     }
     
     // await trySell(wallet, activeCurrency)
 
   }
 
-  tick(wallet, markets, allMarketNames, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket)
 }
 
 
@@ -142,6 +146,8 @@ async function getActiveCurrency(wallet) {
 async function displayWallet(wallet, marketNames) {
 
   try {
+    console.log('marketnames')
+    console.log(marketNames)
 
     let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
     console.log('\nWallet\n')
@@ -160,7 +166,11 @@ async function displayWallet(wallet, marketNames) {
       } else {
 
         let dollarSymbolArray = marketNames.filter(marketName => marketName.includes(currency) && marketName.includes('USDT'))
+        console.log(`dollarSymbolArray`)
+        console.log(dollarSymbolArray)
         let dollarSymbol = dollarSymbolArray[0]
+        console.log(`dollarSymbol`)
+        console.log(dollarSymbol)
         dollarPrice = await fetchPrice(dollarSymbol)
         dollarVolume = wallet.currencies[currency] * dollarPrice
     
