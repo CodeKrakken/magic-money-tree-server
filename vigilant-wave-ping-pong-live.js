@@ -57,6 +57,8 @@ async function run() {
   let balancesRaw = await binance.fetchBalance()
   // wallet[config.asset] = balancesRaw.free[config.asset]
   // wallet[config.base] = balancesRaw.free[config.base]
+
+  console.log(balancesRaw.free)
   
   wallet.currencies = balancesRaw.free
 
@@ -134,19 +136,27 @@ async function displayWallet(wallet, activeCurrency) {
   console.log('Wallet')
   let dollarVolume
   let dollarPrice
-  
-  nonZeroWallet.forEach(currency => {
-    if (currency !== 'USDT') {
 
-      let dollarSymbol = `${activeCurrency}USDT`
+  for (let i = 0; i < nonZeroWallet.length; i ++) {
+
+    let currency = nonZeroWallet[i]
+      
+    if (currency === 'USDT') {
+
+      dollarPrice = 1
+      dollarVolume = wallet.currencies[currency] * dollarPrice
+    
+    } else {
+
+      let dollarSymbol = `${currency}USDT`
       dollarPrice = await fetchPrice(dollarSymbol)
-      dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
+      dollarVolume = wallet.currencies[currency] * dollarPrice
   
     }
   
-    console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
-    console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
-  })
+    console.log(`${wallet.currencies[currency]} ${currency} @ ${dollarPrice} = $${dollarVolume}`)
+    // console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
+  }
 
 }
 
