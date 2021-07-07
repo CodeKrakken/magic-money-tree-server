@@ -60,8 +60,6 @@ async function run() {
   
   wallet.currencies = balancesRaw.free
 
-  console.log(wallet)
-
   let markets
   let currentMarket
 
@@ -136,26 +134,16 @@ async function displayWallet(wallet, activeCurrency) {
   console.log('Wallet')
   let dollarVolume
   let dollarPrice
-
-  if (activeCurrency !== 'USDT') {
-
-    let dollarSymbol = `${activeCurrency}USDT`
-    dollarPrice = await fetchPrice(dollarSymbol)
-
-    if (dollarPrice === 'No response') {
-
-      console.log('Currency information unavailable  - starting new tick')
-      tick(wallet)
-
-    } else {
-      
-      dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
-
-    }
-
-  }
   
   nonZeroWallet.forEach(currency => {
+    if (currency !== 'USDT') {
+
+      let dollarSymbol = `${activeCurrency}USDT`
+      dollarPrice = await fetchPrice(dollarSymbol)
+      dollarVolume = wallet.currencies[activeCurrency] * dollarPrice
+  
+    }
+  
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
     console.log(`Target price - ${wallet.targetPrice} = ${wallet.currencies[currency] * wallet.targetPrice}`)
   })
@@ -697,7 +685,7 @@ async function newBuyOrder(wallet, market) {
 
 function recordTrade(report) {
 
-  fs.appendFile('trade-history.txt', report, function(err) {
+  fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 

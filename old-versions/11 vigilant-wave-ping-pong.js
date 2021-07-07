@@ -687,7 +687,7 @@ async function newBuyOrder(wallet, market) {
 
 function recordTrade(report) {
 
-  fs.appendFile('trade-history.txt', report, function(err) {
+  fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 
