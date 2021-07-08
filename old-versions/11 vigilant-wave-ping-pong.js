@@ -462,7 +462,15 @@ async function getBulls(markets) {
 
   try {
 
+
     console.log('Analysing markets\n\n')
+
+    markets.forEach(market => {
+      
+      console.log(market.name)
+
+    })
+
     let outputArray = []
     let n = markets.length
 
@@ -471,22 +479,23 @@ async function getBulls(markets) {
       let market = markets[i]
       
         market.ema1 = ema(market.history, 1, 'close')
-        market.ema8 = ema(market.history, 8, 'close')
+        market.ema89 = ema(market.history, 89, 'close')
         market.ema233 = ema(market.history, 233, 'close')
 
         if (
-          market.ema1 > market.ema233 // &&
+          market.ema1 > market.ema89 // &&
           // market.ema8 > market.ema233
         )
         {
           outputArray.push(market)
         } else {
           console.log(
-            `${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA233 ${market.ema233}\n`
+            `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA89 ${market.ema89}\n`
           )
         }
       }
     console.log('\n')
+    console.log(outputArray)
     return outputArray
 
   } catch (error) {
@@ -554,6 +563,8 @@ async function fetchAllHistory(marketNames, currentMarket) {
   }
 
   console.log('\n')
+  console.log('Post history fetch')
+  console.log(returnArray)
   return returnArray
 
 }
