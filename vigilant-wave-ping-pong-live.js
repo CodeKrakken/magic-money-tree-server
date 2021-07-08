@@ -504,9 +504,9 @@ async function fetchAllHistory(marketNames) {
       if (response === 'No response') { 
 
         console.log(`No response for market ${i+1}/${n} - ${marketName}`)
-        marketNames.splice(i, 1)
-        i --
-        n --
+        // marketNames.splice(i, 1)
+        // i --
+        // n --
 
       } else {
 
