@@ -129,9 +129,9 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
     }
 
     let bulls = getBulls(markets)
-    await displayMarkets(markets)
-    let bestMarket = markets[0]
-    let secondBestMarket = markets[1]
+    await displayMarkets(bulls)
+    let bestMarket = bulls[0]
+    let secondBestMarket = bulls[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
     if (
