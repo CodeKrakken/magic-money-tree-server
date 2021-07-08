@@ -45,7 +45,7 @@ const volatilityDuration = 2
 const minimumMovement = 2
 const stopLossThreshold = 0.99
 const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
-const initialTargetPrice = 0
+const initialTargetPrice = 6.5888685
 
 // Functions
 
@@ -58,8 +58,9 @@ async function run() {
   let markets
   let currentMarket
   let allMarkets = await fetchMarkets()
+  let marketNames
 
-  tick(wallet, markets, allMarkets, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket, marketNames)
 
 }
 
@@ -75,7 +76,7 @@ async function getWallet(wallet) {
 
 
 
-async function tick(wallet, markets, allMarkets, currentMarket) {
+async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
   wallet = await getWallet(wallet)
   console.log('\n\n----------\n\n')
@@ -98,11 +99,14 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
 
     } else {
 
-      let marketNames = []
+      if (marketNames === undefined) {
 
-      markets.forEach(market => {
-        marketNames.push(market.name)
-      })
+        marketNames = []
+        markets.forEach(market => {
+          marketNames.push(market.name)
+        })
+
+      }
 
       markets = await fetchAllHistory(marketNames)
       markets = await sortByArc(markets)
@@ -135,7 +139,7 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
     
   }
 
-  tick(wallet, markets, allMarkets, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket, marketNames)
 }
 
 
@@ -306,10 +310,10 @@ async function getViableMarketNames(marketNames) {
     if (response.includes("Insufficient") || response === "No response") 
 
     {
-      symbolNames.splice(i, 1)
-      marketNames.splice(i, 1)
-      i--
-      n--
+      // symbolNames.splice(i, 1)
+      // marketNames.splice(i, 1)
+      // i--
+      // n--
 
     } else {
 
