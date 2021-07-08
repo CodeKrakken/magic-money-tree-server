@@ -127,7 +127,10 @@ async function tick(wallet, markets, allMarkets, currentMarket) {
     ) 
     {
       await newSellOrder(wallet, currentMarket, 'Switch')
-      currentMarket = await newBuyOrder(wallet, bestMarket)
+      markets = await tryBuy(wallet)
+      currentMarket = markets[0]
+      currentMarket = await tryBuy(wallet)
+      // currentMarket = await newBuyOrder(wallet, bestMarket)
     }
     
   }
@@ -707,7 +710,7 @@ async function newBuyOrder(wallet, market) {
 
       await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
       wallet = await getWallet(wallet)
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * 0.99})\n\nTarget Price - ${wallet.targetPrice}`
+      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * 0.99})\n\nTarget Price - ${wallet.targetPrice}\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
       tradeReport = ''
