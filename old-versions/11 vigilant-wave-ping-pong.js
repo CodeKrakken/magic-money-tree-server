@@ -62,6 +62,8 @@ async function run() {
 
   let markets
   let currentMarket
+  let allMarkets = await fetchMarkets()
+  let marketNames
 
   tick(wallet, markets, allMarkets, currentMarket, marketNames)
 
@@ -69,7 +71,14 @@ async function run() {
 
 
 
-async function tick(wallet, markets, currentMarket) {
+
+
+
+
+
+
+
+async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
@@ -115,21 +124,20 @@ async function tick(wallet, markets, currentMarket) {
     await displayMarkets(markets)
     let bestMarket = markets[0]
     let secondBestMarket = markets[1]
-    currentMarket.currentPrice = await fetchPrice(currentSymbolName)
+    currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
     if (bestMarket !== undefined && bestMarket.name !== currentMarket.name) {
       if (secondBestMarket !== undefined && secondBestMarket.name !== currentMarket.name) {
 
-      await newSellOrder(wallet, currentMarket, 'Switch')
-      currentMarket = await newBuyOrder(wallet, bestMarket)
-
+        await newSellOrder(wallet, currentMarket, 'Switch')
+        markets = await tryBuy(wallet)
+        currentMarket = markets[0]
+        // currentMarket = await tryBuy(wallet)
+      }
     }
-    
-    // await trySell(wallet, activeCurrency)
-
   }
 
-  tick(wallet, markets, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket, marketNames)
 }
 
 
@@ -143,7 +151,7 @@ async function getActiveCurrency(wallet) {
 
 
 
-async function displayWallet(wallet, activeCurrency) {
+async function displayWallet(wallet, marketNames, activeCurrency) {
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
   console.log('Wallet')
@@ -212,6 +220,22 @@ async function fetchPrice(marketName) {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function updateMarkets() {
 
   let marketNames = await getMarketNames()
@@ -227,6 +251,7 @@ async function updateMarkets() {
 
 async function getMarketNames() {
 
+  console.log(`Fetching overview\n`)
   let markets = await fetchMarkets()
   let marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
   return marketNames
@@ -237,7 +262,6 @@ async function getMarketNames() {
 
 async function fetchMarkets() {
 
-  console.log(`Fetching overview at ${timeNow()}\n`)
   let markets = await binance.load_markets()
   return markets
 
@@ -265,6 +289,7 @@ function goodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
+  && !marketName.includes('BNB')
 
 }
 
@@ -687,7 +712,7 @@ async function newBuyOrder(wallet, market) {
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume})\n\n`
+      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * 0.99})\n\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
       console.log(`Target Price - ${wallet.targetPrice}`)
