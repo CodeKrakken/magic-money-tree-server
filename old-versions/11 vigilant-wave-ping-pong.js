@@ -475,14 +475,14 @@ async function getBulls(markets) {
         market.ema233 = ema(market.history, 233, 'close')
 
         if (
-          market.ema1 > market.ema8 &&
-          market.ema8 > market.ema233
+          market.ema1 > market.ema233 // &&
+          // market.ema8 > market.ema233
         )
         {
           outputArray.push(market)
         } else {
           console.log(
-            `${market.name}\nEMA1 ${market.ema1}\nEMA8 ${market.ema8}\nEMA233 ${market.ema233}`
+            `${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA233 ${market.ema233}\n`
           )
         }
       }
