@@ -45,7 +45,7 @@ const volatilityDuration = 2
 const minimumMovement = 2
 const stopLossThreshold = 0.99
 const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
-const initialTargetPrice = 0
+const initialTargetPrice = 6.5888685
 
 // Functions
 
@@ -121,18 +121,22 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
     await displayMarkets(markets)
     let bestMarket = markets[0]
-    let secondBestMarket = markets[1]
+    // let currentSymbolName = currentMarket.name.replace('/', '')
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
     
-    if (bestMarket !== undefined && bestMarket.name !== currentMarket.name) {
-      if (secondBestMarket !== undefined && secondBestMarket.name !== currentMarket.name) {
-
-        await newSellOrder(wallet, currentMarket, 'Switch')
-        markets = await tryBuy(wallet)
-        currentMarket = markets[0]
-        currentMarket = await tryBuy(wallet)
-      }
-    } 
+    if (
+      bestMarket !== undefined &&
+      bestMarket.name !== currentMarket.name && 
+      currentMarket.currentPrice > wallet.targetPrice
+    ) 
+    {
+      await newSellOrder(wallet, currentMarket, 'Switch')
+      markets = await tryBuy(wallet)
+      currentMarket = markets[0]
+      // currentMarket = await tryBuy(wallet)
+      // currentMarket = await newBuyOrder(wallet, bestMarket)
+    }
+    
   }
 
   tick(wallet, markets, allMarkets, currentMarket, marketNames)
