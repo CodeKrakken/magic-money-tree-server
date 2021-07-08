@@ -63,7 +63,7 @@ async function run() {
   let markets
   let currentMarket
 
-  tick(wallet, markets, currentMarket)
+  tick(wallet, markets, allMarkets, currentMarket, marketNames)
 
 }
 
@@ -74,7 +74,8 @@ async function tick(wallet, markets, currentMarket) {
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  await displayWallet(wallet, activeCurrency)
+  let allMarketNames = Object.keys(allMarkets)
+  await displayWallet(wallet, allMarketNames, activeCurrency)
   // console.log(`Active currency - ${activeCurrency}\n`)
   console.log('\n')
 
@@ -82,25 +83,42 @@ async function tick(wallet, markets, currentMarket) {
     
     markets = await tryBuy(wallet)
     currentMarket = markets[0]
-    console.log('Current Market - ' + currentMarket.name)
+
+  } else {
+    
+    if (markets === undefined) {
+
+    markets = await updateMarkets()
 
   } else {
 
-    let marketNames = []
-    
-    markets.forEach(market => {
-      marketNames.push(market.name)
-    })
+    if (marketNames === undefined) {
+
+      marketNames = []
+      markets.forEach(market => {
+        marketNames.push(market.name)
+      })
+
+    }
 
     markets = await fetchAllHistory(marketNames)
     markets = await sortByArc(markets)
+
+  }
+
+  if (currentMarket === undefined) {
+      
+    currentMarket = { name: `${activeCurrency}/USDT` }
+
+  }
+
     await displayMarkets(markets)
-    upMarkets = markets.filter(market => market.lastMove === 'up')
     let bestMarket = markets[0]
-    let currentSymbolName = currentMarket.name.replace('/', '')
+    let secondBestMarket = markets[1]
     currentMarket.currentPrice = await fetchPrice(currentSymbolName)
 
-    if (bestMarket.name !== currentMarket.name && currentMarket.currentPrice > wallet.targetPrice) {
+    if (bestMarket !== undefined && bestMarket.name !== currentMarket.name) {
+      if (secondBestMarket !== undefined && secondBestMarket.name !== currentMarket.name) {
 
       await newSellOrder(wallet, currentMarket, 'Switch')
       currentMarket = await newBuyOrder(wallet, bestMarket)

@@ -133,7 +133,7 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
       await newSellOrder(wallet, currentMarket, 'Switch')
       markets = await tryBuy(wallet)
       currentMarket = markets[0]
-      // currentMarket = await tryBuy(wallet)
+      currentMarket = await tryBuy(wallet)
       // currentMarket = await newBuyOrder(wallet, bestMarket)
     }
     
