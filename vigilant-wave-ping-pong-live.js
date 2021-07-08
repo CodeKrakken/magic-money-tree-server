@@ -51,6 +51,8 @@ const initialTargetPrice = 0
 
 async function run() {
 
+  await recordTrade('\n\n\n\n\n')
+
   console.log('Running')
   let wallet = {
     targetPrice: initialTargetPrice
@@ -467,6 +469,10 @@ async function getBulls(markets) {
         )
         {
           outputArray.push(market)
+        } else {
+          console.log(
+            `${market.name}\nEMA1 ${market.ema1}\nEMA8 ${market.ema8}\nEMA233 ${market.ema233}`
+          )
         }
       }
     console.log('\n')

@@ -50,6 +50,8 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 async function run() {
 
+  await recordTrade('\n\n\n\n\n')
+
   console.log('Running')
   
   let wallet = { 
@@ -478,6 +480,10 @@ async function getBulls(markets) {
         )
         {
           outputArray.push(market)
+        } else {
+          console.log(
+            `${market.name}\nEMA1 ${market.ema1}\nEMA8 ${market.ema8}\nEMA233 ${market.ema233}`
+          )
         }
       }
     console.log('\n')
