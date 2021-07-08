@@ -118,6 +118,7 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
       }
       markets = await sortByArc(markets)
+      let bulls = await getBulls(markets)
 
     }
 
@@ -127,6 +128,7 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
     }
 
+    let bulls = getBulls(markets)
     await displayMarkets(markets)
     let bestMarket = markets[0]
     let secondBestMarket = markets[1]
@@ -208,12 +210,13 @@ async function displayWallet(wallet, marketNames, activeCurrency) {
 async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
+  let bulls = getBulls(markets)
   let currentMarket
 
-  if (markets.length > 0 && markets[0].shape > 0) {
+  if (bulls.length > 0 && bulls[0].shape > 0) {
 
-    await displayMarkets(markets)
-    let bestMarket = markets[0]
+    await displayMarkets(bulls)
+    let bestMarket = bulls[0]
     currentMarket = await newBuyOrder(wallet, bestMarket)
 
   } else {
@@ -221,7 +224,7 @@ async function tryBuy(wallet) {
     console.log('No viable markets\n')
   }
 
-  return markets
+  return bulls
 
 }
 
@@ -466,12 +469,12 @@ async function getBulls(markets) {
       let market = markets[i]
       
         market.ema1 = ema(market.history, 1, 'close')
-        market.ema5 = ema(market.history, 5, 'close')
+        market.ema8 = ema(market.history, 8, 'close')
         market.ema233 = ema(market.history, 233, 'close')
 
         if (
-          market.ema1 > market.ema5 &&
-          market.ema5 > market.ema233
+          market.ema1 > market.ema8 &&
+          market.ema8 > market.ema233
         )
         {
           outputArray.push(market)
