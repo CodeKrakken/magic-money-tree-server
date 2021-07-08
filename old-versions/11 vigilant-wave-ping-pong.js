@@ -126,14 +126,30 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
     let secondBestMarket = markets[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
-    if (bestMarket !== undefined && bestMarket.name !== currentMarket.name) {
-      if (secondBestMarket !== undefined && secondBestMarket.name !== currentMarket.name) {
+    if (
+      (
+        bestMarket !== undefined && 
+        bestMarket.name !== currentMarket.name &&
+        secondBestMarket !== undefined && 
+        secondBestMarket.name !== currentMarket.name
 
-        await newSellOrder(wallet, currentMarket, 'Switch')
-        markets = await tryBuy(wallet)
-        currentMarket = markets[0]
-        // currentMarket = await tryBuy(wallet)
-      }
+      ) 
+      || 
+      (
+        bestMarket !== undefined && 
+        bestMarket.name !== currentMarket.name &&
+        currentMarket.currentPrice > wallet.targetPrice
+      )
+      ||
+      (
+        currentMarket.shape <= 0
+      )
+    ) 
+    {
+      await newSellOrder(wallet, currentMarket, 'Switch')
+      markets = await tryBuy(wallet)
+      currentMarket = markets[0]
+      // currentMarket = await tryBuy(wallet)
     }
   }
 
@@ -188,7 +204,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   let currentMarket
 
-  if (markets.length > 0) {
+  if (markets.length > 0 && markets[0].shape > 0) {
 
     await displayMarkets(markets)
     let bestMarket = markets[0]
@@ -666,19 +682,19 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`Market ${market.name}`)
+    console.log(`${market.name} ... ${market.shape} ... ${market.lastMove}`)
     // console.log(`Average Price - ${market.averageClose}`)
     // console.log(`Deviation - ${market.deviation}`)
     // console.log(`Volatility - ${market.volatility}`)
     // console.log(`Current Price - ${market.currentPrice}`)
-    console.log(`Wave Shape: ${market.shape}`)
-    console.log(`Last move: ${market.lastMove}`)
+    // console.log(`Wave Shape: ${market.shape}`)
+    // console.log(`Last move: ${market.lastMove}`)
     // console.log(`EMA1 - ${market.ema1}`)
     // console.log(`EMA2 - ${market.ema2}`)
     // console.log(`EMA3 - ${market.ema3}`)
     // console.log(`EMA5 - ${market.ema5}`)
     // console.log(`EMA8 - ${market.ema8}`)
-    console.log('\n')
+    // console.log('\n')
 
   })
 }
@@ -706,13 +722,14 @@ async function newBuyOrder(wallet, market) {
       let currentPrice = response
       let baseVolume = wallet.currencies[base]
       if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = 0 }
-      wallet.currencies[base] -= baseVolume
-      wallet.currencies[asset] += baseVolume * (1 - fee) / currentPrice
+      let volumeToTrade = baseVolume * (1 - fee)
+      wallet.currencies[base] -= volumeToTrade
+      wallet.currencies[asset] += volumeToTrade * (1 - fee) / currentPrice
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
       wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * 0.99})\n\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n`
+      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
       console.log(`Target Price - ${wallet.targetPrice}`)
