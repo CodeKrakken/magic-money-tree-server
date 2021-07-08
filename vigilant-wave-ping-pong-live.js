@@ -92,25 +92,26 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
     currentMarket = markets[0]
 
   } else {
-
+    
     if (markets === undefined) {
 
-      markets = await updateMarkets()
+    markets = await updateMarkets()
+
+  } else {
+
+    if (marketNames === undefined) {
+
+      marketNames = []
+      markets.forEach(market => {
+        marketNames.push(market.name)
+      })
 
     }
 
-      if (marketNames === undefined) {
+    markets = await fetchAllHistory(marketNames)
+    markets = await sortByArc(markets)
 
-        marketNames = []
-        markets.forEach(market => {
-          marketNames.push(market.name)
-        })
-      
-
-      markets = await fetchAllHistory(marketNames)
-      markets = await sortByArc(markets)
-
-    }
+  }
 
     if (currentMarket === undefined) {
       
@@ -479,7 +480,7 @@ async function getBulls(markets) {
 }
 
 
-async function fetchAllHistory(marketNames) {
+async function fetchAllHistory(marketNames, currentMarket) {
 
   console.log('Fetching history\n')
   let n = marketNames.length
@@ -493,7 +494,15 @@ async function fetchAllHistory(marketNames) {
       let symbolName = marketName.replace('/', '')
       let response = await fetchOneHistory(symbolName)
 
-      if (response === 'No response') { 
+      if (response === 'No response' && marketName === currentMarket) { 
+
+        console.log(`No response for current market`)
+        return 'No response for current market'
+        // marketNames.splice(i, 1)
+        // i --
+        // n --
+
+      } else if (response === 'No response') { 
 
         console.log(`No response for market ${i+1}/${n} - ${marketName}`)
         // marketNames.splice(i, 1)
