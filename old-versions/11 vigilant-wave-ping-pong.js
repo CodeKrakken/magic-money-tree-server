@@ -97,18 +97,18 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
     
     if (markets === undefined) {
 
-    markets = await updateMarkets()
+      markets = await updateMarkets()
 
-  } else {
+    }
 
     if (marketNames === undefined) {
 
       marketNames = []
       markets.forEach(market => {
-        marketNames.push(market.name)
+      marketNames.push(market.name)
       })
-
     }
+    
 
     markets = await fetchAllHistory(marketNames)
     markets = await sortByArc(markets)
@@ -258,8 +258,8 @@ async function updateMarkets() {
   let viableMarketNames = await getViableMarketNames(marketNames)
   let markets = await fetchAllHistory(viableMarketNames)
   markets = await sortByArc(markets)
-  // let bulls = await getBulls(markets)
-  return markets
+  let bulls = await getBulls(markets)
+  return bulls
   
 }
 
@@ -458,47 +458,19 @@ async function getBulls(markets) {
     for (let i = 0; i < n; i++) {
 
       let market = markets[i]
-      let response = await fetchPrice(market.name)
-
-      if (response === 'No response') {
-
-        console.log(`No response for market ${i+1}/${n} - ${market.name}`)
-        markets.splice(i, 1)
-        i --
-        n --
-
-      } else {
-
-        market.currentPrice = response
-        console.log(`Fetched current price of market ${i+1}/${n} - ${market.name}`)
+      
         market.ema1 = ema(market.history, 1, 'close')
-        market.ema2 = ema(market.history, 2, 'close')
-        market.ema3 = ema(market.history, 3, 'close')
         market.ema5 = ema(market.history, 5, 'close')
-        market.ema8 = ema(market.history, 8, 'close')
-        market.ema89 = ema(market.history, 89, 'close')
+        market.ema233 = ema(market.history, 233, 'close')
 
         if (
-          market.currentPrice > market.ema1 
-          && market.ema1 > market.ema2
-          && market.ema2 > market.ema3
-          && market.ema3 > market.ema5
-          && (market.ema1 - market.ema2) > (market.ema2 - market.ema3)
-          // && market.ema3 > market.ema5
-          // && market.ema5 > market.ema8
-          && market.ema5 > market.ema89
+          market.ema1 > market.ema5 &&
+          market.ema5 > market.ema233
         )
         {
           outputArray.push(market)
-
-        } else {
-
-          // console.log(market.currentPrice)
-          // console.log(market.ema1)
         }
       }
-    }
-
     console.log('\n')
     return outputArray
 
