@@ -97,35 +97,35 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
     
     if (markets === undefined) {
 
-    markets = await updateMarkets()
+      markets = await updateMarkets()
 
-  } else {
+    } else {
 
-    if (marketNames === undefined) {
+      if (marketNames === undefined) {
 
-      marketNames = []
-      markets.forEach(market => {
-        marketNames.push(market.name)
-      })
+        marketNames = []
+        markets.forEach(market => {
+          marketNames.push(market.name)
+        })
+
+      }
+
+      markets = await fetchAllHistory(marketNames, currentMarket)
+
+      if (markets === 'No response for current market') {
+
+        tick(wallet, markets, allMarkets, currentMarket, marketNames)
+
+      }
+      markets = await sortByArc(markets)
 
     }
 
-    markets = await fetchAllHistory(marketNames, currentMarket)
-
-    if (markets === 'No response for current market') {
-
-      tick(wallet, markets, allMarkets, currentMarket, marketNames)
-
-    }
-    markets = await sortByArc(markets)
-
-  }
-
-  if (currentMarket === undefined) {
+    if (currentMarket === undefined) {
       
-    currentMarket = { name: `${activeCurrency}/USDT` }
+      currentMarket = { name: `${activeCurrency}/USDT` }
 
-  }
+    }
 
     await displayMarkets(markets)
     let bestMarket = markets[0]
@@ -264,8 +264,8 @@ async function updateMarkets() {
   let viableMarketNames = await getViableMarketNames(marketNames)
   let markets = await fetchAllHistory(viableMarketNames)
   markets = await sortByArc(markets)
-  let bulls = await getBulls(markets)
-  return bulls
+  // let bulls = await getBulls(markets)
+  return markets
   
 }
 
