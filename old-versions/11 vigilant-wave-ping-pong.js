@@ -666,13 +666,13 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`Market - ${market.name}`)
+    console.log(`Market ${market.name}`)
     // console.log(`Average Price - ${market.averageClose}`)
     // console.log(`Deviation - ${market.deviation}`)
     // console.log(`Volatility - ${market.volatility}`)
     // console.log(`Current Price - ${market.currentPrice}`)
-    console.log(`Wave Shape - ${market.shape}`)
-    console.log(`Last move - ${market.lastMove}`)
+    console.log(`Wave Shape: ${market.shape}`)
+    console.log(`Last move: ${market.lastMove}`)
     // console.log(`EMA1 - ${market.ema1}`)
     // console.log(`EMA2 - ${market.ema2}`)
     // console.log(`EMA3 - ${market.ema3}`)
