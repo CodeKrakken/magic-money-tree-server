@@ -133,37 +133,36 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    let bulls = markets.filter(market => market.ema1 > market.ema2)
+    let bulls = markets.filter(market => market.ema1 > market.ema233)
     let bestMarket = bulls[0]
     let secondBestMarket = bulls[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
-    // if (
-    //   (
-    //     bestMarket !== undefined && 
-    //     bestMarket.name !== currentMarket.name &&
-    //     secondBestMarket !== undefined && 
-    //     secondBestMarket.name !== currentMarket.name
+    if (
+      (
+        bestMarket !== undefined && 
+        bestMarket.name !== currentMarket.name &&
+        secondBestMarket !== undefined && 
+        secondBestMarket.name !== currentMarket.name
 
-    //   ) 
-    //   || 
-    //   (
-    //     bestMarket !== undefined && 
-    //     bestMarket.name !== currentMarket.name &&
-    //     currentMarket.currentPrice > wallet.targetPrice
-    //   )
-    //   ||
-    //   (
-    //     currentMarket.shape <= 0
-    //   )
-    // ) 
-    // {
-      console.log(currentMarket)
+      ) 
+      || 
+      (
+        bestMarket !== undefined && 
+        bestMarket.name !== currentMarket.name &&
+        currentMarket.currentPrice > wallet.targetPrice
+      )
+      ||
+      (
+        currentMarket.shape <= 0
+      )
+    ) 
+    {
       await newSellOrder(wallet, currentMarket, 'Switch')
       // markets = await tryBuy(wallet)
       // currentMarket = markets[0]
       // currentMarket = await tryBuy(wallet)
-    // }
+    }
   }
 
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
@@ -216,18 +215,18 @@ async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
   markets = await addEMA(markets)
-  let bulls = markets.filter(market => market.ema1 > market.ema2)
+  let bulls = markets.filter(market => market.ema1 > market.ema233)
   let currentMarket
 
-  if (bulls.length > 0 && bulls[0].shape > 0) {
-
-    await displayMarkets(bulls)
+    await displayMarkets(markets)
     let bestMarket = bulls[0]
     currentMarket = await newBuyOrder(wallet, bestMarket)
 
-  } else {
+  // } else {
+  if (bulls.length === 0) {
 
     console.log('No viable markets\n')
+  
   }
 
   return markets
@@ -468,7 +467,6 @@ async function addEMA(markets) {
 
     console.log('Analysing markets\n\n')
 
-    let outputArray = []
     let n = markets.length
 
     for (let i = 0; i < n; i++) {
@@ -484,14 +482,14 @@ async function addEMA(markets) {
       //   // market.ema8 > market.ema233
       // )
       // {
-        outputArray.push(market)
+        
       // } else {
         // console.log(
         //   `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA2 ${market.ema2}\n`
         // )
       // }
     }
-    return outputArray
+    return markets
 
   } catch (error) {
 
@@ -681,7 +679,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... ${market.shape} ... EMA1 - ${market.ema1} ... EMA2 - ${market.ema2}`)
+    console.log(`${market.name} ... ${market.shape} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
     // console.log(`Average Price - ${market.averageClose}`)
     // console.log(`Deviation - ${market.deviation}`)
     // console.log(`Volatility - ${market.volatility}`)
