@@ -151,11 +151,15 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       (
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
-        currentMarket.currentPrice > wallet.targetPrice
+        currentMarket.currentPrice > wallet.targetPrice &&
+        bulls.includes(currentMarket)
+
       )
       ||
       (
-        currentMarket.shape <= 0
+        currentMarket.shape <= 0 &&         
+        bulls.includes(currentMarket)
+
       )
     ) 
     {
