@@ -50,9 +50,7 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 async function run() {
 
-  await recordTrade('\n\n\n ---------- \n\n')
-
-  console.log('Running')
+  await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}`)
   
   let wallet = { 
   
@@ -114,12 +112,12 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
       }
 
-      markets = await fetchAllHistory(marketNames, currentMarket)
+      markets = await fetchAllHistory(marketNames, currentMarket.name)
 
       if (markets === 'No response for current market') {
 
         markets = undefined
-        tick(wallet, markets, allMarkets, currentMarket, marketNames)
+        return tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
       }
       markets = await sortByArc(markets)
@@ -160,6 +158,10 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         currentMarket.shape <= 0 &&         
         bulls.includes(currentMarket)
 
+      )
+      ||
+      (
+        currentMarket.ema1 < currentMarket.ema233
       )
     ) 
     {
@@ -434,26 +436,26 @@ async function sortByArc(markets) {
     let market = markets[i]
     let m = market.history.length
     markets[i].shape = 0
-    let recordHigh = 0
-    let recordLow = Infinity
+    market.recordHigh = 0
+    market.recordLow = Infinity
 
     for (let t = 0; t < m; t++) {
 
       let period = market.history[t]
 
-      if (period['high'] > recordHigh) { 
+      if (period['high'] > market.recordHigh) { 
 
         markets[i].shape ++ 
-        recordHigh = period['high']
+        market.recordHigh = period['high']
         markets[i].lastMove = 'up'
         markets[i].timeStamp = timeNow()
 
       }
 
-      if (period['low'] < recordLow) { 
+      if (period['low'] < market.recordLow) { 
 
         markets[i].shape -- 
-        recordLow = period['low']
+        market.recordLow = period['low']
         markets[i].lastMove = 'down'
         markets[i].timeStamp = timeNow()
 
@@ -505,7 +507,7 @@ async function addEMA(markets) {
 
 
 
-async function fetchAllHistory(marketNames, currentMarket) {
+async function fetchAllHistory(marketNames, currentMarketName) {
 
   console.log('Fetching history\n')
   let n = marketNames.length
@@ -519,7 +521,7 @@ async function fetchAllHistory(marketNames, currentMarket) {
       let symbolName = marketName.replace('/', '')
       let response = await fetchOneHistory(symbolName)
 
-      if (response === 'No response' && marketName === currentMarket) { 
+      if (response === 'No response' && marketName === currentMarketName) { 
 
         console.log(`No response for current market`)
         return 'No response for current market'
@@ -734,7 +736,6 @@ async function newBuyOrder(wallet, market) {
       wallet.boughtTime = Date.now()
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await recordTrade(tradeReport)
-      console.log(tradeReport)
       tradeReport = ''
       return market
     }
@@ -749,6 +750,8 @@ async function newBuyOrder(wallet, market) {
 
 
 function recordTrade(report) {
+
+  console.log(report)
 
   fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
@@ -841,7 +844,6 @@ async function newSellOrder(wallet, market, sellType) {
     wallet.targetPrice = undefined
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]}) [${sellType}]\n\n`
     recordTrade(tradeReport)
-    console.log(tradeReport)
     tradeReport = ''
 
   } catch (error) {
