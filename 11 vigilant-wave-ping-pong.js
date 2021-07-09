@@ -133,7 +133,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    let bulls = markets.filter(market => market.ema1 > market.ema233)
+    let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0)
     let bestMarket = bulls[0]
     let secondBestMarket = bulls[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
@@ -143,7 +143,8 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
         secondBestMarket !== undefined && 
-        secondBestMarket.name !== currentMarket.name
+        secondBestMarket.name !== currentMarket.name &&
+        bulls.includes(currentMarket)
 
       ) 
       || 
