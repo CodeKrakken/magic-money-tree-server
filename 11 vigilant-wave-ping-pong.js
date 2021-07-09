@@ -443,7 +443,7 @@ async function sortByArc(markets) {
       let lastPeriod = markets[i].history[t-1]
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
-      console.log(`Time: ${currentTime}`)
+      console.log(`Time: ${markets[i].endTime}`)
 
       if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) { 
         if (thisPeriod['low'] > markets[i].pointLow) {
