@@ -443,26 +443,25 @@ async function sortByArc(markets) {
       let lastPeriod = markets[i].history[t-1]
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
-      let currentTime = Date.now()
       console.log(`Time: ${currentTime}`)
 
       if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) { 
         if (thisPeriod['low'] > markets[i].pointLow) {
           markets[i].trend = 'up'
-          markets[i].shape += 1 * currentTime
+          markets[i].shape += 1 * markets[i].endTime
         } else if (thisPeriod['low'] < markets[i].pointLow) {
           markets[i].trend = 'down'
-          markets[i].shape -= 1 * currentTime
+          markets[i].shape -= 1 * markets[i].endTime
         }
         markets[i].pointLow = thisPeriod['low']
       }
       if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) { 
         if (thisPeriod['high'] > markets[i].pointHigh) {
           markets[i].trend = 'up'
-          markets[i].shape += currentTime
+          markets[i].shape += 1 * markets[i].endTime
         } else if (thisPeriod['high'] < markets[i].pointHigh) {
           markets[i].trend = 'down'
-          markets[i].shape -= currentTime
+          markets[i].shape -= 1 * markets[i].endTime
         }
         markets[i].pointHigh = thisPeriod['high']
       }
