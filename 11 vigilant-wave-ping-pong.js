@@ -50,7 +50,7 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 async function run() {
 
-  await recordTrade('\n\n\n\n\n')
+  await recordTrade('\n\n\n ---------- \n\n')
 
   console.log('Running')
   
@@ -65,9 +65,10 @@ async function run() {
   let markets
   let currentMarket
   let allMarkets = await fetchMarkets()
+  let allMarketNames = Object.keys(allMarkets)
   let marketNames
 
-  tick(wallet, markets, allMarkets, currentMarket, marketNames)
+  tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
 }
 
@@ -80,14 +81,12 @@ async function run() {
 
 
 
-async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
+async function tick(wallet, markets, allMarketNames, currentMarket, marketNames) {
 
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  let allMarketNames = Object.keys(allMarkets)
   await displayWallet(wallet, allMarketNames, activeCurrency)
-  // console.log(`Active currency - ${activeCurrency}\n`)
   console.log('\n')
 
   if (activeCurrency === 'USDT') {
@@ -120,7 +119,6 @@ async function tick(wallet, markets, allMarkets, currentMarket, marketNames) {
 
       }
       markets = await sortByArc(markets)
-      let bulls = await getBulls(markets)
 
     }
 
@@ -212,7 +210,7 @@ async function displayWallet(wallet, marketNames, activeCurrency) {
 async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
-  let bulls = getBulls(markets)
+  let bulls = await getBulls(markets)
   let currentMarket
 
   if (bulls.length > 0 && bulls[0].shape > 0) {
@@ -462,14 +460,7 @@ async function getBulls(markets) {
 
   try {
 
-
     console.log('Analysing markets\n\n')
-
-    markets.forEach(market => {
-      
-      console.log(market.name)
-
-    })
 
     let outputArray = []
     let n = markets.length
@@ -478,24 +469,22 @@ async function getBulls(markets) {
 
       let market = markets[i]
       
-        market.ema1 = ema(market.history, 1, 'close')
-        market.ema89 = ema(market.history, 89, 'close')
-        market.ema233 = ema(market.history, 233, 'close')
+      market.ema1 = ema(market.history, 1, 'close')
+      market.ema2 = ema(market.history, 2, 'close')
+      market.ema233 = ema(market.history, 233, 'close')
 
-        if (
-          market.ema1 > market.ema89 // &&
-          // market.ema8 > market.ema233
+      if (
+        market.ema1 > market.ema2 // &&
+        // market.ema8 > market.ema233
+      )
+      {
+        outputArray.push(market)
+      } else {
+        console.log(
+          `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA2 ${market.ema2}\n`
         )
-        {
-          outputArray.push(market)
-        } else {
-          console.log(
-            `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA89 ${market.ema89}\n`
-          )
-        }
       }
-    console.log('\n')
-    console.log(outputArray)
+    }
     return outputArray
 
   } catch (error) {
@@ -563,8 +552,6 @@ async function fetchAllHistory(marketNames, currentMarket) {
   }
 
   console.log('\n')
-  console.log('Post history fetch')
-  console.log(returnArray)
   return returnArray
 
 }
@@ -739,7 +726,6 @@ async function newBuyOrder(wallet, market) {
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await recordTrade(tradeReport)
       console.log(tradeReport)
-      console.log(`Target Price - ${wallet.targetPrice}`)
       tradeReport = ''
       return market
     }
