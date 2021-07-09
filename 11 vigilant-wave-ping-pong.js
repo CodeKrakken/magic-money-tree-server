@@ -433,33 +433,59 @@ async function sortByArc(markets) {
 
   for (let i = 0; i < n; i++) {
 
-    let market = markets[i]
-    let m = market.history.length
+    let m = markets[i].history.length
     markets[i].shape = 0
-    market.recordHigh = 0
-    market.recordLow = Infinity
+    markets[i].pointHigh = markets[i].history[0]['high']
+    markets[i].pointLow = markets[i].history[0]['low']
 
-    for (let t = 0; t < m; t++) {
+    for (let t = 1; t < m-1; t++) {
 
-      let period = market.history[t]
+      let lastPeriod = markets[i].history[t-1]
+      let thisPeriod = markets[i].history[t]
+      let nextPeriod = markets[i].history[t+1]
+      let currentTime = Date.now()
+      console.log(`Time: ${currentTime}`)
 
-      if (period['high'] > market.recordHigh) { 
-
-        markets[i].shape ++ 
-        market.recordHigh = period['high']
-        markets[i].lastMove = 'up'
-        markets[i].timeStamp = timeNow()
-
+      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) { 
+        if (thisPeriod['low'] > markets[i].pointLow) {
+          markets[i].trend = 'up'
+          markets[i].shape += 1 * currentTime
+        } else if (thisPeriod['low'] < markets[i].pointLow) {
+          markets[i].trend = 'down'
+          markets[i].shape -= 1 * currentTime
+        }
+        markets[i].pointLow = thisPeriod['low']
+      }
+      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) { 
+        if (thisPeriod['high'] > markets[i].pointHigh) {
+          markets[i].trend = 'up'
+          markets[i].shape += currentTime
+        } else if (thisPeriod['high'] < markets[i].pointHigh) {
+          markets[i].trend = 'down'
+          markets[i].shape -= currentTime
+        }
+        markets[i].pointHigh = thisPeriod['high']
       }
 
-      if (period['low'] < market.recordLow) { 
 
-        markets[i].shape -- 
-        market.recordLow = period['low']
-        markets[i].lastMove = 'down'
-        markets[i].timeStamp = timeNow()
 
-      }
+
+
+      //   markets[i].shape ++ 
+      //   market.recordHigh = period['high']
+      //   markets[i].lastMove = 'up'
+      //   markets[i].timeStamp = timeNow()
+
+      // }
+
+      // if (period['low'] < market.recordLow) { 
+
+      //   markets[i].shape -- 
+      //   market.recordLow = period['low']
+      //   markets[i].lastMove = 'down'
+      //   markets[i].timeStamp = timeNow()
+
+      // }
     }
 
   }
