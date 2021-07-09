@@ -95,6 +95,9 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     currentMarket = markets[0]
 
   } else {
+
+    currentMarket = { name: `${activeCurrency}/USDT` }
+
     
     if (markets === undefined) {
 
@@ -115,6 +118,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
       if (markets === 'No response for current market') {
 
+        markets = undefined
         tick(wallet, markets, allMarkets, currentMarket, marketNames)
 
       }
@@ -122,46 +126,47 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     }
 
-    if (currentMarket === undefined) {
+    // if (currentMarket === undefined) {
       
-      currentMarket = { name: `${activeCurrency}/USDT` }
 
-    }
+    // }
 
-    let bulls = getBulls(markets)
-    await displayMarkets(bulls)
+    markets = await addEMA(markets)
+    await displayMarkets(markets)
+    let bulls = markets.filter(market => market.ema1 > market.ema2)
     let bestMarket = bulls[0]
     let secondBestMarket = bulls[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
-    if (
-      (
-        bestMarket !== undefined && 
-        bestMarket.name !== currentMarket.name &&
-        secondBestMarket !== undefined && 
-        secondBestMarket.name !== currentMarket.name
+    // if (
+    //   (
+    //     bestMarket !== undefined && 
+    //     bestMarket.name !== currentMarket.name &&
+    //     secondBestMarket !== undefined && 
+    //     secondBestMarket.name !== currentMarket.name
 
-      ) 
-      || 
-      (
-        bestMarket !== undefined && 
-        bestMarket.name !== currentMarket.name &&
-        currentMarket.currentPrice > wallet.targetPrice
-      )
-      ||
-      (
-        currentMarket.shape <= 0
-      )
-    ) 
-    {
+    //   ) 
+    //   || 
+    //   (
+    //     bestMarket !== undefined && 
+    //     bestMarket.name !== currentMarket.name &&
+    //     currentMarket.currentPrice > wallet.targetPrice
+    //   )
+    //   ||
+    //   (
+    //     currentMarket.shape <= 0
+    //   )
+    // ) 
+    // {
+      console.log(currentMarket)
       await newSellOrder(wallet, currentMarket, 'Switch')
-      markets = await tryBuy(wallet)
-      currentMarket = markets[0]
+      // markets = await tryBuy(wallet)
+      // currentMarket = markets[0]
       // currentMarket = await tryBuy(wallet)
-    }
+    // }
   }
 
-  tick(wallet, markets, allMarkets, currentMarket, marketNames)
+  tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 }
 
 
@@ -210,7 +215,8 @@ async function displayWallet(wallet, marketNames, activeCurrency) {
 async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
-  let bulls = await getBulls(markets)
+  markets = await addEMA(markets)
+  let bulls = markets.filter(market => market.ema1 > market.ema2)
   let currentMarket
 
   if (bulls.length > 0 && bulls[0].shape > 0) {
@@ -224,7 +230,7 @@ async function tryBuy(wallet) {
     console.log('No viable markets\n')
   }
 
-  return bulls
+  return markets
 
 }
 
@@ -267,7 +273,7 @@ async function updateMarkets() {
   let viableMarketNames = await getViableMarketNames(marketNames)
   let markets = await fetchAllHistory(viableMarketNames)
   markets = await sortByArc(markets)
-  // let bulls = await getBulls(markets)
+  // markets = await addEMA(markets)
   return markets
   
 }
@@ -456,7 +462,7 @@ async function sortByArc(markets) {
 
 
 
-async function getBulls(markets) {
+async function addEMA(markets) {
 
   try {
 
@@ -473,17 +479,17 @@ async function getBulls(markets) {
       market.ema2 = ema(market.history, 2, 'close')
       market.ema233 = ema(market.history, 233, 'close')
 
-      if (
-        market.ema1 > market.ema2 // &&
-        // market.ema8 > market.ema233
-      )
-      {
+      // if (
+      //   market.ema1 > market.ema2 // &&
+      //   // market.ema8 > market.ema233
+      // )
+      // {
         outputArray.push(market)
-      } else {
-        console.log(
-          `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA2 ${market.ema2}\n`
-        )
-      }
+      // } else {
+        // console.log(
+        //   `Not including ${market.name}\nShape  ${market.shape}\nEMA1   ${market.ema1}\nEMA2 ${market.ema2}\n`
+        // )
+      // }
     }
     return outputArray
 
@@ -675,7 +681,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... ${market.shape} ... ${market.lastMove}`)
+    console.log(`${market.name} ... ${market.shape} ... EMA1 - ${market.ema1} ... EMA2 - ${market.ema2}`)
     // console.log(`Average Price - ${market.averageClose}`)
     // console.log(`Deviation - ${market.deviation}`)
     // console.log(`Volatility - ${market.volatility}`)
