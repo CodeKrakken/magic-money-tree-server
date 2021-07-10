@@ -154,7 +154,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
 
     if (
-      (
+      
         currentMarketArray.length > 0 &&
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
@@ -162,37 +162,57 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         secondBestMarket.name !== currentMarket.name
 
       ) 
-      || 
+      {
+        console.log(bestMarket.name)
+        console.log(secondBestMarket.name)
+        console.log(currentMarket.name)
+        await newSellOrder(wallet, currentMarket, 'Not top 2')
+      } 
+    else if  
       (
         currentMarketArray.length > 0 &&
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
         currentMarket.currentPrice > wallet.targetPrice 
       )
-      ||
+      {
+        console.log(bestMarket.name)
+        console.log(currentMarket.name)
+        console.log(currentMarket.currentPrice)
+        console.log(wallet.targetPrice)
+        await newSellOrder(wallet, currentMarket, 'Switch after profit')
+      }  
+    else if
       (
         currentMarketArray.length > 0 &&
         currentMarket.shape <= 0     
       )
-      ||
+      {     
+        console.log(currentMarket.shape) 
+        await newSellOrder(wallet, currentMarket, 'Market crashing')
+      }
+    else if
       (
         currentMarketArray.length > 0 &&
         currentMarket.ema1 < currentMarket.ema233
       )
-      ||
+      {     
+        console.log(currentMarket.ema1)
+        console.log(currentMarket.ema233)
+
+        await newSellOrder(wallet, currentMarket, 'Switch')
+      }
+    else if
       (
         currentMarketArray.length > 0 &&
         currentMarket.trend === 'down' &&
         currentMarket.currentPrice > wallet.targetPrice
-      )
-    ) 
-    {
-      await newSellOrder(wallet, currentMarket, 'Switch')
-      // markets = await tryBuy(wallet)
-      // currentMarket = markets[0]
-      // currentMarket = await tryBuy(wallet)
+      
+      ) 
+      {
+        await newSellOrder(wallet, currentMarket, 'Switch')
+      }
     }
-  }
 
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 }
