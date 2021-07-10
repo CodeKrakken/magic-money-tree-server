@@ -131,7 +131,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0)
+    let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
     let bestMarket = bulls[0]
     let secondBestMarket = bulls[1]
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
@@ -453,12 +453,12 @@ async function sortByArc(markets) {
         if (thisPeriod['low'] > markets[i].pointLow) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime']
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].pointLow) / thisPeriod['low'])
 
         } else if (thisPeriod['low'] < markets[i].pointLow) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime']
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['low']) / thisPeriod['low'])
 
         }
 
@@ -470,12 +470,12 @@ async function sortByArc(markets) {
         if (thisPeriod['high'] > markets[i].pointHigh) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime']
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].pointHigh) / thisPeriod['high'])
 
         } else if (thisPeriod['high'] < markets[i].pointHigh) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime']
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointHigh - thisPeriod['high']) / thisPeriod['high'])
 
         }
 
@@ -772,11 +772,11 @@ async function newBuyOrder(wallet, market) {
 
 function recordTrade(report) {
 
-  console.log(report)
-
   fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
+
+  console.log(report)
 
 } 
 
