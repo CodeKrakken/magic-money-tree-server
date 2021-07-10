@@ -142,37 +142,48 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     }
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
+    console.log('Best market')
+    console.log(bestMarket)
+    console.log('Current market')
+    console.log(currentMarket)
+    console.log('Second best market')
+    console.log(secondBestMarket)
+    console.log('Wallet')
+    console.log(wallet)
+
+
+
     if (
       (
+        currentMarketArray.length > 0 &&
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
         secondBestMarket !== undefined && 
-        secondBestMarket.name !== currentMarket.name &&
-        currentMarketArray.length > 0
+        secondBestMarket.name !== currentMarket.name
 
       ) 
       || 
       (
+        currentMarketArray.length > 0 &&
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
-        currentMarket.currentPrice > wallet.targetPrice &&
-        currentMarketArray.length > 0
+        currentMarket.currentPrice > wallet.targetPrice 
       )
       ||
       (
-        currentMarket.shape <= 0 &&         
-        currentMarketArray.length > 0
+        currentMarketArray.length > 0 &&
+        currentMarket.shape <= 0     
       )
       ||
       (
-        currentMarket.ema1 < currentMarket.ema233 &&
-        currentMarketArray.length > 0
+        currentMarketArray.length > 0 &&
+        currentMarket.ema1 < currentMarket.ema233
       )
       ||
       (
+        currentMarketArray.length > 0 &&
         currentMarket.trend === 'down' &&
-        currentMarket.currentPrice > wallet.targetPrice &&
-        currentMarketArray.length > 0
+        currentMarket.currentPrice > wallet.targetPrice
       )
     ) 
     {
