@@ -50,7 +50,7 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 async function run() {
 
-  await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}`)
+  await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}\n`)
   
   let wallet = { 
   
@@ -134,7 +134,12 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
     let bestMarket = bulls[0]
     let secondBestMarket = bulls[1]
+    let currentMarketArray = markets.filter(market => market.name === currentMarket.name)
+    if (currentMarketArray.length > 0) {
+      currentMarket = currentMarketArray[0]
+    }
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+    console.log(currentMarket)
 
     if (
       (
@@ -142,7 +147,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         bestMarket.name !== currentMarket.name &&
         secondBestMarket !== undefined && 
         secondBestMarket.name !== currentMarket.name &&
-        bulls.includes(currentMarket)
+        currentMarketArray.length > 0
 
       ) 
       || 
@@ -150,13 +155,13 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
         currentMarket.currentPrice > wallet.targetPrice &&
-        bulls.includes(currentMarket)
+        currentMarketArray.length > 0
 
       )
       ||
       (
         currentMarket.shape <= 0 &&         
-        bulls.includes(currentMarket)
+        currentMarketArray.length > 0
 
       )
       ||
@@ -219,10 +224,6 @@ async function displayWallet(wallet, marketNames, activeCurrency, currentMarket)
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
   })
 
-  if (currentMarket !== undefined) {
-    console.log(`Market Point Low: ${currentMarket.pointLow} ... Point High: ${currentMarket.pointHigh}`)
-  }
-
 }
 
 
@@ -230,7 +231,7 @@ async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
   markets = await addEMA(markets)
-  let bulls = markets.filter(market => market.ema1 > market.ema233)
+  let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
   let currentMarket
 
     await displayMarkets(markets)
@@ -444,11 +445,7 @@ async function sortByArc(markets) {
     let m = markets[i].history.length
     markets[i].shape = 0
     markets[i].pointHigh = markets[i].history[0]['high']
-    console.log(`markets[i].pointHigh: ${markets[i].pointHigh}`)
-    console.log(`markets[i].history[0]['high']: ${markets[i].history[0]['high']}`)
     markets[i].pointLow = markets[i].history[0]['low']
-    console.log(`markets[i].pointLow ${markets[i].pointLow}`)
-    console.log(`markets[i].history[0]['low']: ${markets[i].history[0]['low']}`)
 
     for (let t = 1; t < m-1; t++) {
 
