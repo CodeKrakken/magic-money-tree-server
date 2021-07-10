@@ -50,7 +50,7 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 async function run() {
 
-  await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}\n`)
+  await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
   
   let wallet = { 
   
@@ -166,11 +166,11 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         currentMarket.ema1 < currentMarket.ema233 &&
         currentMarketArray.length > 0
       )
-      ||
-      (
-        currentMarket.trend === 'down' &&
-        currentMarketArray.length > 0
-      )
+      // ||
+      // (
+      //   currentMarket.trend === 'down' &&
+      //   currentMarketArray.length > 0
+      // )
     ) 
     {
       await newSellOrder(wallet, currentMarket, 'Switch')
@@ -456,12 +456,12 @@ async function sortByArc(markets) {
 
         if (thisPeriod['close'] > markets[i].pointLow) {
 
-          markets[i].trend = 'up'
+          // markets[i].trend = 'up'
           markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointLow) / thisPeriod['close'])
 
         } else if (thisPeriod['close'] < markets[i].pointLow) {
 
-          markets[i].trend = 'down'
+          // markets[i].trend = 'down'
           markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['close']) / thisPeriod['close'])
 
         }
