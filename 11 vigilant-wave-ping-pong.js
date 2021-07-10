@@ -84,7 +84,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  await displayWallet(wallet, allMarketNames, activeCurrency)
+  await displayWallet(wallet, allMarketNames, activeCurrency, currentMarket)
   console.log('\n')
 
   if (activeCurrency === 'USDT') {
@@ -163,6 +163,10 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       (
         currentMarket.ema1 < currentMarket.ema233
       )
+      ||
+      (
+        currentMarket.trend === 'down'
+      )
     ) 
     {
       await newSellOrder(wallet, currentMarket, 'Switch')
@@ -186,7 +190,7 @@ async function getActiveCurrency(wallet) {
 
 
 
-async function displayWallet(wallet, marketNames, activeCurrency) {
+async function displayWallet(wallet, marketNames, activeCurrency, currentMarket) {
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency] > 0)
   console.log('Wallet')
@@ -214,6 +218,10 @@ async function displayWallet(wallet, marketNames, activeCurrency) {
   nonZeroWallet.forEach(currency => {
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
   })
+
+  if (currentMarket !== undefined) {
+    console.log(`Market Point Low: ${currentMarket.pointLow} ... Point High: ${currentMarket.pointHigh}`)
+  }
 
 }
 
