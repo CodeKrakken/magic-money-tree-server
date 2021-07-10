@@ -89,7 +89,9 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
   if (activeCurrency === 'USDT') {
     
-    markets = await tryBuy(wallet)
+    let response = await tryBuy(wallet)
+    wallet = response['wallet']
+    markets = response['markets']
     currentMarket = markets[0]
 
   } else {
@@ -114,9 +116,9 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
       markets = await fetchAllHistory(marketNames, currentMarket.name)
 
-      if (markets === 'No response for current market') {
+      if (markets[markets.length-1] === 'No response for current market') {
 
-        markets = undefined
+        markets.pop()
         return tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
       }
@@ -166,13 +168,18 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         currentMarket.ema1 < currentMarket.ema233 &&
         currentMarketArray.length > 0
       )
-      // ||
-      // (
-      //   currentMarket.trend === 'down' &&
-      //   currentMarketArray.length > 0
-      // )
+      ||
+      (
+        currentMarket.trend === 'down' &&
+        currentMarket.currentPrice > wallet.targetPrice &&
+        currentMarketArray.length > 0
+      )
     ) 
     {
+      console.log(wallet.targetPrice)
+      console.log(currentMarket)
+      console.log(bestMarket)
+      console.log(secondBestMarket)
       await newSellOrder(wallet, currentMarket, 'Switch')
       // markets = await tryBuy(wallet)
       // currentMarket = markets[0]
@@ -221,8 +228,13 @@ async function displayWallet(wallet, marketNames, activeCurrency, currentMarket)
   
   nonZeroWallet.forEach(currency => {
     console.log(`${wallet.currencies[currency]} ${currency} ${currency !== 'USDT' ? `@ ${dollarPrice} = $${dollarVolume}` : '' } `)
-  })
+    
+    if (currency === activeCurrency && currency !== 'USDT') {
 
+      console.log(`Target Price - ${wallet.targetPrice}`)
+
+    }
+  })
 }
 
 
@@ -235,7 +247,9 @@ async function tryBuy(wallet) {
 
     await displayMarkets(markets)
     let bestMarket = bulls[0]
-    currentMarket = await newBuyOrder(wallet, bestMarket)
+    let response = await newBuyOrder(wallet, bestMarket)
+    currentMarket = response['market']
+    wallet = response['wallet']
 
   // } else {
   if (bulls.length === 0) {
@@ -244,8 +258,10 @@ async function tryBuy(wallet) {
   
   }
 
-  return markets
-
+  return {
+    'markets': markets,
+    'wallet': wallet
+  }
 }
 
 
@@ -549,7 +565,8 @@ async function fetchAllHistory(marketNames, currentMarketName) {
       if (response === 'No response' && marketName === currentMarketName) { 
 
         console.log(`No response for current market`)
-        return 'No response for current market'
+        markets.push(`No response for current market`)
+        return markets
         // marketNames.splice(i, 1)
         // i --
         // n --
@@ -762,7 +779,10 @@ async function newBuyOrder(wallet, market) {
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await recordTrade(tradeReport)
       tradeReport = ''
-      return market
+      return {
+        'market': market, 
+        'wallet': wallet
+      }
     }
 
   } catch (error) {
