@@ -139,7 +139,6 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       currentMarket = currentMarketArray[0]
     }
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
-    console.log(currentMarket)
 
     if (
       (
@@ -156,21 +155,21 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         bestMarket.name !== currentMarket.name &&
         currentMarket.currentPrice > wallet.targetPrice &&
         currentMarketArray.length > 0
-
       )
       ||
       (
         currentMarket.shape <= 0 &&         
         currentMarketArray.length > 0
-
       )
       ||
       (
-        currentMarket.ema1 < currentMarket.ema233
+        currentMarket.ema1 < currentMarket.ema233 &&
+        currentMarketArray.length > 0
       )
       ||
       (
-        currentMarket.trend === 'down'
+        currentMarket.trend === 'down' &&
+        currentMarketArray.length > 0
       )
     ) 
     {
@@ -444,8 +443,8 @@ async function sortByArc(markets) {
 
     let m = markets[i].history.length
     markets[i].shape = 0
-    markets[i].pointHigh = markets[i].history[0]['high']
-    markets[i].pointLow = markets[i].history[0]['low']
+    markets[i].pointHigh = markets[i].history[0]['close']
+    markets[i].pointLow = markets[i].history[0]['close']
 
     for (let t = 1; t < m-1; t++) {
 
@@ -453,38 +452,38 @@ async function sortByArc(markets) {
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
 
-      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) { 
+      if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) { 
 
-        if (thisPeriod['low'] > markets[i].pointLow) {
+        if (thisPeriod['close'] > markets[i].pointLow) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].pointLow) / thisPeriod['low'])
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointLow) / thisPeriod['close'])
 
-        } else if (thisPeriod['low'] < markets[i].pointLow) {
+        } else if (thisPeriod['close'] < markets[i].pointLow) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['low']) / thisPeriod['low'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['close']) / thisPeriod['close'])
 
         }
 
-        markets[i].pointLow = thisPeriod['low']
+        markets[i].pointLow = thisPeriod['close']
       }
 
-      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) { 
+      if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) { 
 
-        if (thisPeriod['high'] > markets[i].pointHigh) {
+        if (thisPeriod['close'] > markets[i].pointHigh) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].pointHigh) / thisPeriod['high'])
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointHigh) / thisPeriod['close'])
 
-        } else if (thisPeriod['high'] < markets[i].pointHigh) {
+        } else if (thisPeriod['close'] < markets[i].pointHigh) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointHigh - thisPeriod['high']) / thisPeriod['high'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointHigh - thisPeriod['close']) / thisPeriod['close'])
 
         }
 
-        markets[i].pointHigh = thisPeriod['high']
+        markets[i].pointHigh = thisPeriod['close']
       }
     }
   }
