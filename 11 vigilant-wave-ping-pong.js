@@ -132,7 +132,6 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     // }
 
     markets = await addEMA(markets)
-    console.log(markets)
     await displayMarkets(markets)
     let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
     let bestMarket = bulls[0]
@@ -177,10 +176,6 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       )
     ) 
     {
-      console.log(wallet.targetPrice)
-      console.log(currentMarket)
-      console.log(bestMarket)
-      console.log(secondBestMarket)
       await newSellOrder(wallet, currentMarket, 'Switch')
       // markets = await tryBuy(wallet)
       // currentMarket = markets[0]
@@ -243,22 +238,23 @@ async function tryBuy(wallet) {
 
   let markets = await updateMarkets()
   markets = await addEMA(markets)
+  await displayMarkets(markets)
   let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
   let currentMarket
 
-    await displayMarkets(markets)
+  if (bulls.length === 0) {
+
+    console.log('No viable markets\n')
+  
+  } else {
+
     let bestMarket = bulls[0]
     let response = await newBuyOrder(wallet, bestMarket)
     currentMarket = response['market']
     wallet = response['wallet']
 
-  // } else {
-  if (bulls.length === 0) {
-
-    console.log('No viable markets\n')
-  
   }
-
+  
   return {
     'markets': markets,
     'wallet': wallet
