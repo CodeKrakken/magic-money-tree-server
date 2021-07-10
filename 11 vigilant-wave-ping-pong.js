@@ -132,6 +132,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     // }
 
     markets = await addEMA(markets)
+    console.log(markets)
     await displayMarkets(markets)
     let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
     let bestMarket = bulls[0]

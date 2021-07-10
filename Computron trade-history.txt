@@ -834,3 +834,46 @@ Wave Shape: 186346110895.34155  Target Price - 0.18266057561685148
 
 Running at 10/07/2021, 18:50:50
 
+10/07/2021, 18:52:58 - Bought 5505.02019241 CHR @ 0.18138000 ($999.25)
+Wave Shape: 226788891368.58038  Target Price - 0.1817886156674048
+
+10/07/2021, 18:55:48 - Sold 5505.02019241 CHR @ 0.18192000 ($1001.4721684488502) [Switch]
+
+10/07/2021, 18:58:11 - Bought 5494.34353585 CHR @ 0.18200000 ($1000.7210643225135)
+Wave Shape: 233816258400.4564  Target Price - 0.18241001241298752
+
+10/07/2021, 19:12:39 - Sold 5494.34353585 CHR @ 0.17901000 ($983.5558836511599) [Switch]
+
+
+ ---------- 
+
+
+Running at 10/07/2021, 19:18:59
+
+
+ ---------- 
+
+
+Running at 10/07/2021, 19:26:15
+
+
+ ---------- 
+
+
+Running at 10/07/2021, 19:30:19
+
+TypeError: Cannot read property 'name' of undefined
+    at newBuyOrder (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:756:24)
+    at tryBuy (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:251:26)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:94:5)
+    at async tick (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:92:20)
+/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:252
+    currentMarket = response['market']
+                            ^
+
+TypeError: Cannot read property 'market' of undefined
+    at tryBuy (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:252:29)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:94:5)
+    at async tick (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:92:20)
