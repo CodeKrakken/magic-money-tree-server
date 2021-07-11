@@ -877,3 +877,22 @@ TypeError: Cannot read property 'market' of undefined
     at runMicrotasks (<anonymous>)
     at processTicksAndRejections (node:internal/process/task_queues:94:5)
     at async tick (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:92:20)
+ ---------- 
+
+
+Running at 11/07/2021, 11:08:14
+
+11/07/2021, 11:09:20 - Bought 24.46106229 ICP @ 40.82000000 ($999.25)
+Wave Shape: 152509451156.38852  Target Price - 40.91195992691291
+
+11/07/2021, 11:14:11 - Sold 24.46106229 ICP @ 40.81000000 ($998.2572599132358) [Not top 2]
+
+11/07/2021, 11:15:23 - Bought 143.32184502 ALICE @ 6.95470000 ($997.5085669683008)
+Wave Shape: 40496535723.25626  Target Price - 6.970367655651673
+
+
+ ---------- 
+
+
+Running at 11/07/2021, 11:39:32
+

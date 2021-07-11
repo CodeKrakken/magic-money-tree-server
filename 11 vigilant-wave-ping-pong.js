@@ -428,7 +428,7 @@ async function checkVolumeAndMovement(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     let change = parseFloat(twentyFourHour.data.priceChangePercent)
-    if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
+    // if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
     if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
     return 'Sufficient volume and movement'
   
