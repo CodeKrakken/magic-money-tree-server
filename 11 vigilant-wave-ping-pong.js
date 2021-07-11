@@ -221,14 +221,22 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
 async function getActiveCurrency(wallet) {
 
-  Object.keys(wallet.currencies).forEach(key => {
+  let keys = Object.keys(wallet.currencies)
+  let n = keys.length
+
+  for (let i = 0; i < n; i ++) {
+
+    let key = keys[i]
+
     if (key !== 'USDT') {
+
       key['dollarSymbol'] = `${activeCurrency}USDT`
-      key['dollarPrice'] = await fetchPrice(dollarSymbol)
-      key['dollarValue'] = key.quantity * dollarPrice
+      key['dollarPrice'] = await fetchPrice(key['dollarSymbol'])
+      key['dollarValue'] = key['quantity'] * key['dollarPrice']
     }
-  })
-  let sorted = Object.entries(wallet.currencies).sort((prev, next) => prev[1].dollarValue - next[1].dollarValue)
+  }
+
+  let sorted = Object.entries(wallet.currencies).sort((prev, next) => prev[1]['dollarValue'] - next[1]['dollarValue'])
   return sorted.pop()[0]
 }
 
@@ -276,7 +284,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   markets = await addEMA(markets)
   await displayMarkets(markets)
-  let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
+  let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0) // && market.trend === 'up')
 
   if (bulls.length === 0) {
 
@@ -697,7 +705,7 @@ async function newBuyOrder(wallet, market) {
 
       let currentPrice = response
       let baseVolume = wallet.currencies[base]['quantity']
-      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset]['quantity'] = 0 }
+      if (wallet.currencies[asset] === undefined) { wallet.currencies['asset'] = { 'quantity': 0 } }
       let volumeToTrade = baseVolume * (1 - fee)
       wallet.currencies[base]['quantity'] -= volumeToTrade
       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
@@ -747,7 +755,7 @@ async function newSellOrder(wallet, market, sellType) {
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]['quantity']
 
-    if (wallet.currencies[base] === undefined) { wallet.currencies[base]['quantity'] = 0 }
+    if (wallet.currencies[base] === undefined) { wallet.currencies[base] = { 'quantity': 0 } }
     wallet.currencies[base]['quantity'] += assetVolume * (1 - fee) * market.currentPrice
     wallet.currencies[asset]['quantity'] -= assetVolume
     wallet.targetPrice = undefined
