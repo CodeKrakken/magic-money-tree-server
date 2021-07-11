@@ -142,34 +142,42 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     }
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
 
-    console.log('Best market')
-    console.log(bestMarket)
-    console.log('Current market')
-    console.log(currentMarket)
-    console.log('Second best market')
-    console.log(secondBestMarket)
+    console.log('Best market name')
+    console.log(bestMarket.name)
+    // console.log('Second best market name')
+    // console.log(secondBestMarket.name)
+    console.log('Current market price')
+    console.log(currentMarket.currentPrice)
+    console.log('Current market shape')
+    console.log(currentMarket.shape)
+    console.log('currentMarket.ema1')
+    console.log(currentMarket.ema1)
+    console.log('currentMarket.ema233')
+    console.log(currentMarket.ema233)
+    console.log('currentMarket.trend')
+    console.log(currentMarket.trend)
     console.log('Wallet')
     console.log(wallet)
-
+ 
 
 
     if (
       
-        currentMarketArray.length > 0 &&
-        bestMarket !== undefined && 
-        bestMarket.name !== currentMarket.name &&
-        secondBestMarket !== undefined && 
-        secondBestMarket.name !== currentMarket.name
+    //     currentMarketArray.length > 0 &&
+    //     bestMarket !== undefined && 
+    //     bestMarket.name !== currentMarket.name &&
+    //     secondBestMarket !== undefined && 
+    //     secondBestMarket.name !== currentMarket.name
 
-      ) 
-      {
-        console.log(bestMarket.name)
-        console.log(secondBestMarket.name)
-        console.log(currentMarket.name)
-        await newSellOrder(wallet, currentMarket, 'Not top 2')
-      } 
-    else if  
-      (
+    //   ) 
+    //   {
+    //     console.log(bestMarket.name)
+    //     console.log(secondBestMarket.name)
+    //     console.log(currentMarket.name)
+    //     await newSellOrder(wallet, currentMarket, 'Not top 2 market - switch at possible loss')
+    //   } 
+    // else if  
+      // (
         currentMarketArray.length > 0 &&
         bestMarket !== undefined && 
         bestMarket.name !== currentMarket.name &&
@@ -180,7 +188,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         console.log(currentMarket.name)
         console.log(currentMarket.currentPrice)
         console.log(wallet.targetPrice)
-        await newSellOrder(wallet, currentMarket, 'Switch after profit')
+        await newSellOrder(wallet, currentMarket, 'Better market located - profitable switch')
       }  
     else if
       (
@@ -189,7 +197,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       )
       {     
         console.log(currentMarket.shape) 
-        await newSellOrder(wallet, currentMarket, 'Market crashing')
+        await newSellOrder(wallet, currentMarket, 'Market crashing - switch at possible loss')
       }
     else if
       (
@@ -200,7 +208,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         console.log(currentMarket.ema1)
         console.log(currentMarket.ema233)
 
-        await newSellOrder(wallet, currentMarket, 'Switch')
+        await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
       }
     else if
       (
@@ -210,7 +218,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       
       ) 
       {
-        await newSellOrder(wallet, currentMarket, 'Switch')
+        await newSellOrder(wallet, currentMarket, 'Trending down - profitable switch')
       }
     }
 
@@ -428,9 +436,8 @@ async function checkVolumeAndMovement(symbolName) {
   if (twentyFourHour.data !== undefined) {
 
     let change = parseFloat(twentyFourHour.data.priceChangePercent)
-    // if (Math.abs(change) < minimumMovement) { return "Insufficient movement" }
     if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
-    return 'Sufficient volume and movement'
+    return 'Sufficient volume'
   
   } else {
 

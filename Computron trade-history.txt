@@ -862,21 +862,7 @@ Running at 10/07/2021, 19:26:15
 
 Running at 10/07/2021, 19:30:19
 
-TypeError: Cannot read property 'name' of undefined
-    at newBuyOrder (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:756:24)
-    at tryBuy (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:251:26)
-    at runMicrotasks (<anonymous>)
-    at processTicksAndRejections (node:internal/process/task_queues:94:5)
-    at async tick (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:92:20)
-/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:252
-    currentMarket = response['market']
-                            ^
 
-TypeError: Cannot read property 'market' of undefined
-    at tryBuy (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:252:29)
-    at runMicrotasks (<anonymous>)
-    at processTicksAndRejections (node:internal/process/task_queues:94:5)
-    at async tick (/home/pea/Code/magic-money-tree-server/11 vigilant-wave-ping-pong.js:92:20)
  ---------- 
 
 
@@ -895,4 +881,144 @@ Wave Shape: 40496535723.25626  Target Price - 6.970367655651673
 
 
 Running at 11/07/2021, 11:39:32
+
+11/07/2021, 11:40:50 - Bought 18.27082457 FIL @ 54.65000000 ($999.25)
+Wave Shape: 12308587237.615807  Target Price - 54.77311636466904
+
+11/07/2021, 11:41:34 - Sold 18.27082457 FIL @ 54.69000000 ($999.2319719360048) [Not top 2]
+
+11/07/2021, 11:42:50 - Bought 54.82053220 AXS @ 18.20000000 ($998.4825479570528)
+Wave Shape: 277660127510.39874  Target Price - 18.241001241298747
+
+11/07/2021, 11:44:20 - Sold 54.82053220 AXS @ 18.22000000 ($998.8303980965262) [Not top 2]
+
+11/07/2021, 11:45:42 - Bought 2039.95237133 SAND @ 0.48890000 ($998.0812752979538)
+Wave Shape: 75429937847.33536  Target Price - 0.49000140147642635
+
+11/07/2021, 11:51:14 - Sold 2039.95237133 SAND @ 0.48685000 ($993.1550716698484) [Not top 2]
+
+11/07/2021, 11:52:31 - Bought 54.49821654 AXS @ 18.19630000 ($992.4102053660961)
+Wave Shape: 235221045652.9598  Target Price - 18.237292905881564
+
+
+ ---------- 
+
+
+Running at 11/07/2021, 11:59:07
+
+11/07/2021, 12:00:22 - Bought 2.28604918 COMP @ 436.78000000 ($999.25)
+Wave Shape: 101300392797.4842  Target Price - 437.76398473486086
+
+11/07/2021, 12:03:22 - Sold 2.28604918 COMP @ 435.48000000 ($995.5320520371397) [Not top 2]
+
+11/07/2021, 12:04:39 - Bought 144.64644713 ALICE @ 6.87220000 ($994.7854029981119)
+Wave Shape: 69457495803.46788  Target Price - 6.887681798376553
+
+11/07/2021, 12:09:23 - Sold 144.64644713 ALICE @ 6.84190000 ($989.6609332419958) [Not top 2]
+
+11/07/2021, 12:10:40 - Bought 12845.14491780 VET @ 0.07693000 ($988.9186875420643)
+Wave Shape: 33138428507.74993  Target Price - 0.07710330909302819
+
+11/07/2021, 12:16:12 - Sold 12845.14491780 VET @ 0.07698000 ($988.8198870304002) [Not top 2]
+
+11/07/2021, 12:17:28 - Bought 2.26287407 COMP @ 436.32000000 ($988.0782721151273)
+Wave Shape: 109984363964.34338  Target Price - 437.3029484397512
+
+11/07/2021, 12:17:42 - Sold 2.26287407 COMP @ 436.37000000 ($987.4513842618849) [Not top 2]
+
+11/07/2021, 12:19:03 - Bought 2.25777596 COMP @ 436.70000000 ($986.7107957236884)
+Wave Shape: 115039747623.25963  Target Price - 437.6838045096244
+
+11/07/2021, 12:24:39 - Sold 2.25777596 COMP @ 437.03000000 ($986.7163803610475) [Not top 2]
+
+11/07/2021, 12:25:54 - Bought 24.44149990 ICP @ 40.31000000 ($985.9763430757768)
+Wave Shape: 136619594433.77066  Target Price - 40.40081099103036
+
+
+ ---------- 
+
+
+Running at 11/07/2021, 12:26:27
+
+11/07/2021, 12:27:44 - Bought 142.69186042 ALICE @ 6.99760000 ($999.25)
+Wave Shape: 153086911318.81134  Target Price - 7.013364301434733
+
+11/07/2021, 12:29:17 - Sold 142.69186042 ALICE @ 7.03240000 ($1003.4636395633082) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 12:30:34 - Bought 141.48366355 ALICE @ 7.08180000 ($1002.7110418336357)
+Wave Shape: 152684403815.6441  Target Price - 7.097753988496127
+
+11/07/2021, 12:35:30 - Sold 141.48366355 ALICE @ 7.15000000 ($1011.6020859904678) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 12:36:45 - Bought 140.11447522 ALICE @ 7.20900000 ($1010.8433844259749)
+Wave Shape: 173550291900.328  Target Price - 7.225240546622126
+
+11/07/2021, 12:42:48 - Sold 140.11447522 ALICE @ 7.14630000 ($1001.3078007999039) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 12:47:29 - Bought 141.34336156 ALICE @ 7.07360000 ($1000.556819949304)
+Wave Shape: 221712754675.28656  Target Price - 7.089535515409388
+
+11/07/2021, 12:56:58 - Sold 141.34336156 ALICE @ 7.15000000 ($1010.5980622317959) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:01:40 - Bought 2.31318968 COMP @ 436.23000000 ($1009.840113685122)
+Wave Shape: 138836464960.44904  Target Price - 437.21274568636017
+
+11/07/2021, 13:06:08 - Sold 2.31318968 COMP @ 436.15000000 ($1008.8989537134057) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:11:03 - Bought 2953.69193921 TFUEL @ 0.34106000 ($1008.1422794981206)
+Wave Shape: 78501589333.51189  Target Price - 0.34182834523941497
+
+11/07/2021, 13:14:17 - Sold 2953.69193921 TFUEL @ 0.34352000 ($1014.6479399830306) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:18:34 - Bought 143.22846382 ALICE @ 7.07350000 ($1013.8869540280433)
+Wave Shape: 293951062546.06244  Target Price - 7.089435290127843
+
+11/07/2021, 13:23:27 - Sold 143.22846382 ALICE @ 7.01600000 ($1004.8982199214005) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:25:18 - Bought 2888.78746429 TFUEL @ 0.34734000 ($1004.1445462564594)
+Wave Shape: 159177188903.9388  Target Price - 0.3481224929204784
+
+11/07/2021, 13:26:27 - Sold 2888.78746429 TFUEL @ 0.34836000 ($1006.3369212244895) [Better market located - profitable switch]
+
+11/07/2021, 13:28:03 - Bought 142.88143530 ALICE @ 7.03260000 ($1005.5821685335711)
+Wave Shape: 307558345145.95135  Target Price - 7.048443149975692
+
+11/07/2021, 13:28:32 - Sold 142.88143530 ALICE @ 7.00310000 ($1000.6172725219963) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:30:21 - Bought 2879.38243022 TFUEL @ 0.34699000 ($999.8668095676047)
+Wave Shape: 157030003055.54434  Target Price - 0.3477717044350689
+
+11/07/2021, 13:31:18 - Sold 2879.38243022 TFUEL @ 0.34652000 ($997.7657399728305) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:32:57 - Bought 140.53938589 ALICE @ 7.08890000 ($997.0174156678509)
+Wave Shape: 337614280213.2311  Target Price - 7.104869983485863
+
+11/07/2021, 13:40:40 - Sold 140.53938589 ALICE @ 7.15650000 ($1005.764111810643) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:41:56 - Bought 138.60027760 ALICE @ 7.24570000 ($1005.009788726785)
+Wave Shape: 379870316497.3663  Target Price - 7.2620232249493615
+
+11/07/2021, 13:51:14 - Sold 138.60027760 ALICE @ 7.28690000 ($1009.9632111339813) [Not top 2 market - switch at possible loss]
+
+11/07/2021, 13:52:35 - Bought 18.46637675 FIL @ 54.61000000 ($1009.2057387256308)
+Wave Shape: 32721220543.272167  Target Price - 54.73302625205081
+
+
+ ---------- 
+
+
+Running at 11/07/2021, 14:48:41
+
+11/07/2021, 14:50:00 - Bought 66.20478468 CAKE @ 15.08200000 ($999.25)
+Wave Shape: 66376010984.19981  Target Price - 15.115976962707018
+
+11/07/2021, 14:52:31 - Sold 66.20478468 CAKE @ 15.11900000 ($1000.9494269284029) [Better market located - profitable switch]
+
+11/07/2021, 14:53:50 - Bought 136.91076244 ALICE @ 7.30000000 ($1000.1987148582066)
+Wave Shape: 351827169185.18646  Target Price - 7.31644555282862
+
+11/07/2021, 14:57:54 - Sold 136.91076244 ALICE @ 7.34030000 ($1004.9630570664854) [Better market located - profitable switch]
+
+11/07/2021, 14:59:12 - Bought 137.44092286 ALICE @ 7.30100000 ($1004.2093347736854)
+Wave Shape: 341600836281.17334  Target Price - 7.3174478056440755
 
