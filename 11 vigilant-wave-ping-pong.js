@@ -225,12 +225,11 @@ async function getActiveCurrency(wallet) {
   let n = keys.length
 
   for (let i = 0; i < n; i ++) {
+    let key = wallet.currencies[keys[i]]
 
-    let key = keys[i]
+    if (keys[i] !== 'USDT') {
 
-    if (key !== 'USDT') {
-
-      key['dollarSymbol'] = `${activeCurrency}USDT`
+      key['dollarSymbol'] = `${keys[i]}USDT`
       key['dollarPrice'] = await fetchPrice(key['dollarSymbol'])
       key['dollarValue'] = key['quantity'] * key['dollarPrice']
     }
@@ -705,7 +704,7 @@ async function newBuyOrder(wallet, market) {
 
       let currentPrice = response
       let baseVolume = wallet.currencies[base]['quantity']
-      if (wallet.currencies[asset] === undefined) { wallet.currencies['asset'] = { 'quantity': 0 } }
+      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = { 'quantity': 0 } }
       let volumeToTrade = baseVolume * (1 - fee)
       wallet.currencies[base]['quantity'] -= volumeToTrade
       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
