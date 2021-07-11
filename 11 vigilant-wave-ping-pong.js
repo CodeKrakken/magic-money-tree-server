@@ -440,6 +440,7 @@ async function sortByArc(markets) {
 
         } else if (thisPeriod['close'] < markets[i].pointLow) {
 
+          markets[i].trend = 'down'
           markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['close']) / thisPeriod['close'])
         }
 
@@ -455,7 +456,6 @@ async function sortByArc(markets) {
 
         } else if (thisPeriod['close'] < markets[i].pointHigh) {
 
-          markets[i].trend = 'down'
           markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointHigh - thisPeriod['close']) / thisPeriod['close'])
         }
 
