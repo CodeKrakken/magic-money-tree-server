@@ -319,7 +319,7 @@ async function getMarketNames() {
 async function fetchMarkets() {
 
   let markets = await binance.load_markets()
-  return market
+  return markets
 }
 
 
@@ -434,32 +434,33 @@ async function sortByArc(markets) {
 
       if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) { 
 
-        if (thisPeriod['close'] > markets[i].pointLow) {
+        if (thisPeriod['close'] > markets[i].history[pointLow]['close']) {
 
           markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointLow) / thisPeriod['close'])
 
-        } else if (thisPeriod['close'] < markets[i].pointLow) {
+        } else if (thisPeriod['close'] < markets[i].history[pointLow]['close']) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointLow - thisPeriod['close']) / thisPeriod['close'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[pointLow]['close'] - thisPeriod['close']) / thisPeriod['close'])
         }
-
-        markets[i].pointLow = thisPeriod['close']
+        markets[i].pointLow = t
+        // markets[i].pointLow = thisPeriod['close']
       }
 
       if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) { 
 
-        if (thisPeriod['close'] > markets[i].pointHigh) {
+        if (thisPeriod['close'] > markets[i].history[pointHigh]['close']) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointHigh) / thisPeriod['close'])
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].history[pointHigh]['close']) / thisPeriod['close'])
 
-        } else if (thisPeriod['close'] < markets[i].pointHigh) {
+        } else if (thisPeriod['close'] < markets[i].history[pointHigh]['close']) {
 
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].pointHigh - thisPeriod['close']) / thisPeriod['close'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[pointHigh]['close'] - thisPeriod['close']) / thisPeriod['close'])
         }
 
-        markets[i].pointHigh = thisPeriod['close']
+        markets[i].pointHigh = t
+        // markets[i].pointHigh = thisPeriod['close']
       }
     }
   }
