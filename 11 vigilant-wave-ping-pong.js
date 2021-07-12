@@ -53,7 +53,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.00075
 const volatilityDuration = 2
 const minimumMovement = 2
-const stopLossThreshold = 0.99
+const stopLossThreshold = 0.98
 const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
@@ -170,19 +170,19 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     console.log('Wallet')
     console.log(wallet)
  
-    if (
-      currentMarketArray.length > 0 &&
-      bestMarket !== undefined && 
-      bestMarket.name !== currentMarket.name &&
-      currentMarket.currentPrice > wallet.targetPrice 
-    )
-    {
-      console.log(bestMarket.name)
-      console.log(currentMarket.name)
-      console.log(currentMarket.currentPrice)
-      console.log(wallet.targetPrice)
-      await newSellOrder(wallet, currentMarket, 'Better market located - profitable switch')
-    }  
+    // if (
+    //   currentMarketArray.length > 0 &&
+    //   bestMarket !== undefined && 
+    //   bestMarket.name !== currentMarket.name &&
+    //   currentMarket.currentPrice > wallet.targetPrice 
+    // )
+    // {
+    //   console.log(bestMarket.name)
+    //   console.log(currentMarket.name)
+    //   console.log(currentMarket.currentPrice)
+    //   console.log(wallet.targetPrice)
+    //   await newSellOrder(wallet, currentMarket, 'Better market located - profitable switch')
+    // }  
   // else if
   //   (
   //     currentMarketArray.length > 0 &&
@@ -204,7 +204,8 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
   //     await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
   //   }
 
-  else if 
+  // else 
+  if 
     (
       currentMarketArray.length > 0 &&
       currentMarket.currentPrice > wallet.targetPrice &&
@@ -228,16 +229,16 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       console.log(wallet.stopLossPrice)
       await newSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
     }
-  else if
-    (
-      currentMarketArray.length > 0 &&
-      currentMarket.trend === 'down' &&
-      currentMarket.currentPrice > wallet.targetPrice
+  // else if
+  //   (
+  //     currentMarketArray.length > 0 &&
+  //     currentMarket.trend === 'down' &&
+  //     currentMarket.currentPrice > wallet.targetPrice
     
-    ) 
-    {
-      await newSellOrder(wallet, currentMarket, 'Trending down - profitable switch')
-    }
+  //   ) 
+  //   {
+  //     await newSellOrder(wallet, currentMarket, 'Trending down - profitable switch')
+  //   }
   }
 
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
