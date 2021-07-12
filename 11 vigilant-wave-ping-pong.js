@@ -465,40 +465,56 @@ async function sortByArc(markets) {
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
 
-      if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) { 
+      if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) {
+         
+        console.log(`thisPeriod['close'] (${thisPeriod['close']}) < lastPeriod['close'] (${lastPeriod['close']}) and thisPeriod['close'] (${thisPeriod['close']}) < nextPeriod['close'] (${nextPeriod['close']})`)
 
         if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close']) {
 
+          console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
+
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['close'])
-          console.log(markets[i].shape)
+          console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])} = `)
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])
           markets[i].pointLow = t
+          console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}`)
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointLow]['close']) {
 
+          console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
+
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['close']) / markets[i].history[markets[i].pointLow]['close'])
-          console.log(markets[i].shape)
+          console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])} = `)
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])
           markets[i].pointLow = t
+          console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}`)
         }
 
       }
 
-      if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) { 
+      if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) {
+        
+        console.log(`thisPeriod['close'] (${thisPeriod['close']}) > lastPeriod['close'] (${lastPeriod['close']}) and thisPeriod['close'] (${thisPeriod['close']}) > nextPeriod['close'] (${nextPeriod['close']})`)
 
         if (thisPeriod['open'] > markets[i].history[markets[i].pointHigh]['close']) {
 
+          console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
+
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['close'])
-          console.log(markets[i].shape)
+          console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])} = `)
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])
           markets[i].pointHigh = t
+          console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}`)
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointHigh]['close']) {
 
+          console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
+
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['close']) / markets[i].history[markets[i].pointHigh]['close'])
-          console.log(markets[i].shape)
+          console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])} = `)
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])
           markets[i].pointHigh = t
+          console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}`)
         }
       }
     }
