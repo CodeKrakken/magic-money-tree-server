@@ -134,8 +134,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    console.log(markets)
-    let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
+    let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
     let bestMarket = bulls[0]
     let currentMarketArray = markets.filter(market => market.name === currentMarket.name)
 
@@ -193,17 +192,17 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       console.log(currentMarket.shape) 
       await newSellOrder(wallet, currentMarket, 'Market crashing - switch at possible loss')
     }
-  else if
-    (
-      currentMarketArray.length > 0 &&
-      currentMarket.ema1 < currentMarket.ema233
-    )
-    {     
-      console.log(currentMarket.ema1)
-      console.log(currentMarket.ema233)
+  // else if
+  //   (
+  //     currentMarketArray.length > 0 &&
+  //     currentMarket.ema1 < currentMarket.ema233
+  //   )
+  //   {     
+  //     console.log(currentMarket.ema1)
+  //     console.log(currentMarket.ema233)
 
-      await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
-    }
+  //     await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
+  //   }
   else if
     (
       currentMarketArray.length > 0 &&
@@ -234,7 +233,7 @@ async function getActiveCurrency(wallet) {
       key['dollarPrice'] = 1
       
     } else {
-      
+
       key['dollarSymbol'] = `${keys[i]}USDT`
       key['dollarPrice'] = await fetchPrice(key['dollarSymbol'])
     }
@@ -250,8 +249,6 @@ async function getActiveCurrency(wallet) {
 
 
 async function displayWallet(wallet, marketNames, activeCurrency, currentMarket) {
-  console.log(wallet)
-  console.log(activeCurrency)
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency]['quantity'] > 0)
   console.log('Wallet')
@@ -293,7 +290,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   markets = await addEMA(markets)
   await displayMarkets(markets)
-  let bulls = markets // .filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
+  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
 
   if (bulls.length === 0) {
 
@@ -456,7 +453,7 @@ async function sortByArc(markets) {
   let n = markets.length
 
   for (let i = 0; i < n; i++) {
-
+    console.log(markets[i].name)
     let m = markets[i].history.length
     markets[i].shape = 0
     markets[i].pointHigh = 0
@@ -473,15 +470,18 @@ async function sortByArc(markets) {
         if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close']) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].pointLow) / thisPeriod['close'])
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['close'])
+          console.log(markets[i].shape)
+          markets[i].pointLow = t
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointLow]['close']) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['close']) / thisPeriod['close'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['close']) / markets[i].history[markets[i].pointLow]['close'])
+          console.log(markets[i].shape)
+          markets[i].pointLow = t
         }
-        markets[i].pointLow = t
-        // markets[i].pointLow = thisPeriod['close']
+
       }
 
       if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) { 
@@ -490,15 +490,16 @@ async function sortByArc(markets) {
 
           markets[i].trend = 'up'
           markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['close'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['close'])
+          console.log(markets[i].shape)
+          markets[i].pointHigh = t
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointHigh]['close']) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['close']) / thisPeriod['close'])
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['close']) / markets[i].history[markets[i].pointHigh]['close'])
+          console.log(markets[i].shape)
+          markets[i].pointHigh = t
         }
-
-        markets[i].pointHigh = t
-        // markets[i].pointHigh = thisPeriod['close']
       }
     }
   }
