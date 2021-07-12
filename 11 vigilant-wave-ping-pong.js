@@ -134,7 +134,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
+    let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
     let bestMarket = bulls[0]
     let currentMarketArray = markets.filter(market => market.name === currentMarket.name)
 
@@ -322,7 +322,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   markets = await addEMA(markets)
   await displayMarkets(markets)
-  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
+  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
 
   if (bulls.length === 0) {
 
