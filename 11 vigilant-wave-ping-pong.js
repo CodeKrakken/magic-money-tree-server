@@ -134,7 +134,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
-    let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
+    let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
     let bestMarket = bulls[0]
     let currentMarketArray = markets.filter(market => market.name === currentMarket.name)
 
@@ -192,16 +192,41 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
   //     console.log(currentMarket.shape) 
   //     await newSellOrder(wallet, currentMarket, 'Market crashing - switch at possible loss')
   //   }
-  else if
+  // else if
+  //   (
+  //     currentMarketArray.length > 0 &&
+  //     currentMarket.ema1 < currentMarket.ema233
+  //   )
+  //   {     
+  //     console.log(currentMarket.ema1)
+  //     console.log(currentMarket.ema233)
+
+  //     await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
+  //   }
+
+  else if 
     (
       currentMarketArray.length > 0 &&
-      currentMarket.ema1 < currentMarket.ema233
-    )
-    {     
-      console.log(currentMarket.ema1)
-      console.log(currentMarket.ema233)
-
-      await newSellOrder(wallet, currentMarket, 'EMA down - switch at possible loss')
+      currentMarket.currentPrice > wallet.targetPrice &&
+      currentMarket.currentPrice < wallet.stopLossPrice
+    ) 
+    {
+      console.log(currentMarket.currentPrice)
+      console.log(wallet.targetPrice)
+      console.log(wallet.stopLossPrice)
+      await newSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch')
+    }
+  else if 
+    (
+      currentMarketArray.length > 0 &&
+      currentMarket.currentPrice < wallet.targetPrice &&
+      currentMarket.currentPrice < wallet.stopLossPrice
+    ) 
+    {
+      console.log(currentMarket.currentPrice)
+      console.log(wallet.targetPrice)
+      console.log(wallet.stopLossPrice)
+      await newSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
     }
   else if
     (
@@ -268,8 +293,14 @@ async function displayWallet(wallet, marketNames, activeCurrency, currentMarket)
     } else {
       
       dollarVolume = wallet.currencies[activeCurrency]['quantity'] * dollarPrice
-    }
 
+      if (dollarPrice > wallet.targetPrice && dollarPrice > wallet.highPrice) { 
+      
+        wallet.highPrice = dollarPrice
+        wallet.stopLossPrice = wallet.targetPrice + (wallet.highPrice - wallet.targetPrice) / 2
+      
+      }
+    }
   }
   
   nonZeroWallet.forEach(currency => {
@@ -290,7 +321,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   markets = await addEMA(markets)
   await displayMarkets(markets)
-  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
+  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // && market.ema1 > market.ema233)
 
   if (bulls.length === 0) {
 
@@ -737,6 +768,7 @@ async function newBuyOrder(wallet, market) {
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
       wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
+      wallet.highPrice = currentPrice
       wallet.boughtTime = Date.now()
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await recordTrade(tradeReport)
