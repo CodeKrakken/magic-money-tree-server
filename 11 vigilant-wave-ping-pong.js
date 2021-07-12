@@ -61,12 +61,7 @@ const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 async function run() {
 
   await recordTrade(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-  let markets
-  let currentMarket
-  let allMarkets = await fetchMarkets()
-  let allMarketNames = Object.keys(allMarkets)
-  let marketNames
-  
+
   let wallet = { 
   
     currencies: {
@@ -76,6 +71,12 @@ async function run() {
       }
     }
   }
+
+  let markets
+  let allMarkets = await fetchMarkets()
+  let allMarketNames = Object.keys(allMarkets)
+  let currentMarket
+  let marketNames
 
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
@@ -133,6 +134,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     markets = await addEMA(markets)
     await displayMarkets(markets)
+    console.log(markets)
     let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
     let bestMarket = bulls[0]
     let currentMarketArray = markets.filter(market => market.name === currentMarket.name)
@@ -225,14 +227,20 @@ async function getActiveCurrency(wallet) {
   let n = keys.length
 
   for (let i = 0; i < n; i ++) {
+    
     let key = wallet.currencies[keys[i]]
+    if (keys[i] === 'USDT') {
 
-    if (keys[i] !== 'USDT') {
-
+      key['dollarPrice'] = 1
+      
+    } else {
+      
       key['dollarSymbol'] = `${keys[i]}USDT`
       key['dollarPrice'] = await fetchPrice(key['dollarSymbol'])
-      key['dollarValue'] = key['quantity'] * key['dollarPrice']
     }
+
+    key['dollarValue'] = key['quantity'] * key['dollarPrice']
+
   }
 
   let sorted = Object.entries(wallet.currencies).sort((prev, next) => prev[1]['dollarValue'] - next[1]['dollarValue'])
@@ -242,6 +250,8 @@ async function getActiveCurrency(wallet) {
 
 
 async function displayWallet(wallet, marketNames, activeCurrency, currentMarket) {
+  console.log(wallet)
+  console.log(activeCurrency)
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency]['quantity'] > 0)
   console.log('Wallet')
@@ -283,7 +293,7 @@ async function tryBuy(wallet) {
   let markets = await updateMarkets()
   markets = await addEMA(markets)
   await displayMarkets(markets)
-  let bulls = markets.filter(market => market.ema1 > market.ema233 && market.shape > 0) // && market.trend === 'up')
+  let bulls = markets // .filter(market => market.ema1 > market.ema233 && market.shape > 0 && market.trend === 'up')
 
   if (bulls.length === 0) {
 

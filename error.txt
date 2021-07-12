@@ -1,0 +1,1469 @@
+
+ ---------- 
+
+
+Running at 12/07/2021, 08:34:39
+
+
+
+
+----------
+
+
+Tick at 12/07/2021, 08:34:40
+
+Wallet
+1000 USDT  
+
+
+Fetching overview
+
+Checking 24 hour volume of market 1/234 - BTCUSDT - Sufficient volume
+Checking 24 hour volume of market 2/234 - ETHUSDT - Sufficient volume
+Checking 24 hour volume of market 3/234 - NEOUSDT - Insufficient volume
+Checking 24 hour volume of market 3/233 - LTCUSDT - Sufficient volume
+Checking 24 hour volume of market 4/233 - QTUMUSDT - Insufficient volume
+Checking 24 hour volume of market 4/232 - ADAUSDT - Sufficient volume
+Checking 24 hour volume of market 5/232 - XRPUSDT - Sufficient volume
+Checking 24 hour volume of market 6/232 - EOSUSDT - Sufficient volume
+Checking 24 hour volume of market 7/232 - IOTAUSDT - Insufficient volume
+Checking 24 hour volume of market 7/231 - XLMUSDT - Insufficient volume
+Checking 24 hour volume of market 7/230 - ONTUSDT - Insufficient volume
+Checking 24 hour volume of market 7/229 - TRXUSDT - Insufficient volume
+Checking 24 hour volume of market 7/228 - ETCUSDT - Sufficient volume
+Checking 24 hour volume of market 8/228 - ICXUSDT - Insufficient volume
+Checking 24 hour volume of market 8/227 - NULSUSDT - Insufficient volume
+Checking 24 hour volume of market 8/226 - VETUSDT - Sufficient volume
+Checking 24 hour volume of market 9/226 - PAXUSDT - Insufficient volume
+Checking 24 hour volume of market 9/225 - BCHUSDT - Insufficient volume
+Checking 24 hour volume of market 9/224 - LINKUSDT - Sufficient volume
+Checking 24 hour volume of market 10/224 - WAVESUSDT - Insufficient volume
+Checking 24 hour volume of market 10/223 - BTTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/222 - ONGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/221 - HOTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/220 - ZILUSDT - Insufficient volume
+Checking 24 hour volume of market 10/219 - ZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 10/218 - FETUSDT - Insufficient volume
+Checking 24 hour volume of market 10/217 - BATUSDT - Insufficient volume
+Checking 24 hour volume of market 10/216 - XMRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/215 - ZECUSDT - Insufficient volume
+Checking 24 hour volume of market 10/214 - IOSTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/213 - CELRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/212 - DASHUSDT - Insufficient volume
+Checking 24 hour volume of market 10/211 - NANOUSDT - Insufficient volume
+Checking 24 hour volume of market 10/210 - OMGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/209 - THETAUSDT - Sufficient volume
+Checking 24 hour volume of market 11/209 - ENJUSDT - Sufficient volume
+Checking 24 hour volume of market 12/209 - MITHUSDT - Sufficient volume
+Checking 24 hour volume of market 13/209 - MATICUSDT - Sufficient volume
+Checking 24 hour volume of market 14/209 - ATOMUSDT - Sufficient volume
+Checking 24 hour volume of market 15/209 - TFUELUSDT - Insufficient volume
+Checking 24 hour volume of market 15/208 - ONEUSDT - Insufficient volume
+Checking 24 hour volume of market 15/207 - FTMUSDT - Insufficient volume
+Checking 24 hour volume of market 15/206 - ALGOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/205 - GTOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/204 - DOGEUSDT - Sufficient volume
+Checking 24 hour volume of market 16/204 - DUSKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/203 - ANKRUSDT - Insufficient volume
+Checking 24 hour volume of market 16/202 - WINUSDT - Insufficient volume
+Checking 24 hour volume of market 16/201 - COSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/200 - COCOSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/199 - MTLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/198 - TOMOUSDT - Insufficient volume
+Checking 24 hour volume of market 16/197 - PERLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/196 - DENTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/195 - MFTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/194 - KEYUSDT - Insufficient volume
+Checking 24 hour volume of market 16/193 - DOCKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/192 - WANUSDT - Insufficient volume
+Checking 24 hour volume of market 16/191 - FUNUSDT - Insufficient volume
+Checking 24 hour volume of market 16/190 - CVCUSDT - Insufficient volume
+Checking 24 hour volume of market 16/189 - CHZUSDT - Sufficient volume
+Checking 24 hour volume of market 17/189 - BANDUSDT - Insufficient volume
+Checking 24 hour volume of market 17/188 - BEAMUSDT - Insufficient volume
+Checking 24 hour volume of market 17/187 - XTZUSDT - Insufficient volume
+Checking 24 hour volume of market 17/186 - RENUSDT - Insufficient volume
+Checking 24 hour volume of market 17/185 - RVNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/184 - HBARUSDT - Insufficient volume
+Checking 24 hour volume of market 17/183 - NKNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/182 - STXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/181 - KAVAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/180 - ARPAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/179 - IOTXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/178 - RLCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/177 - CTXCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/176 - TROYUSDT - Insufficient volume
+Checking 24 hour volume of market 17/175 - VITEUSDT - Insufficient volume
+Checking 24 hour volume of market 17/174 - FTTUSDT - Insufficient volume
+Checking 24 hour volume of market 17/173 - EURUSDT - Sufficient volume
+Checking 24 hour volume of market 18/173 - OGNUSDT - Insufficient volume
+Checking 24 hour volume of market 18/172 - DREPUSDT - Insufficient volume
+Checking 24 hour volume of market 18/171 - TCTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/170 - WRXUSDT - Insufficient volume
+Checking 24 hour volume of market 18/169 - BTSUSDT - Insufficient volume
+Checking 24 hour volume of market 18/168 - LSKUSDT - Insufficient volume
+Checking 24 hour volume of market 18/167 - BNTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/166 - LTOUSDT - Insufficient volume
+Checking 24 hour volume of market 18/165 - AIONUSDT - Insufficient volume
+Checking 24 hour volume of market 18/164 - MBLUSDT - Insufficient volume
+Checking 24 hour volume of market 18/163 - COTIUSDT - Insufficient volume
+Checking 24 hour volume of market 18/162 - STPTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/161 - WTCUSDT - Insufficient volume
+Checking 24 hour volume of market 18/160 - DATAUSDT - Insufficient volume
+Checking 24 hour volume of market 18/159 - SOLUSDT - Sufficient volume
+Checking 24 hour volume of market 19/159 - CTSIUSDT - Insufficient volume
+Checking 24 hour volume of market 19/158 - HIVEUSDT - Insufficient volume
+Checking 24 hour volume of market 19/157 - CHRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/156 - GXSUSDT - Insufficient volume
+Checking 24 hour volume of market 19/155 - ARDRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/154 - MDTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/153 - STMXUSDT - Insufficient volume
+Checking 24 hour volume of market 19/152 - KNCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/151 - REPUSDT - Insufficient volume
+Checking 24 hour volume of market 19/150 - LRCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/149 - PNTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/148 - COMPUSDT - Sufficient volume
+Checking 24 hour volume of market 20/148 - SCUSDT - Insufficient volume
+Checking 24 hour volume of market 20/147 - ZENUSDT - Insufficient volume
+Checking 24 hour volume of market 20/146 - SNXUSDT - Sufficient volume
+Checking 24 hour volume of market 21/146 - VTHOUSDT - Insufficient volume
+Checking 24 hour volume of market 21/145 - DGBUSDT - Insufficient volume
+Checking 24 hour volume of market 21/144 - GBPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/143 - SXPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/142 - MKRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/141 - DCRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/140 - STORJUSDT - Insufficient volume
+Checking 24 hour volume of market 21/139 - MANAUSDT - Insufficient volume
+Checking 24 hour volume of market 21/138 - AUDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/137 - YFIUSDT - Insufficient volume
+Checking 24 hour volume of market 21/136 - BALUSDT - Insufficient volume
+Checking 24 hour volume of market 21/135 - BLZUSDT - Insufficient volume
+Checking 24 hour volume of market 21/134 - IRISUSDT - Insufficient volume
+Checking 24 hour volume of market 21/133 - KMDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/132 - JSTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/131 - SRMUSDT - Insufficient volume
+Checking 24 hour volume of market 21/130 - ANTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/129 - CRVUSDT - Insufficient volume
+Checking 24 hour volume of market 21/128 - SANDUSDT - Sufficient volume
+Checking 24 hour volume of market 22/128 - OCEANUSDT - Insufficient volume
+Checking 24 hour volume of market 22/127 - NMRUSDT - Insufficient volume
+Checking 24 hour volume of market 22/126 - DOTUSDT - Sufficient volume
+Checking 24 hour volume of market 23/126 - LUNAUSDT - Sufficient volume
+Checking 24 hour volume of market 24/126 - RSRUSDT - Insufficient volume
+Checking 24 hour volume of market 24/125 - PAXGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/124 - WNXMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/123 - TRBUSDT - Insufficient volume
+Checking 24 hour volume of market 24/122 - BZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 24/121 - SUSHIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/120 - YFIIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/119 - KSMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/118 - EGLDUSDT - Insufficient volume
+Checking 24 hour volume of market 24/117 - DIAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/116 - RUNEUSDT - Insufficient volume
+Checking 24 hour volume of market 24/115 - FIOUSDT - Insufficient volume
+Checking 24 hour volume of market 24/114 - UMAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/113 - BELUSDT - Insufficient volume
+Checking 24 hour volume of market 24/112 - WINGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/111 - UNIUSDT - Sufficient volume
+Checking 24 hour volume of market 25/111 - NBSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/110 - OXTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/109 - SUNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/108 - AVAXUSDT - Insufficient volume
+Checking 24 hour volume of market 25/107 - HNTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/106 - FLMUSDT - Insufficient volume
+Checking 24 hour volume of market 25/105 - ORNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/104 - UTKUSDT - Insufficient volume
+Checking 24 hour volume of market 25/103 - XVSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/102 - ALPHAUSDT - Insufficient volume
+Checking 24 hour volume of market 25/101 - AAVEUSDT - Sufficient volume
+Checking 24 hour volume of market 26/101 - NEARUSDT - Insufficient volume
+Checking 24 hour volume of market 26/100 - FILUSDT - Sufficient volume
+Checking 24 hour volume of market 27/100 - INJUSDT - Insufficient volume
+Checking 24 hour volume of market 27/99 - AUDIOUSDT - Insufficient volume
+Checking 24 hour volume of market 27/98 - CTKUSDT - Insufficient volume
+Checking 24 hour volume of market 27/97 - AKROUSDT - Insufficient volume
+Checking 24 hour volume of market 27/96 - AXSUSDT - Sufficient volume
+Checking 24 hour volume of market 28/96 - HARDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/95 - DNTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/94 - STRAXUSDT - Insufficient volume
+Checking 24 hour volume of market 28/93 - UNFIUSDT - Insufficient volume
+Checking 24 hour volume of market 28/92 - ROSEUSDT - Insufficient volume
+Checking 24 hour volume of market 28/91 - AVAUSDT - Insufficient volume
+Checking 24 hour volume of market 28/90 - XEMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/89 - SKLUSDT - Insufficient volume
+Checking 24 hour volume of market 28/88 - SUSDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/87 - GRTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/86 - JUVUSDT - Insufficient volume
+Checking 24 hour volume of market 28/85 - PSGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/84 - 1INCHUSDT - Insufficient volume
+Checking 24 hour volume of market 28/83 - REEFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/82 - OGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/81 - ATMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/80 - ASRUSDT - Insufficient volume
+Checking 24 hour volume of market 28/79 - CELOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/78 - RIFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/77 - BTCSTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/76 - TRUUSDT - Insufficient volume
+Checking 24 hour volume of market 28/75 - CKBUSDT - Insufficient volume
+Checking 24 hour volume of market 28/74 - TWTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/73 - FIROUSDT - Insufficient volume
+Checking 24 hour volume of market 28/72 - LITUSDT - Insufficient volume
+Checking 24 hour volume of market 28/71 - SFPUSDT - Insufficient volume
+Checking 24 hour volume of market 28/70 - DODOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/69 - CAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 29/69 - ACMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/68 - BADGERUSDT - Insufficient volume
+Checking 24 hour volume of market 29/67 - FISUSDT - Insufficient volume
+Checking 24 hour volume of market 29/66 - OMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/65 - PONDUSDT - Insufficient volume
+Checking 24 hour volume of market 29/64 - DEGOUSDT - Insufficient volume
+Checking 24 hour volume of market 29/63 - ALICEUSDT - Sufficient volume
+Checking 24 hour volume of market 30/63 - LINAUSDT - Insufficient volume
+Checking 24 hour volume of market 30/62 - PERPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/61 - RAMPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/60 - CFXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/59 - EPSUSDT - Insufficient volume
+Checking 24 hour volume of market 30/58 - AUTOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/57 - TKOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/56 - PUNDIXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/55 - TLMUSDT - Sufficient volume
+Checking 24 hour volume of market 31/55 - BTGUSDT - Insufficient volume
+Checking 24 hour volume of market 31/54 - MIRUSDT - Insufficient volume
+Checking 24 hour volume of market 31/53 - BARUSDT - Insufficient volume
+Checking 24 hour volume of market 31/52 - FORTHUSDT - Insufficient volume
+Checking 24 hour volume of market 31/51 - BAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 32/51 - BURGERUSDT - Insufficient volume
+Checking 24 hour volume of market 32/50 - SLPUSDT - Sufficient volume
+Checking 24 hour volume of market 33/50 - SHIBUSDT - Sufficient volume
+Checking 24 hour volume of market 34/50 - ICPUSDT - Sufficient volume
+Checking 24 hour volume of market 35/50 - ARUSDT - Insufficient volume
+Checking 24 hour volume of market 35/49 - POLSUSDT - Insufficient volume
+Checking 24 hour volume of market 35/48 - MDXUSDT - Insufficient volume
+Checking 24 hour volume of market 35/47 - MASKUSDT - Insufficient volume
+Checking 24 hour volume of market 35/46 - LPTUSDT - Insufficient volume
+Checking 24 hour volume of market 35/45 - NUUSDT - Insufficient volume
+Checking 24 hour volume of market 35/44 - XVGUSDT - Insufficient volume
+Checking 24 hour volume of market 35/43 - ATAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/42 - GTCUSDT - Insufficient volume
+Checking 24 hour volume of market 35/41 - TORNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/40 - KEEPUSDT - Insufficient volume
+Checking 24 hour volume of market 35/39 - ERNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/38 - KLAYUSDT - Insufficient volume
+Checking 24 hour volume of market 35/37 - PHAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/36 - BONDUSDT - Insufficient volume
+Checking 24 hour volume of market 35/35 - MLNUSDT - Insufficient volume
+
+
+Fetching history
+
+Fetching history of market 1/34 - BTC/USDT
+Fetching history of market 2/34 - ETH/USDT
+Fetching history of market 3/34 - LTC/USDT
+Fetching history of market 4/34 - ADA/USDT
+Fetching history of market 5/34 - XRP/USDT
+Fetching history of market 6/34 - EOS/USDT
+Fetching history of market 7/34 - ETC/USDT
+Fetching history of market 8/34 - VET/USDT
+Fetching history of market 9/34 - LINK/USDT
+Fetching history of market 10/34 - THETA/USDT
+Fetching history of market 11/34 - ENJ/USDT
+Fetching history of market 12/34 - MITH/USDT
+Fetching history of market 13/34 - MATIC/USDT
+Fetching history of market 14/34 - ATOM/USDT
+Fetching history of market 15/34 - DOGE/USDT
+Fetching history of market 16/34 - CHZ/USDT
+Fetching history of market 17/34 - EUR/USDT
+Fetching history of market 18/34 - SOL/USDT
+Fetching history of market 19/34 - COMP/USDT
+Fetching history of market 20/34 - SNX/USDT
+Fetching history of market 21/34 - SAND/USDT
+Fetching history of market 22/34 - DOT/USDT
+Fetching history of market 23/34 - LUNA/USDT
+Fetching history of market 24/34 - UNI/USDT
+Fetching history of market 25/34 - AAVE/USDT
+Fetching history of market 26/34 - FIL/USDT
+Fetching history of market 27/34 - AXS/USDT
+Fetching history of market 28/34 - CAKE/USDT
+Fetching history of market 29/34 - ALICE/USDT
+Fetching history of market 30/34 - TLM/USDT
+Fetching history of market 31/34 - BAKE/USDT
+Fetching history of market 32/34 - SLP/USDT
+Fetching history of market 33/34 - SHIB/USDT
+Fetching history of market 34/34 - ICP/USDT
+
+
+Analysing markets
+
+
+BTC/USDT ... 164636809059803.66 ... trending down ... EMA1 - 34404.3 ... EMA233 - 34337.78100523781
+ETH/USDT ... 130888627492586.4 ... trending down ... EMA1 - 2151.54 ... EMA233 - 2151.6552813452263
+COMP/USDT ... 66374923472890.96 ... trending down ... EMA1 - 436.78 ... EMA233 - 435.7413775567812
+AAVE/USDT ... 33766634657087.973 ... trending down ... EMA1 - 317.76 ... EMA233 - 315.8662566094835
+LTC/USDT ... -90767111278585.12 ... trending down ... EMA1 - 138.28 ... EMA233 - 136.58908359865612
+FIL/USDT ... -359007389270926.06 ... trending down ... EMA1 - 55.28 ... EMA233 - 55.204830022373464
+ETC/USDT ... -526041647020974.4 ... trending up ... EMA1 - 50.349 ... EMA233 - 49.90945668965426
+ICP/USDT ... -738621525859043.1 ... trending down ... EMA1 - 40.14 ... EMA233 - 40.1558822057103
+SOL/USDT ... -1097248747812729 ... trending down ... EMA1 - 32.194 ... EMA233 - 32.270907729199294
+UNI/USDT ... -1585572429932857.8 ... trending down ... EMA1 - 21.196 ... EMA233 - 21.131017483621665
+LINK/USDT ... -1691212803767709.8 ... trending down ... EMA1 - 18.489 ... EMA233 - 18.475992806050357
+AXS/USDT ... -1763174027028830.5 ... trending down ... EMA1 - 17.8725 ... EMA233 - 17.943242906134977
+DOT/USDT ... -1905617944801779.2 ... trending down ... EMA1 - 15.591 ... EMA233 - 15.55238917861435
+CAKE/USDT ... -1911232579123673.5 ... trending down ... EMA1 - 15.69 ... EMA233 - 15.553386407888265
+ATOM/USDT ... -2087770746770558.2 ... trending up ... EMA1 - 13.954 ... EMA233 - 13.940848834692193
+SNX/USDT ... -2486489858968413.5 ... trending down ... EMA1 - 13.15 ... EMA233 - 13.27405809034395
+LUNA/USDT ... -3821809233574058 ... trending down ... EMA1 - 8.261 ... EMA233 - 8.305966483689499
+THETA/USDT ... -4598589405058363 ... trending down ... EMA1 - 5.954 ... EMA233 - 5.947941466305782
+ALICE/USDT ... -5666126389916928 ... trending down ... EMA1 - 6.791 ... EMA233 - 6.9004919161014815
+EOS/USDT ... -8612153008352857 ... trending down ... EMA1 - 4.3168 ... EMA233 - 4.2992456929874905
+EUR/USDT ... -9421801511579430 ... trending down ... EMA1 - 1.1864 ... EMA233 - 1.1862226207544206
+BAKE/USDT ... -16832926903420048 ... trending down ... EMA1 - 2.1389 ... EMA233 - 2.1055504473734943
+ENJ/USDT ... -22041939925802464 ... trending down ... EMA1 - 1.3567 ... EMA233 - 1.3575469213481428
+ADA/USDT ... -27222824013835950 ... trending down ... EMA1 - 1.3673 ... EMA233 - 1.3610934080762045
+MATIC/USDT ... -39467180906277496 ... trending down ... EMA1 - 1.04468 ... EMA233 - 1.0431093093726618
+XRP/USDT ... -47931292804329520 ... trending up ... EMA1 - 0.6535 ... EMA233 - 0.6492120370966722
+SAND/USDT ... -70787697737053016 ... trending down ... EMA1 - 0.46422 ... EMA233 - 0.46434556024285245
+SLP/USDT ... -102957386879285090 ... trending down ... EMA1 - 0.2872 ... EMA233 - 0.2826678637962514
+CHZ/USDT ... -137329914978650750 ... trending down ... EMA1 - 0.25643 ... EMA233 - 0.256043943264871
+DOGE/USDT ... -187226231362494430 ... trending down ... EMA1 - 0.21774 ... EMA233 - 0.217289811456206
+TLM/USDT ... -192677849603309100 ... trending down ... EMA1 - 0.1257 ... EMA233 - 0.12658707204483272
+VET/USDT ... -429852223483793660 ... trending down ... EMA1 - 0.07831 ... EMA233 - 0.0782842809819998
+MITH/USDT ... -768545555902019300 ... trending up ... EMA1 - 0.05235 ... EMA233 - 0.048356411427434465
+SHIB/USDT ... -2.0983290574509496e+21 ... trending up ... EMA1 - 0.00000794 ... EMA233 - 0.000007914445805990503
+
+
+
+12/07/2021, 08:36:05 - Bought 0.02902066 BTC @ 34406.54000000 ($999.25)
+Wave Shape: 164636809059803.66  Target Price - 34484.05158509863
+
+
+
+
+----------
+
+
+Tick at 12/07/2021, 08:36:05
+
+Wallet
+0.75 USDT  
+0.02902066184219628 BTC @ undefined = $undefined 
+
+
+Fetching overview
+
+Checking 24 hour volume of market 1/234 - BTCUSDT - Sufficient volume
+Checking 24 hour volume of market 2/234 - ETHUSDT - Sufficient volume
+Checking 24 hour volume of market 3/234 - NEOUSDT - Insufficient volume
+Checking 24 hour volume of market 3/233 - LTCUSDT - Sufficient volume
+Checking 24 hour volume of market 4/233 - QTUMUSDT - Insufficient volume
+Checking 24 hour volume of market 4/232 - ADAUSDT - Sufficient volume
+Checking 24 hour volume of market 5/232 - XRPUSDT - Sufficient volume
+Checking 24 hour volume of market 6/232 - EOSUSDT - Sufficient volume
+Checking 24 hour volume of market 7/232 - IOTAUSDT - Insufficient volume
+Checking 24 hour volume of market 7/231 - XLMUSDT - Insufficient volume
+Checking 24 hour volume of market 7/230 - ONTUSDT - Insufficient volume
+Checking 24 hour volume of market 7/229 - TRXUSDT - Insufficient volume
+Checking 24 hour volume of market 7/228 - ETCUSDT - Sufficient volume
+Checking 24 hour volume of market 8/228 - ICXUSDT - Insufficient volume
+Checking 24 hour volume of market 8/227 - NULSUSDT - Insufficient volume
+Checking 24 hour volume of market 8/226 - VETUSDT - Sufficient volume
+Checking 24 hour volume of market 9/226 - PAXUSDT - Insufficient volume
+Checking 24 hour volume of market 9/225 - BCHUSDT - Insufficient volume
+Checking 24 hour volume of market 9/224 - LINKUSDT - Sufficient volume
+Checking 24 hour volume of market 10/224 - WAVESUSDT - Insufficient volume
+Checking 24 hour volume of market 10/223 - BTTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/222 - ONGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/221 - HOTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/220 - ZILUSDT - Insufficient volume
+Checking 24 hour volume of market 10/219 - ZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 10/218 - FETUSDT - Insufficient volume
+Checking 24 hour volume of market 10/217 - BATUSDT - Insufficient volume
+Checking 24 hour volume of market 10/216 - XMRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/215 - ZECUSDT - Insufficient volume
+Checking 24 hour volume of market 10/214 - IOSTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/213 - CELRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/212 - DASHUSDT - Insufficient volume
+Checking 24 hour volume of market 10/211 - NANOUSDT - Insufficient volume
+Checking 24 hour volume of market 10/210 - OMGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/209 - THETAUSDT - Sufficient volume
+Checking 24 hour volume of market 11/209 - ENJUSDT - Sufficient volume
+Checking 24 hour volume of market 12/209 - MITHUSDT - Sufficient volume
+Checking 24 hour volume of market 13/209 - MATICUSDT - Sufficient volume
+Checking 24 hour volume of market 14/209 - ATOMUSDT - Sufficient volume
+Checking 24 hour volume of market 15/209 - TFUELUSDT - Insufficient volume
+Checking 24 hour volume of market 15/208 - ONEUSDT - Insufficient volume
+Checking 24 hour volume of market 15/207 - FTMUSDT - Insufficient volume
+Checking 24 hour volume of market 15/206 - ALGOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/205 - GTOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/204 - DOGEUSDT - Sufficient volume
+Checking 24 hour volume of market 16/204 - DUSKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/203 - ANKRUSDT - Insufficient volume
+Checking 24 hour volume of market 16/202 - WINUSDT - Insufficient volume
+Checking 24 hour volume of market 16/201 - COSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/200 - COCOSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/199 - MTLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/198 - TOMOUSDT - Insufficient volume
+Checking 24 hour volume of market 16/197 - PERLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/196 - DENTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/195 - MFTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/194 - KEYUSDT - Insufficient volume
+Checking 24 hour volume of market 16/193 - DOCKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/192 - WANUSDT - Insufficient volume
+Checking 24 hour volume of market 16/191 - FUNUSDT - Insufficient volume
+Checking 24 hour volume of market 16/190 - CVCUSDT - Insufficient volume
+Checking 24 hour volume of market 16/189 - CHZUSDT - Sufficient volume
+Checking 24 hour volume of market 17/189 - BANDUSDT - Insufficient volume
+Checking 24 hour volume of market 17/188 - BEAMUSDT - Insufficient volume
+Checking 24 hour volume of market 17/187 - XTZUSDT - Insufficient volume
+Checking 24 hour volume of market 17/186 - RENUSDT - Insufficient volume
+Checking 24 hour volume of market 17/185 - RVNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/184 - HBARUSDT - Insufficient volume
+Checking 24 hour volume of market 17/183 - NKNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/182 - STXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/181 - KAVAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/180 - ARPAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/179 - IOTXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/178 - RLCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/177 - CTXCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/176 - TROYUSDT - Insufficient volume
+Checking 24 hour volume of market 17/175 - VITEUSDT - Insufficient volume
+Checking 24 hour volume of market 17/174 - FTTUSDT - Insufficient volume
+Checking 24 hour volume of market 17/173 - EURUSDT - Sufficient volume
+Checking 24 hour volume of market 18/173 - OGNUSDT - Insufficient volume
+Checking 24 hour volume of market 18/172 - DREPUSDT - Insufficient volume
+Checking 24 hour volume of market 18/171 - TCTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/170 - WRXUSDT - Insufficient volume
+Checking 24 hour volume of market 18/169 - BTSUSDT - Insufficient volume
+Checking 24 hour volume of market 18/168 - LSKUSDT - Insufficient volume
+Checking 24 hour volume of market 18/167 - BNTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/166 - LTOUSDT - Insufficient volume
+Checking 24 hour volume of market 18/165 - AIONUSDT - Insufficient volume
+Checking 24 hour volume of market 18/164 - MBLUSDT - Insufficient volume
+Checking 24 hour volume of market 18/163 - COTIUSDT - Insufficient volume
+Checking 24 hour volume of market 18/162 - STPTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/161 - WTCUSDT - Insufficient volume
+Checking 24 hour volume of market 18/160 - DATAUSDT - Insufficient volume
+Checking 24 hour volume of market 18/159 - SOLUSDT - Sufficient volume
+Checking 24 hour volume of market 19/159 - CTSIUSDT - Insufficient volume
+Checking 24 hour volume of market 19/158 - HIVEUSDT - Insufficient volume
+Checking 24 hour volume of market 19/157 - CHRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/156 - GXSUSDT - Insufficient volume
+Checking 24 hour volume of market 19/155 - ARDRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/154 - MDTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/153 - STMXUSDT - Insufficient volume
+Checking 24 hour volume of market 19/152 - KNCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/151 - REPUSDT - Insufficient volume
+Checking 24 hour volume of market 19/150 - LRCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/149 - PNTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/148 - COMPUSDT - Sufficient volume
+Checking 24 hour volume of market 20/148 - SCUSDT - Insufficient volume
+Checking 24 hour volume of market 20/147 - ZENUSDT - Insufficient volume
+Checking 24 hour volume of market 20/146 - SNXUSDT - Sufficient volume
+Checking 24 hour volume of market 21/146 - VTHOUSDT - Insufficient volume
+Checking 24 hour volume of market 21/145 - DGBUSDT - Insufficient volume
+Checking 24 hour volume of market 21/144 - GBPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/143 - SXPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/142 - MKRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/141 - DCRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/140 - STORJUSDT - Insufficient volume
+Checking 24 hour volume of market 21/139 - MANAUSDT - Insufficient volume
+Checking 24 hour volume of market 21/138 - AUDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/137 - YFIUSDT - Insufficient volume
+Checking 24 hour volume of market 21/136 - BALUSDT - Insufficient volume
+Checking 24 hour volume of market 21/135 - BLZUSDT - Insufficient volume
+Checking 24 hour volume of market 21/134 - IRISUSDT - Insufficient volume
+Checking 24 hour volume of market 21/133 - KMDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/132 - JSTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/131 - SRMUSDT - Insufficient volume
+Checking 24 hour volume of market 21/130 - ANTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/129 - CRVUSDT - Insufficient volume
+Checking 24 hour volume of market 21/128 - SANDUSDT - Sufficient volume
+Checking 24 hour volume of market 22/128 - OCEANUSDT - Insufficient volume
+Checking 24 hour volume of market 22/127 - NMRUSDT - Insufficient volume
+Checking 24 hour volume of market 22/126 - DOTUSDT - Sufficient volume
+Checking 24 hour volume of market 23/126 - LUNAUSDT - Sufficient volume
+Checking 24 hour volume of market 24/126 - RSRUSDT - Insufficient volume
+Checking 24 hour volume of market 24/125 - PAXGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/124 - WNXMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/123 - TRBUSDT - Insufficient volume
+Checking 24 hour volume of market 24/122 - BZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 24/121 - SUSHIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/120 - YFIIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/119 - KSMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/118 - EGLDUSDT - Insufficient volume
+Checking 24 hour volume of market 24/117 - DIAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/116 - RUNEUSDT - Insufficient volume
+Checking 24 hour volume of market 24/115 - FIOUSDT - Insufficient volume
+Checking 24 hour volume of market 24/114 - UMAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/113 - BELUSDT - Insufficient volume
+Checking 24 hour volume of market 24/112 - WINGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/111 - UNIUSDT - Sufficient volume
+Checking 24 hour volume of market 25/111 - NBSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/110 - OXTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/109 - SUNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/108 - AVAXUSDT - Insufficient volume
+Checking 24 hour volume of market 25/107 - HNTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/106 - FLMUSDT - Insufficient volume
+Checking 24 hour volume of market 25/105 - ORNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/104 - UTKUSDT - Insufficient volume
+Checking 24 hour volume of market 25/103 - XVSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/102 - ALPHAUSDT - Insufficient volume
+Checking 24 hour volume of market 25/101 - AAVEUSDT - Sufficient volume
+Checking 24 hour volume of market 26/101 - NEARUSDT - Insufficient volume
+Checking 24 hour volume of market 26/100 - FILUSDT - Sufficient volume
+Checking 24 hour volume of market 27/100 - INJUSDT - Insufficient volume
+Checking 24 hour volume of market 27/99 - AUDIOUSDT - Insufficient volume
+Checking 24 hour volume of market 27/98 - CTKUSDT - Insufficient volume
+Checking 24 hour volume of market 27/97 - AKROUSDT - Insufficient volume
+Checking 24 hour volume of market 27/96 - AXSUSDT - Sufficient volume
+Checking 24 hour volume of market 28/96 - HARDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/95 - DNTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/94 - STRAXUSDT - Insufficient volume
+Checking 24 hour volume of market 28/93 - UNFIUSDT - Insufficient volume
+Checking 24 hour volume of market 28/92 - ROSEUSDT - Insufficient volume
+Checking 24 hour volume of market 28/91 - AVAUSDT - Insufficient volume
+Checking 24 hour volume of market 28/90 - XEMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/89 - SKLUSDT - Insufficient volume
+Checking 24 hour volume of market 28/88 - SUSDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/87 - GRTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/86 - JUVUSDT - Insufficient volume
+Checking 24 hour volume of market 28/85 - PSGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/84 - 1INCHUSDT - Insufficient volume
+Checking 24 hour volume of market 28/83 - REEFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/82 - OGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/81 - ATMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/80 - ASRUSDT - Insufficient volume
+Checking 24 hour volume of market 28/79 - CELOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/78 - RIFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/77 - BTCSTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/76 - TRUUSDT - Insufficient volume
+Checking 24 hour volume of market 28/75 - CKBUSDT - Insufficient volume
+Checking 24 hour volume of market 28/74 - TWTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/73 - FIROUSDT - Insufficient volume
+Checking 24 hour volume of market 28/72 - LITUSDT - Insufficient volume
+Checking 24 hour volume of market 28/71 - SFPUSDT - Insufficient volume
+Checking 24 hour volume of market 28/70 - DODOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/69 - CAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 29/69 - ACMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/68 - BADGERUSDT - Insufficient volume
+Checking 24 hour volume of market 29/67 - FISUSDT - Insufficient volume
+Checking 24 hour volume of market 29/66 - OMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/65 - PONDUSDT - Insufficient volume
+Checking 24 hour volume of market 29/64 - DEGOUSDT - Insufficient volume
+Checking 24 hour volume of market 29/63 - ALICEUSDT - Sufficient volume
+Checking 24 hour volume of market 30/63 - LINAUSDT - Insufficient volume
+Checking 24 hour volume of market 30/62 - PERPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/61 - RAMPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/60 - CFXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/59 - EPSUSDT - Insufficient volume
+Checking 24 hour volume of market 30/58 - AUTOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/57 - TKOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/56 - PUNDIXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/55 - TLMUSDT - Sufficient volume
+Checking 24 hour volume of market 31/55 - BTGUSDT - Insufficient volume
+Checking 24 hour volume of market 31/54 - MIRUSDT - Insufficient volume
+Checking 24 hour volume of market 31/53 - BARUSDT - Insufficient volume
+Checking 24 hour volume of market 31/52 - FORTHUSDT - Insufficient volume
+Checking 24 hour volume of market 31/51 - BAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 32/51 - BURGERUSDT - Insufficient volume
+Checking 24 hour volume of market 32/50 - SLPUSDT - Sufficient volume
+Checking 24 hour volume of market 33/50 - SHIBUSDT - Sufficient volume
+Checking 24 hour volume of market 34/50 - ICPUSDT - Sufficient volume
+Checking 24 hour volume of market 35/50 - ARUSDT - Insufficient volume
+Checking 24 hour volume of market 35/49 - POLSUSDT - Insufficient volume
+Checking 24 hour volume of market 35/48 - MDXUSDT - Insufficient volume
+Checking 24 hour volume of market 35/47 - MASKUSDT - Insufficient volume
+Checking 24 hour volume of market 35/46 - LPTUSDT - Insufficient volume
+Checking 24 hour volume of market 35/45 - NUUSDT - Insufficient volume
+Checking 24 hour volume of market 35/44 - XVGUSDT - Insufficient volume
+Checking 24 hour volume of market 35/43 - ATAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/42 - GTCUSDT - Insufficient volume
+Checking 24 hour volume of market 35/41 - TORNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/40 - KEEPUSDT - Insufficient volume
+Checking 24 hour volume of market 35/39 - ERNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/38 - KLAYUSDT - Insufficient volume
+Checking 24 hour volume of market 35/37 - PHAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/36 - BONDUSDT - Insufficient volume
+Checking 24 hour volume of market 35/35 - MLNUSDT - Insufficient volume
+
+
+Fetching history
+
+Fetching history of market 1/34 - BTC/USDT
+Fetching history of market 2/34 - ETH/USDT
+Fetching history of market 3/34 - LTC/USDT
+Fetching history of market 4/34 - ADA/USDT
+Fetching history of market 5/34 - XRP/USDT
+Fetching history of market 6/34 - EOS/USDT
+Fetching history of market 7/34 - ETC/USDT
+Fetching history of market 8/34 - VET/USDT
+Fetching history of market 9/34 - LINK/USDT
+Fetching history of market 10/34 - THETA/USDT
+Fetching history of market 11/34 - ENJ/USDT
+Fetching history of market 12/34 - MITH/USDT
+Fetching history of market 13/34 - MATIC/USDT
+Fetching history of market 14/34 - ATOM/USDT
+Fetching history of market 15/34 - DOGE/USDT
+Fetching history of market 16/34 - CHZ/USDT
+Fetching history of market 17/34 - EUR/USDT
+Fetching history of market 18/34 - SOL/USDT
+Fetching history of market 19/34 - COMP/USDT
+Fetching history of market 20/34 - SNX/USDT
+Fetching history of market 21/34 - SAND/USDT
+Fetching history of market 22/34 - DOT/USDT
+Fetching history of market 23/34 - LUNA/USDT
+Fetching history of market 24/34 - UNI/USDT
+Fetching history of market 25/34 - AAVE/USDT
+Fetching history of market 26/34 - FIL/USDT
+Fetching history of market 27/34 - AXS/USDT
+Fetching history of market 28/34 - CAKE/USDT
+Fetching history of market 29/34 - ALICE/USDT
+Fetching history of market 30/34 - TLM/USDT
+Fetching history of market 31/34 - BAKE/USDT
+Fetching history of market 32/34 - SLP/USDT
+Fetching history of market 33/34 - SHIB/USDT
+Fetching history of market 34/34 - ICP/USDT
+
+
+Analysing markets
+
+
+BTC/USDT ... 164622749229494.53 ... trending up ... EMA1 - 34403.01 ... EMA233 - 34338.94171509668
+ETH/USDT ... 130649165577900.84 ... trending down ... EMA1 - 2151.47 ... EMA233 - 2151.671029621182
+COMP/USDT ... 63576341646580.945 ... trending up ... EMA1 - 436.88 ... EMA233 - 435.74630863354224
+AAVE/USDT ... 33770891096876.39 ... trending up ... EMA1 - 318.2 ... EMA233 - 315.9059316417078
+LTC/USDT ... -93179099988319.66 ... trending up ... EMA1 - 138.29 ... EMA233 - 136.61858128600988
+FIL/USDT ... -369466822910423.5 ... trending up ... EMA1 - 55.3 ... EMA233 - 55.206193350245094
+ETC/USDT ... -521837863390933.25 ... trending down ... EMA1 - 50.318 ... EMA233 - 49.91608032895451
+ICP/USDT ... -736878352531071.5 ... trending down ... EMA1 - 40.12 ... EMA233 - 40.15477412964415
+SOL/USDT ... -1111390162921202 ... trending up ... EMA1 - 32.229 ... EMA233 - 32.269762217285134
+UNI/USDT ... -1607369099714512 ... trending up ... EMA1 - 21.188 ... EMA233 - 21.13200845650526
+LINK/USDT ... -1677125565471604.5 ... trending down ... EMA1 - 18.492 ... EMA233 - 18.476343156005914
+AXS/USDT ... -1791127125958089.2 ... trending up ... EMA1 - 17.9147 ... EMA233 - 17.94344313703833
+DOT/USDT ... -1939211644112282 ... trending up ... EMA1 - 15.597 ... EMA233 - 15.553213313096064
+CAKE/USDT ... -1943151243321017.5 ... trending up ... EMA1 - 15.688 ... EMA233 - 15.555504984850964
+ATOM/USDT ... -2123188512358009.2 ... trending up ... EMA1 - 13.99 ... EMA233 - 13.941191552806215
+SNX/USDT ... -2525054566677557.5 ... trending down ... EMA1 - 13.173 ... EMA233 - 13.272271782379713
+LUNA/USDT ... -3885543433618050 ... trending up ... EMA1 - 8.283 ... EMA233 - 8.305936113475287
+THETA/USDT ... -4562949889317925 ... trending down ... EMA1 - 5.955 ... EMA233 - 5.948093705627896
+ALICE/USDT ... -5643647334590708 ... trending down ... EMA1 - 6.7884 ... EMA233 - 6.899080814466255
+EOS/USDT ... -8725331890810236 ... trending down ... EMA1 - 4.3152 ... EMA233 - 4.299543042443853
+EUR/USDT ... -9345061279100464 ... trending down ... EMA1 - 1.1864 ... EMA233 - 1.1862256399204825
+BAKE/USDT ... -16695534348647456 ... trending down ... EMA1 - 2.1364 ... EMA233 - 2.106093886431115
+ENJ/USDT ... -21859505647076388 ... trending down ... EMA1 - 1.3554 ... EMA233 - 1.3574618921576707
+ADA/USDT ... -27004421561925490 ... trending down ... EMA1 - 1.3641 ... EMA233 - 1.3611531630059044
+MATIC/USDT ... -39153438398267970 ... trending down ... EMA1 - 1.04435 ... EMA233 - 1.0431194646333886
+XRP/USDT ... -48759179331481770 ... trending up ... EMA1 - 0.6535 ... EMA233 - 0.6492882319925323
+SAND/USDT ... -71992891003031680 ... trending up ... EMA1 - 0.46478 ... EMA233 - 0.46435749500231666
+SLP/USDT ... -105300058630912880 ... trending up ... EMA1 - 0.2878 ... EMA233 - 0.28271700625456453
+CHZ/USDT ... -139355719362020060 ... trending up ... EMA1 - 0.25676 ... EMA233 - 0.2560542931513066
+DOGE/USDT ... -185755095079875600 ... trending down ... EMA1 - 0.21769 ... EMA233 - 0.21729488510492684
+TLM/USDT ... -191020976467803260 ... trending down ... EMA1 - 0.1256 ... EMA233 - 0.12656565849448603
+VET/USDT ... -426438020040647600 ... trending down ... EMA1 - 0.07834 ... EMA233 - 0.07828505989435235
+MITH/USDT ... -777982364354501100 ... trending up ... EMA1 - 0.05219 ... EMA233 - 0.048422786007215
+SHIB/USDT ... -2.0890737919882777e+21 ... trending up ... EMA1 - 0.00000793 ... EMA233 - 0.000007914409268675806
+
+
+
+12/07/2021, 08:37:32 - Bought 0.02904243 BTC @ 34409.62000000 ($0.7494375)
+Wave Shape: 164622749229494.53  Target Price - 25.843657680510077
+
+
+
+
+----------
+
+
+Tick at 12/07/2021, 08:37:32
+
+Wallet
+0.0005625000000000213 USDT  
+0.029042425390351564 BTC @ undefined = $undefined 
+
+
+Fetching overview
+
+Checking 24 hour volume of market 1/234 - BTCUSDT - Sufficient volume
+Checking 24 hour volume of market 2/234 - ETHUSDT - Sufficient volume
+Checking 24 hour volume of market 3/234 - NEOUSDT - Insufficient volume
+Checking 24 hour volume of market 3/233 - LTCUSDT - Sufficient volume
+Checking 24 hour volume of market 4/233 - QTUMUSDT - Insufficient volume
+Checking 24 hour volume of market 4/232 - ADAUSDT - Sufficient volume
+Checking 24 hour volume of market 5/232 - XRPUSDT - Sufficient volume
+Checking 24 hour volume of market 6/232 - EOSUSDT - Sufficient volume
+Checking 24 hour volume of market 7/232 - IOTAUSDT - Insufficient volume
+Checking 24 hour volume of market 7/231 - XLMUSDT - Insufficient volume
+Checking 24 hour volume of market 7/230 - ONTUSDT - Insufficient volume
+Checking 24 hour volume of market 7/229 - TRXUSDT - Insufficient volume
+Checking 24 hour volume of market 7/228 - ETCUSDT - Sufficient volume
+Checking 24 hour volume of market 8/228 - ICXUSDT - Insufficient volume
+Checking 24 hour volume of market 8/227 - NULSUSDT - Insufficient volume
+Checking 24 hour volume of market 8/226 - VETUSDT - Sufficient volume
+Checking 24 hour volume of market 9/226 - PAXUSDT - Insufficient volume
+Checking 24 hour volume of market 9/225 - BCHUSDT - Insufficient volume
+Checking 24 hour volume of market 9/224 - LINKUSDT - Sufficient volume
+Checking 24 hour volume of market 10/224 - WAVESUSDT - Insufficient volume
+Checking 24 hour volume of market 10/223 - BTTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/222 - ONGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/221 - HOTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/220 - ZILUSDT - Insufficient volume
+Checking 24 hour volume of market 10/219 - ZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 10/218 - FETUSDT - Insufficient volume
+Checking 24 hour volume of market 10/217 - BATUSDT - Insufficient volume
+Checking 24 hour volume of market 10/216 - XMRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/215 - ZECUSDT - Insufficient volume
+Checking 24 hour volume of market 10/214 - IOSTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/213 - CELRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/212 - DASHUSDT - Insufficient volume
+Checking 24 hour volume of market 10/211 - NANOUSDT - Insufficient volume
+Checking 24 hour volume of market 10/210 - OMGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/209 - THETAUSDT - Sufficient volume
+Checking 24 hour volume of market 11/209 - ENJUSDT - Sufficient volume
+Checking 24 hour volume of market 12/209 - MITHUSDT - Sufficient volume
+Checking 24 hour volume of market 13/209 - MATICUSDT - Sufficient volume
+Checking 24 hour volume of market 14/209 - ATOMUSDT - Sufficient volume
+Checking 24 hour volume of market 15/209 - TFUELUSDT - Insufficient volume
+Checking 24 hour volume of market 15/208 - ONEUSDT - Insufficient volume
+Checking 24 hour volume of market 15/207 - FTMUSDT - Insufficient volume
+Checking 24 hour volume of market 15/206 - ALGOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/205 - GTOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/204 - DOGEUSDT - Sufficient volume
+Checking 24 hour volume of market 16/204 - DUSKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/203 - ANKRUSDT - Insufficient volume
+Checking 24 hour volume of market 16/202 - WINUSDT - Insufficient volume
+Checking 24 hour volume of market 16/201 - COSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/200 - COCOSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/199 - MTLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/198 - TOMOUSDT - Insufficient volume
+Checking 24 hour volume of market 16/197 - PERLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/196 - DENTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/195 - MFTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/194 - KEYUSDT - Insufficient volume
+Checking 24 hour volume of market 16/193 - DOCKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/192 - WANUSDT - Insufficient volume
+Checking 24 hour volume of market 16/191 - FUNUSDT - Insufficient volume
+Checking 24 hour volume of market 16/190 - CVCUSDT - Insufficient volume
+Checking 24 hour volume of market 16/189 - CHZUSDT - Sufficient volume
+Checking 24 hour volume of market 17/189 - BANDUSDT - Insufficient volume
+Checking 24 hour volume of market 17/188 - BEAMUSDT - Insufficient volume
+Checking 24 hour volume of market 17/187 - XTZUSDT - Insufficient volume
+Checking 24 hour volume of market 17/186 - RENUSDT - Insufficient volume
+Checking 24 hour volume of market 17/185 - RVNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/184 - HBARUSDT - Insufficient volume
+Checking 24 hour volume of market 17/183 - NKNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/182 - STXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/181 - KAVAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/180 - ARPAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/179 - IOTXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/178 - RLCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/177 - CTXCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/176 - TROYUSDT - Insufficient volume
+Checking 24 hour volume of market 17/175 - VITEUSDT - Insufficient volume
+Checking 24 hour volume of market 17/174 - FTTUSDT - Insufficient volume
+Checking 24 hour volume of market 17/173 - EURUSDT - Sufficient volume
+Checking 24 hour volume of market 18/173 - OGNUSDT - Insufficient volume
+Checking 24 hour volume of market 18/172 - DREPUSDT - Insufficient volume
+Checking 24 hour volume of market 18/171 - TCTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/170 - WRXUSDT - Insufficient volume
+Checking 24 hour volume of market 18/169 - BTSUSDT - Insufficient volume
+Checking 24 hour volume of market 18/168 - LSKUSDT - Insufficient volume
+Checking 24 hour volume of market 18/167 - BNTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/166 - LTOUSDT - Insufficient volume
+Checking 24 hour volume of market 18/165 - AIONUSDT - Insufficient volume
+Checking 24 hour volume of market 18/164 - MBLUSDT - Insufficient volume
+Checking 24 hour volume of market 18/163 - COTIUSDT - Insufficient volume
+Checking 24 hour volume of market 18/162 - STPTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/161 - WTCUSDT - Insufficient volume
+Checking 24 hour volume of market 18/160 - DATAUSDT - Insufficient volume
+Checking 24 hour volume of market 18/159 - SOLUSDT - Sufficient volume
+Checking 24 hour volume of market 19/159 - CTSIUSDT - Insufficient volume
+Checking 24 hour volume of market 19/158 - HIVEUSDT - Insufficient volume
+Checking 24 hour volume of market 19/157 - CHRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/156 - GXSUSDT - Insufficient volume
+Checking 24 hour volume of market 19/155 - ARDRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/154 - MDTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/153 - STMXUSDT - Insufficient volume
+Checking 24 hour volume of market 19/152 - KNCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/151 - REPUSDT - Insufficient volume
+Checking 24 hour volume of market 19/150 - LRCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/149 - PNTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/148 - COMPUSDT - Sufficient volume
+Checking 24 hour volume of market 20/148 - SCUSDT - Insufficient volume
+Checking 24 hour volume of market 20/147 - ZENUSDT - Insufficient volume
+Checking 24 hour volume of market 20/146 - SNXUSDT - Sufficient volume
+Checking 24 hour volume of market 21/146 - VTHOUSDT - Insufficient volume
+Checking 24 hour volume of market 21/145 - DGBUSDT - Insufficient volume
+Checking 24 hour volume of market 21/144 - GBPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/143 - SXPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/142 - MKRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/141 - DCRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/140 - STORJUSDT - Insufficient volume
+Checking 24 hour volume of market 21/139 - MANAUSDT - Insufficient volume
+Checking 24 hour volume of market 21/138 - AUDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/137 - YFIUSDT - Insufficient volume
+Checking 24 hour volume of market 21/136 - BALUSDT - Insufficient volume
+Checking 24 hour volume of market 21/135 - BLZUSDT - Insufficient volume
+Checking 24 hour volume of market 21/134 - IRISUSDT - Insufficient volume
+Checking 24 hour volume of market 21/133 - KMDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/132 - JSTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/131 - SRMUSDT - Insufficient volume
+Checking 24 hour volume of market 21/130 - ANTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/129 - CRVUSDT - Insufficient volume
+Checking 24 hour volume of market 21/128 - SANDUSDT - Sufficient volume
+Checking 24 hour volume of market 22/128 - OCEANUSDT - Insufficient volume
+Checking 24 hour volume of market 22/127 - NMRUSDT - Insufficient volume
+Checking 24 hour volume of market 22/126 - DOTUSDT - Sufficient volume
+Checking 24 hour volume of market 23/126 - LUNAUSDT - Sufficient volume
+Checking 24 hour volume of market 24/126 - RSRUSDT - Insufficient volume
+Checking 24 hour volume of market 24/125 - PAXGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/124 - WNXMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/123 - TRBUSDT - Insufficient volume
+Checking 24 hour volume of market 24/122 - BZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 24/121 - SUSHIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/120 - YFIIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/119 - KSMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/118 - EGLDUSDT - Insufficient volume
+Checking 24 hour volume of market 24/117 - DIAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/116 - RUNEUSDT - Insufficient volume
+Checking 24 hour volume of market 24/115 - FIOUSDT - Insufficient volume
+Checking 24 hour volume of market 24/114 - UMAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/113 - BELUSDT - Insufficient volume
+Checking 24 hour volume of market 24/112 - WINGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/111 - UNIUSDT - Sufficient volume
+Checking 24 hour volume of market 25/111 - NBSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/110 - OXTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/109 - SUNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/108 - AVAXUSDT - Insufficient volume
+Checking 24 hour volume of market 25/107 - HNTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/106 - FLMUSDT - Insufficient volume
+Checking 24 hour volume of market 25/105 - ORNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/104 - UTKUSDT - Insufficient volume
+Checking 24 hour volume of market 25/103 - XVSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/102 - ALPHAUSDT - Insufficient volume
+Checking 24 hour volume of market 25/101 - AAVEUSDT - Sufficient volume
+Checking 24 hour volume of market 26/101 - NEARUSDT - Insufficient volume
+Checking 24 hour volume of market 26/100 - FILUSDT - Sufficient volume
+Checking 24 hour volume of market 27/100 - INJUSDT - Insufficient volume
+Checking 24 hour volume of market 27/99 - AUDIOUSDT - Insufficient volume
+Checking 24 hour volume of market 27/98 - CTKUSDT - Insufficient volume
+Checking 24 hour volume of market 27/97 - AKROUSDT - Insufficient volume
+Checking 24 hour volume of market 27/96 - AXSUSDT - Sufficient volume
+Checking 24 hour volume of market 28/96 - HARDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/95 - DNTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/94 - STRAXUSDT - Insufficient volume
+Checking 24 hour volume of market 28/93 - UNFIUSDT - Insufficient volume
+Checking 24 hour volume of market 28/92 - ROSEUSDT - Insufficient volume
+Checking 24 hour volume of market 28/91 - AVAUSDT - Insufficient volume
+Checking 24 hour volume of market 28/90 - XEMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/89 - SKLUSDT - Insufficient volume
+Checking 24 hour volume of market 28/88 - SUSDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/87 - GRTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/86 - JUVUSDT - Insufficient volume
+Checking 24 hour volume of market 28/85 - PSGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/84 - 1INCHUSDT - Insufficient volume
+Checking 24 hour volume of market 28/83 - REEFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/82 - OGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/81 - ATMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/80 - ASRUSDT - Insufficient volume
+Checking 24 hour volume of market 28/79 - CELOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/78 - RIFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/77 - BTCSTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/76 - TRUUSDT - Insufficient volume
+Checking 24 hour volume of market 28/75 - CKBUSDT - Insufficient volume
+Checking 24 hour volume of market 28/74 - TWTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/73 - FIROUSDT - Insufficient volume
+Checking 24 hour volume of market 28/72 - LITUSDT - Insufficient volume
+Checking 24 hour volume of market 28/71 - SFPUSDT - Insufficient volume
+Checking 24 hour volume of market 28/70 - DODOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/69 - CAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 29/69 - ACMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/68 - BADGERUSDT - Insufficient volume
+Checking 24 hour volume of market 29/67 - FISUSDT - Insufficient volume
+Checking 24 hour volume of market 29/66 - OMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/65 - PONDUSDT - Insufficient volume
+Checking 24 hour volume of market 29/64 - DEGOUSDT - Insufficient volume
+Checking 24 hour volume of market 29/63 - ALICEUSDT - Sufficient volume
+Checking 24 hour volume of market 30/63 - LINAUSDT - Insufficient volume
+Checking 24 hour volume of market 30/62 - PERPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/61 - RAMPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/60 - CFXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/59 - EPSUSDT - Insufficient volume
+Checking 24 hour volume of market 30/58 - AUTOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/57 - TKOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/56 - PUNDIXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/55 - TLMUSDT - Sufficient volume
+Checking 24 hour volume of market 31/55 - BTGUSDT - Insufficient volume
+Checking 24 hour volume of market 31/54 - MIRUSDT - Insufficient volume
+Checking 24 hour volume of market 31/53 - BARUSDT - Insufficient volume
+Checking 24 hour volume of market 31/52 - FORTHUSDT - Insufficient volume
+Checking 24 hour volume of market 31/51 - BAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 32/51 - BURGERUSDT - Insufficient volume
+Checking 24 hour volume of market 32/50 - SLPUSDT - Sufficient volume
+Checking 24 hour volume of market 33/50 - SHIBUSDT - Sufficient volume
+Checking 24 hour volume of market 34/50 - ICPUSDT - Sufficient volume
+Checking 24 hour volume of market 35/50 - ARUSDT - Insufficient volume
+Checking 24 hour volume of market 35/49 - POLSUSDT - Insufficient volume
+Checking 24 hour volume of market 35/48 - MDXUSDT - Insufficient volume
+Checking 24 hour volume of market 35/47 - MASKUSDT - Insufficient volume
+Checking 24 hour volume of market 35/46 - LPTUSDT - Insufficient volume
+Checking 24 hour volume of market 35/45 - NUUSDT - Insufficient volume
+Checking 24 hour volume of market 35/44 - XVGUSDT - Insufficient volume
+Checking 24 hour volume of market 35/43 - ATAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/42 - GTCUSDT - Insufficient volume
+Checking 24 hour volume of market 35/41 - TORNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/40 - KEEPUSDT - Insufficient volume
+Checking 24 hour volume of market 35/39 - ERNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/38 - KLAYUSDT - Insufficient volume
+Checking 24 hour volume of market 35/37 - PHAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/36 - BONDUSDT - Insufficient volume
+Checking 24 hour volume of market 35/35 - MLNUSDT - Insufficient volume
+
+
+Fetching history
+
+Fetching history of market 1/34 - BTC/USDT
+Fetching history of market 2/34 - ETH/USDT
+Fetching history of market 3/34 - LTC/USDT
+Fetching history of market 4/34 - ADA/USDT
+Fetching history of market 5/34 - XRP/USDT
+Fetching history of market 6/34 - EOS/USDT
+Fetching history of market 7/34 - ETC/USDT
+Fetching history of market 8/34 - VET/USDT
+Fetching history of market 9/34 - LINK/USDT
+Fetching history of market 10/34 - THETA/USDT
+Fetching history of market 11/34 - ENJ/USDT
+Fetching history of market 12/34 - MITH/USDT
+Fetching history of market 13/34 - MATIC/USDT
+Fetching history of market 14/34 - ATOM/USDT
+Fetching history of market 15/34 - DOGE/USDT
+Fetching history of market 16/34 - CHZ/USDT
+Fetching history of market 17/34 - EUR/USDT
+Fetching history of market 18/34 - SOL/USDT
+Fetching history of market 19/34 - COMP/USDT
+Fetching history of market 20/34 - SNX/USDT
+Fetching history of market 21/34 - SAND/USDT
+Fetching history of market 22/34 - DOT/USDT
+Fetching history of market 23/34 - LUNA/USDT
+Fetching history of market 24/34 - UNI/USDT
+Fetching history of market 25/34 - AAVE/USDT
+Fetching history of market 26/34 - FIL/USDT
+Fetching history of market 27/34 - AXS/USDT
+Fetching history of market 28/34 - CAKE/USDT
+Fetching history of market 29/34 - ALICE/USDT
+Fetching history of market 30/34 - TLM/USDT
+Fetching history of market 31/34 - BAKE/USDT
+Fetching history of market 32/34 - SLP/USDT
+Fetching history of market 33/34 - SHIB/USDT
+Fetching history of market 34/34 - ICP/USDT
+
+
+Analysing markets
+
+
+BTC/USDT ... 164626467373721.25 ... trending down ... EMA1 - 34375 ... EMA233 - 34339.7907579003
+ETH/USDT ... 129086980600946.77 ... trending down ... EMA1 - 2150.26 ... EMA233 - 2151.6996431171856
+COMP/USDT ... 63919442544029.484 ... trending up ... EMA1 - 435.64 ... EMA233 - 435.74098995190525
+AAVE/USDT ... 34230743876870.277 ... trending down ... EMA1 - 318.47 ... EMA233 - 315.9380178850516
+LTC/USDT ... -92281338344344.58 ... trending down ... EMA1 - 138.2 ... EMA233 - 136.63584437108108
+FIL/USDT ... -369027142720101.94 ... trending down ... EMA1 - 55.25 ... EMA233 - 55.20719967745833
+ETC/USDT ... -533292511302517.7 ... trending down ... EMA1 - 50.277 ... EMA233 - 49.92061148889269
+ICP/USDT ... -730228488353729.2 ... trending down ... EMA1 - 40.18 ... EMA233 - 40.15651324928989
+SOL/USDT ... -1106751900404203.4 ... trending down ... EMA1 - 32.177 ... EMA233 - 32.269412925446325
+UNI/USDT ... -1599999628286950.8 ... trending down ... EMA1 - 21.179 ... EMA233 - 21.132626420820337
+LINK/USDT ... -1669269028510400 ... trending down ... EMA1 - 18.488 ... EMA233 - 18.476759469930062
+AXS/USDT ... -1784934161964648 ... trending up ... EMA1 - 17.8793 ... EMA233 - 17.94329281431845
+CAKE/USDT ... -1884562317362540.5 ... trending down ... EMA1 - 15.661 ... EMA233 - 15.556095901284028
+DOT/USDT ... -1930090500559374.8 ... trending down ... EMA1 - 15.598 ... EMA233 - 15.553773331315647
+ATOM/USDT ... -2115364258256563 ... trending down ... EMA1 - 13.978 ... EMA233 - 13.941266464832022
+SNX/USDT ... -2514426069028357 ... trending up ... EMA1 - 13.19 ... EMA233 - 13.271883955632838
+LUNA/USDT ... -3870912288111362.5 ... trending up ... EMA1 - 8.269 ... EMA233 - 8.306036731487122
+THETA/USDT ... -4544594938759613 ... trending down ... EMA1 - 5.952 ... EMA233 - 5.948245001082767
+ALICE/USDT ... -5621425447283204 ... trending down ... EMA1 - 6.7987 ... EMA233 - 6.89906119501272
+EOS/USDT ... -8689085831784798 ... trending down ... EMA1 - 4.3094 ... EMA233 - 4.2996594182739365
+EUR/USDT ... -9308317345474206 ... trending down ... EMA1 - 1.1864 ... EMA233 - 1.186228498107152
+BAKE/USDT ... -16628460662338830 ... trending down ... EMA1 - 2.134 ... EMA233 - 2.106450974495087
+ENJ/USDT ... -21769487514787984 ... trending down ... EMA1 - 1.3557 ... EMA233 - 1.3574764193927915
+ADA/USDT ... -26898063832354020 ... trending down ... EMA1 - 1.3683 ... EMA233 - 1.3612736130396803
+MATIC/USDT ... -38998945562887304 ... trending down ... EMA1 - 1.04405 ... EMA233 - 1.0431520055928107
+XRP/USDT ... -47338585087803224 ... trending up ... EMA1 - 0.6523 ... EMA233 - 0.64931775052631
+SAND/USDT ... -71727401242932400 ... trending down ... EMA1 - 0.46455 ... EMA233 - 0.46437922954178373
+SLP/USDT ... -104372123419200560 ... trending up ... EMA1 - 0.2884 ... EMA233 - 0.28281238005852705
+CHZ/USDT ... -138796803994021570 ... trending up ... EMA1 - 0.25642 ... EMA233 - 0.2560605590406853
+DOGE/USDT ... -185026236292789600 ... trending down ... EMA1 - 0.21767 ... EMA233 - 0.21730081497787054
+TLM/USDT ... -190205267241530050 ... trending down ... EMA1 - 0.1248 ... EMA233 - 0.12655675332041644
+VET/USDT ... -424730919669147840 ... trending down ... EMA1 - 0.07835 ... EMA233 - 0.07828636427515165
+MITH/USDT ... -775016196262940300 ... trending down ... EMA1 - 0.05156 ... EMA233 - 0.04844941095568132
+SHIB/USDT ... -2.0798185265256069e+21 ... trending up ... EMA1 - 0.00000792 ... EMA233 - 0.0000079143723131323
+
+
+
+12/07/2021, 08:39:02 - Bought 0.02904244 BTC @ 34377.03000000 ($0.0005620781250000213)
+Wave Shape: 164626467373721.25  Target Price - 0.01938273235641439
+
+
+
+
+----------
+
+
+Tick at 12/07/2021, 08:39:02
+
+Wallet
+4.2187499999998823e-7 USDT  
+0.029042441728486836 BTC @ undefined = $undefined 
+
+
+Fetching overview
+
+Checking 24 hour volume of market 1/234 - BTCUSDT - Sufficient volume
+Checking 24 hour volume of market 2/234 - ETHUSDT - Sufficient volume
+Checking 24 hour volume of market 3/234 - NEOUSDT - Insufficient volume
+Checking 24 hour volume of market 3/233 - LTCUSDT - Sufficient volume
+Checking 24 hour volume of market 4/233 - QTUMUSDT - Insufficient volume
+Checking 24 hour volume of market 4/232 - ADAUSDT - Sufficient volume
+Checking 24 hour volume of market 5/232 - XRPUSDT - Sufficient volume
+Checking 24 hour volume of market 6/232 - EOSUSDT - Sufficient volume
+Checking 24 hour volume of market 7/232 - IOTAUSDT - Insufficient volume
+Checking 24 hour volume of market 7/231 - XLMUSDT - Insufficient volume
+Checking 24 hour volume of market 7/230 - ONTUSDT - Insufficient volume
+Checking 24 hour volume of market 7/229 - TRXUSDT - Insufficient volume
+Checking 24 hour volume of market 7/228 - ETCUSDT - Sufficient volume
+Checking 24 hour volume of market 8/228 - ICXUSDT - Insufficient volume
+Checking 24 hour volume of market 8/227 - NULSUSDT - Insufficient volume
+Checking 24 hour volume of market 8/226 - VETUSDT - Sufficient volume
+Checking 24 hour volume of market 9/226 - PAXUSDT - Insufficient volume
+Checking 24 hour volume of market 9/225 - BCHUSDT - Insufficient volume
+Checking 24 hour volume of market 9/224 - LINKUSDT - Sufficient volume
+Checking 24 hour volume of market 10/224 - WAVESUSDT - Insufficient volume
+Checking 24 hour volume of market 10/223 - BTTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/222 - ONGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/221 - HOTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/220 - ZILUSDT - Insufficient volume
+Checking 24 hour volume of market 10/219 - ZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 10/218 - FETUSDT - Insufficient volume
+Checking 24 hour volume of market 10/217 - BATUSDT - Insufficient volume
+Checking 24 hour volume of market 10/216 - XMRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/215 - ZECUSDT - Insufficient volume
+Checking 24 hour volume of market 10/214 - IOSTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/213 - CELRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/212 - DASHUSDT - Insufficient volume
+Checking 24 hour volume of market 10/211 - NANOUSDT - Insufficient volume
+Checking 24 hour volume of market 10/210 - OMGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/209 - THETAUSDT - Sufficient volume
+Checking 24 hour volume of market 11/209 - ENJUSDT - Sufficient volume
+Checking 24 hour volume of market 12/209 - MITHUSDT - Sufficient volume
+Checking 24 hour volume of market 13/209 - MATICUSDT - Sufficient volume
+Checking 24 hour volume of market 14/209 - ATOMUSDT - Sufficient volume
+Checking 24 hour volume of market 15/209 - TFUELUSDT - Insufficient volume
+Checking 24 hour volume of market 15/208 - ONEUSDT - Insufficient volume
+Checking 24 hour volume of market 15/207 - FTMUSDT - Insufficient volume
+Checking 24 hour volume of market 15/206 - ALGOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/205 - GTOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/204 - DOGEUSDT - Sufficient volume
+Checking 24 hour volume of market 16/204 - DUSKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/203 - ANKRUSDT - Insufficient volume
+Checking 24 hour volume of market 16/202 - WINUSDT - Insufficient volume
+Checking 24 hour volume of market 16/201 - COSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/200 - COCOSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/199 - MTLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/198 - TOMOUSDT - Insufficient volume
+Checking 24 hour volume of market 16/197 - PERLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/196 - DENTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/195 - MFTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/194 - KEYUSDT - Insufficient volume
+Checking 24 hour volume of market 16/193 - DOCKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/192 - WANUSDT - Insufficient volume
+Checking 24 hour volume of market 16/191 - FUNUSDT - Insufficient volume
+Checking 24 hour volume of market 16/190 - CVCUSDT - Insufficient volume
+Checking 24 hour volume of market 16/189 - CHZUSDT - Sufficient volume
+Checking 24 hour volume of market 17/189 - BANDUSDT - Insufficient volume
+Checking 24 hour volume of market 17/188 - BEAMUSDT - Insufficient volume
+Checking 24 hour volume of market 17/187 - XTZUSDT - Insufficient volume
+Checking 24 hour volume of market 17/186 - RENUSDT - Insufficient volume
+Checking 24 hour volume of market 17/185 - RVNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/184 - HBARUSDT - Insufficient volume
+Checking 24 hour volume of market 17/183 - NKNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/182 - STXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/181 - KAVAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/180 - ARPAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/179 - IOTXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/178 - RLCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/177 - CTXCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/176 - TROYUSDT - Insufficient volume
+Checking 24 hour volume of market 17/175 - VITEUSDT - Insufficient volume
+Checking 24 hour volume of market 17/174 - FTTUSDT - Insufficient volume
+Checking 24 hour volume of market 17/173 - EURUSDT - Sufficient volume
+Checking 24 hour volume of market 18/173 - OGNUSDT - Insufficient volume
+Checking 24 hour volume of market 18/172 - DREPUSDT - Insufficient volume
+Checking 24 hour volume of market 18/171 - TCTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/170 - WRXUSDT - Insufficient volume
+Checking 24 hour volume of market 18/169 - BTSUSDT - Insufficient volume
+Checking 24 hour volume of market 18/168 - LSKUSDT - Insufficient volume
+Checking 24 hour volume of market 18/167 - BNTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/166 - LTOUSDT - Insufficient volume
+Checking 24 hour volume of market 18/165 - AIONUSDT - Insufficient volume
+Checking 24 hour volume of market 18/164 - MBLUSDT - Insufficient volume
+Checking 24 hour volume of market 18/163 - COTIUSDT - Insufficient volume
+Checking 24 hour volume of market 18/162 - STPTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/161 - WTCUSDT - Insufficient volume
+Checking 24 hour volume of market 18/160 - DATAUSDT - Insufficient volume
+Checking 24 hour volume of market 18/159 - SOLUSDT - Sufficient volume
+Checking 24 hour volume of market 19/159 - CTSIUSDT - Insufficient volume
+Checking 24 hour volume of market 19/158 - HIVEUSDT - Insufficient volume
+Checking 24 hour volume of market 19/157 - CHRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/156 - GXSUSDT - Insufficient volume
+Checking 24 hour volume of market 19/155 - ARDRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/154 - MDTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/153 - STMXUSDT - Insufficient volume
+Checking 24 hour volume of market 19/152 - KNCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/151 - REPUSDT - Insufficient volume
+Checking 24 hour volume of market 19/150 - LRCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/149 - PNTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/148 - COMPUSDT - Sufficient volume
+Checking 24 hour volume of market 20/148 - SCUSDT - Insufficient volume
+Checking 24 hour volume of market 20/147 - ZENUSDT - Insufficient volume
+Checking 24 hour volume of market 20/146 - SNXUSDT - Sufficient volume
+Checking 24 hour volume of market 21/146 - VTHOUSDT - Insufficient volume
+Checking 24 hour volume of market 21/145 - DGBUSDT - Insufficient volume
+Checking 24 hour volume of market 21/144 - GBPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/143 - SXPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/142 - MKRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/141 - DCRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/140 - STORJUSDT - Insufficient volume
+Checking 24 hour volume of market 21/139 - MANAUSDT - Insufficient volume
+Checking 24 hour volume of market 21/138 - AUDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/137 - YFIUSDT - Insufficient volume
+Checking 24 hour volume of market 21/136 - BALUSDT - Insufficient volume
+Checking 24 hour volume of market 21/135 - BLZUSDT - Insufficient volume
+Checking 24 hour volume of market 21/134 - IRISUSDT - Insufficient volume
+Checking 24 hour volume of market 21/133 - KMDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/132 - JSTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/131 - SRMUSDT - Insufficient volume
+Checking 24 hour volume of market 21/130 - ANTUSDT - Insufficient volume
+Checking 24 hour volume of market 21/129 - CRVUSDT - Insufficient volume
+Checking 24 hour volume of market 21/128 - SANDUSDT - Sufficient volume
+Checking 24 hour volume of market 22/128 - OCEANUSDT - Insufficient volume
+Checking 24 hour volume of market 22/127 - NMRUSDT - Insufficient volume
+Checking 24 hour volume of market 22/126 - DOTUSDT - Sufficient volume
+Checking 24 hour volume of market 23/126 - LUNAUSDT - Sufficient volume
+Checking 24 hour volume of market 24/126 - RSRUSDT - Insufficient volume
+Checking 24 hour volume of market 24/125 - PAXGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/124 - WNXMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/123 - TRBUSDT - Insufficient volume
+Checking 24 hour volume of market 24/122 - BZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 24/121 - SUSHIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/120 - YFIIUSDT - Insufficient volume
+Checking 24 hour volume of market 24/119 - KSMUSDT - Insufficient volume
+Checking 24 hour volume of market 24/118 - EGLDUSDT - Insufficient volume
+Checking 24 hour volume of market 24/117 - DIAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/116 - RUNEUSDT - Insufficient volume
+Checking 24 hour volume of market 24/115 - FIOUSDT - Insufficient volume
+Checking 24 hour volume of market 24/114 - UMAUSDT - Insufficient volume
+Checking 24 hour volume of market 24/113 - BELUSDT - Insufficient volume
+Checking 24 hour volume of market 24/112 - WINGUSDT - Insufficient volume
+Checking 24 hour volume of market 24/111 - UNIUSDT - Sufficient volume
+Checking 24 hour volume of market 25/111 - NBSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/110 - OXTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/109 - SUNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/108 - AVAXUSDT - Insufficient volume
+Checking 24 hour volume of market 25/107 - HNTUSDT - Insufficient volume
+Checking 24 hour volume of market 25/106 - FLMUSDT - Insufficient volume
+Checking 24 hour volume of market 25/105 - ORNUSDT - Insufficient volume
+Checking 24 hour volume of market 25/104 - UTKUSDT - Insufficient volume
+Checking 24 hour volume of market 25/103 - XVSUSDT - Insufficient volume
+Checking 24 hour volume of market 25/102 - ALPHAUSDT - Insufficient volume
+Checking 24 hour volume of market 25/101 - AAVEUSDT - Sufficient volume
+Checking 24 hour volume of market 26/101 - NEARUSDT - Insufficient volume
+Checking 24 hour volume of market 26/100 - FILUSDT - Sufficient volume
+Checking 24 hour volume of market 27/100 - INJUSDT - Insufficient volume
+Checking 24 hour volume of market 27/99 - AUDIOUSDT - Insufficient volume
+Checking 24 hour volume of market 27/98 - CTKUSDT - Insufficient volume
+Checking 24 hour volume of market 27/97 - AKROUSDT - Insufficient volume
+Checking 24 hour volume of market 27/96 - AXSUSDT - Sufficient volume
+Checking 24 hour volume of market 28/96 - HARDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/95 - DNTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/94 - STRAXUSDT - Insufficient volume
+Checking 24 hour volume of market 28/93 - UNFIUSDT - Insufficient volume
+Checking 24 hour volume of market 28/92 - ROSEUSDT - Insufficient volume
+Checking 24 hour volume of market 28/91 - AVAUSDT - Insufficient volume
+Checking 24 hour volume of market 28/90 - XEMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/89 - SKLUSDT - Insufficient volume
+Checking 24 hour volume of market 28/88 - SUSDUSDT - Insufficient volume
+Checking 24 hour volume of market 28/87 - GRTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/86 - JUVUSDT - Insufficient volume
+Checking 24 hour volume of market 28/85 - PSGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/84 - 1INCHUSDT - Insufficient volume
+Checking 24 hour volume of market 28/83 - REEFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/82 - OGUSDT - Insufficient volume
+Checking 24 hour volume of market 28/81 - ATMUSDT - Insufficient volume
+Checking 24 hour volume of market 28/80 - ASRUSDT - Insufficient volume
+Checking 24 hour volume of market 28/79 - CELOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/78 - RIFUSDT - Insufficient volume
+Checking 24 hour volume of market 28/77 - BTCSTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/76 - TRUUSDT - Insufficient volume
+Checking 24 hour volume of market 28/75 - CKBUSDT - Insufficient volume
+Checking 24 hour volume of market 28/74 - TWTUSDT - Insufficient volume
+Checking 24 hour volume of market 28/73 - FIROUSDT - Insufficient volume
+Checking 24 hour volume of market 28/72 - LITUSDT - Insufficient volume
+Checking 24 hour volume of market 28/71 - SFPUSDT - Insufficient volume
+Checking 24 hour volume of market 28/70 - DODOUSDT - Insufficient volume
+Checking 24 hour volume of market 28/69 - CAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 29/69 - ACMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/68 - BADGERUSDT - Insufficient volume
+Checking 24 hour volume of market 29/67 - FISUSDT - Insufficient volume
+Checking 24 hour volume of market 29/66 - OMUSDT - Insufficient volume
+Checking 24 hour volume of market 29/65 - PONDUSDT - Insufficient volume
+Checking 24 hour volume of market 29/64 - DEGOUSDT - Insufficient volume
+Checking 24 hour volume of market 29/63 - ALICEUSDT - Sufficient volume
+Checking 24 hour volume of market 30/63 - LINAUSDT - Insufficient volume
+Checking 24 hour volume of market 30/62 - PERPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/61 - RAMPUSDT - Insufficient volume
+Checking 24 hour volume of market 30/60 - CFXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/59 - EPSUSDT - Insufficient volume
+Checking 24 hour volume of market 30/58 - AUTOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/57 - TKOUSDT - Insufficient volume
+Checking 24 hour volume of market 30/56 - PUNDIXUSDT - Insufficient volume
+Checking 24 hour volume of market 30/55 - TLMUSDT - Sufficient volume
+Checking 24 hour volume of market 31/55 - BTGUSDT - Insufficient volume
+Checking 24 hour volume of market 31/54 - MIRUSDT - Insufficient volume
+Checking 24 hour volume of market 31/53 - BARUSDT - Insufficient volume
+Checking 24 hour volume of market 31/52 - FORTHUSDT - Insufficient volume
+Checking 24 hour volume of market 31/51 - BAKEUSDT - Sufficient volume
+Checking 24 hour volume of market 32/51 - BURGERUSDT - Insufficient volume
+Checking 24 hour volume of market 32/50 - SLPUSDT - Sufficient volume
+Checking 24 hour volume of market 33/50 - SHIBUSDT - Sufficient volume
+Checking 24 hour volume of market 34/50 - ICPUSDT - Sufficient volume
+Checking 24 hour volume of market 35/50 - ARUSDT - Insufficient volume
+Checking 24 hour volume of market 35/49 - POLSUSDT - Insufficient volume
+Checking 24 hour volume of market 35/48 - MDXUSDT - Insufficient volume
+Checking 24 hour volume of market 35/47 - MASKUSDT - Insufficient volume
+Checking 24 hour volume of market 35/46 - LPTUSDT - Insufficient volume
+Checking 24 hour volume of market 35/45 - NUUSDT - Insufficient volume
+Checking 24 hour volume of market 35/44 - XVGUSDT - Insufficient volume
+Checking 24 hour volume of market 35/43 - ATAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/42 - GTCUSDT - Insufficient volume
+Checking 24 hour volume of market 35/41 - TORNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/40 - KEEPUSDT - Insufficient volume
+Checking 24 hour volume of market 35/39 - ERNUSDT - Insufficient volume
+Checking 24 hour volume of market 35/38 - KLAYUSDT - Insufficient volume
+Checking 24 hour volume of market 35/37 - PHAUSDT - Insufficient volume
+Checking 24 hour volume of market 35/36 - BONDUSDT - Insufficient volume
+Checking 24 hour volume of market 35/35 - MLNUSDT - Insufficient volume
+
+
+Fetching history
+
+Fetching history of market 1/34 - BTC/USDT
+Fetching history of market 2/34 - ETH/USDT
+Fetching history of market 3/34 - LTC/USDT
+Fetching history of market 4/34 - ADA/USDT
+Fetching history of market 5/34 - XRP/USDT
+Fetching history of market 6/34 - EOS/USDT
+Fetching history of market 7/34 - ETC/USDT
+Fetching history of market 8/34 - VET/USDT
+Fetching history of market 9/34 - LINK/USDT
+Fetching history of market 10/34 - THETA/USDT
+Fetching history of market 11/34 - ENJ/USDT
+Fetching history of market 12/34 - MITH/USDT
+Fetching history of market 13/34 - MATIC/USDT
+Fetching history of market 14/34 - ATOM/USDT
+Fetching history of market 15/34 - DOGE/USDT
+Fetching history of market 16/34 - CHZ/USDT
+Fetching history of market 17/34 - EUR/USDT
+Fetching history of market 18/34 - SOL/USDT
+Fetching history of market 19/34 - COMP/USDT
+Fetching history of market 20/34 - SNX/USDT
+Fetching history of market 21/34 - SAND/USDT
+Fetching history of market 22/34 - DOT/USDT
+Fetching history of market 23/34 - LUNA/USDT
+Fetching history of market 24/34 - UNI/USDT
+Fetching history of market 25/34 - AAVE/USDT
+Fetching history of market 26/34 - FIL/USDT
+Fetching history of market 27/34 - AXS/USDT
+Fetching history of market 28/34 - CAKE/USDT
+Fetching history of market 29/34 - ALICE/USDT
+Fetching history of market 30/34 - TLM/USDT
+Fetching history of market 31/34 - BAKE/USDT
+Fetching history of market 32/34 - SLP/USDT
+Fetching history of market 33/34 - SHIB/USDT
+Fetching history of market 34/34 - ICP/USDT
+
+
+Analysing markets
+
+
+BTC/USDT ... 163004063266836.22 ... trending down ... EMA1 - 34369.04 ... EMA233 - 34340.87013861442
+ETH/USDT ... 130473496667509.06 ... trending down ... EMA1 - 2150.68 ... EMA233 - 2151.712144354893
+COMP/USDT ... 62738728460273.8 ... trending up ... EMA1 - 436.26 ... EMA233 - 435.7613128307644
+AAVE/USDT ... 32616247617869.918 ... trending up ... EMA1 - 318.04 ... EMA233 - 315.99242823596535
+LTC/USDT ... -92111489777193.4 ... trending down ... EMA1 - 138.23 ... EMA233 - 136.66733862078854
+FIL/USDT ... -377844833010941.94 ... trending down ... EMA1 - 55.22 ... EMA233 - 55.208405004958905
+ETC/USDT ... -529094813074841.2 ... trending down ... EMA1 - 50.276 ... EMA233 - 49.92797413570303
+ICP/USDT ... -726908208797045.9 ... trending down ... EMA1 - 40.13 ... EMA233 - 40.15641011429352
+SOL/USDT ... -1122436938112896.1 ... trending down ... EMA1 - 32.174 ... EMA233 - 32.26871125793689
+UNI/USDT ... -1585261131535583 ... trending down ... EMA1 - 21.168 ... EMA233 - 21.1339039510101
+LINK/USDT ... -1653553800632605.2 ... trending down ... EMA1 - 18.474 ... EMA233 - 18.476789534251076
+AXS/USDT ... -1769287909279352.8 ... trending up ... EMA1 - 17.8364 ... EMA233 - 17.94140491634113
+CAKE/USDT ... -1866785135155007.8 ... trending down ... EMA1 - 15.648 ... EMA233 - 15.557944123286356
+DOT/USDT ... -1961881894553950.8 ... trending up ... EMA1 - 15.586 ... EMA233 - 15.554488437833868
+ATOM/USDT ... -2154201210998991.2 ... trending up ... EMA1 - 13.981 ... EMA233 - 13.942920738411097
+SNX/USDT ... -2494806515672489 ... trending up ... EMA1 - 13.174 ... EMA233 - 13.271576536702865
+LUNA/USDT ... -3838378693572086.5 ... trending up ... EMA1 - 8.257 ... EMA233 - 8.304860894749158
+THETA/USDT ... -4509511090475085 ... trending down ... EMA1 - 5.952 ... EMA233 - 5.9485815653699525
+ALICE/USDT ... -5578609161762515 ... trending down ... EMA1 - 6.7776 ... EMA233 - 6.897879436647722
+EOS/USDT ... -8618227145744071 ... trending down ... EMA1 - 4.305 ... EMA233 - 4.299875932415936
+EUR/USDT ... -9231577386947866 ... trending down ... EMA1 - 1.1863 ... EMA233 - 1.186228886677106
+BAKE/USDT ... -16491870171372214 ... trending down ... EMA1 - 2.1277 ... EMA233 - 2.1068450752783803
+ENJ/USDT ... -21591078367261380 ... trending down ... EMA1 - 1.3541 ... EMA233 - 1.3574560345529814
+ADA/USDT ... -26682075795248612 ... trending up ... EMA1 - 1.3715 ... EMA233 - 1.3614857670223601
+MATIC/USDT ... -38685068080886310 ... trending down ... EMA1 - 1.04359 ... EMA233 - 1.043150710423138
+XRP/USDT ... -46944691733877736 ... trending down ... EMA1 - 0.6521 ... EMA233 - 0.6493666408684386
+SAND/USDT ... -71198047954722200 ... trending down ... EMA1 - 0.46443 ... EMA233 - 0.4644028212109192
+SLP/USDT ... -103908159902048980 ... trending up ... EMA1 - 0.2886 ... EMA233 - 0.2828717492645438
+CHZ/USDT ... -137680601525300340 ... trending up ... EMA1 - 0.25624 ... EMA233 - 0.25606323272144393
+DOGE/USDT ... -183570140153016540 ... trending down ... EMA1 - 0.21776 ... EMA233 - 0.2173128685131265
+TLM/USDT ... -188575526264877900 ... trending down ... EMA1 - 0.1248 ... EMA233 - 0.12655817096848662
+VET/USDT ... -431570502382121150 ... trending up ... EMA1 - 0.07837 ... EMA233 - 0.07828924628716318
+MITH/USDT ... -769083873916750000 ... trending down ... EMA1 - 0.0519 ... EMA233 - 0.04850662001408646
+SHIB/USDT ... -2.0613079956043955e+21 ... trending up ... EMA1 - 0.00000792 ... EMA233 - 0.000007914602556414372
+
+
+
+12/07/2021, 08:40:29 - Bought 0.02904244 BTC @ 34350.09000000 ($4.215585937499882e-7)
+Wave Shape: 163004063266836.22  Target Price - 0.00001453704926117155
+
+
+
+
+----------
+
+
+Tick at 12/07/2021, 08:40:29
+
+Wallet
+3.1640625000000557e-10 USDT  
+0.029042441740750047 BTC @ undefined = $undefined 
+
+
+Fetching overview
+
+Checking 24 hour volume of market 1/234 - BTCUSDT - Sufficient volume
+Checking 24 hour volume of market 2/234 - ETHUSDT - Sufficient volume
+Checking 24 hour volume of market 3/234 - NEOUSDT - Insufficient volume
+Checking 24 hour volume of market 3/233 - LTCUSDT - Sufficient volume
+Checking 24 hour volume of market 4/233 - QTUMUSDT - Insufficient volume
+Checking 24 hour volume of market 4/232 - ADAUSDT - Sufficient volume
+Checking 24 hour volume of market 5/232 - XRPUSDT - Sufficient volume
+Checking 24 hour volume of market 6/232 - EOSUSDT - Sufficient volume
+Checking 24 hour volume of market 7/232 - IOTAUSDT - Insufficient volume
+Checking 24 hour volume of market 7/231 - XLMUSDT - Insufficient volume
+Checking 24 hour volume of market 7/230 - ONTUSDT - Insufficient volume
+Checking 24 hour volume of market 7/229 - TRXUSDT - Insufficient volume
+Checking 24 hour volume of market 7/228 - ETCUSDT - Sufficient volume
+Checking 24 hour volume of market 8/228 - ICXUSDT - Insufficient volume
+Checking 24 hour volume of market 8/227 - NULSUSDT - Insufficient volume
+Checking 24 hour volume of market 8/226 - VETUSDT - Sufficient volume
+Checking 24 hour volume of market 9/226 - PAXUSDT - Insufficient volume
+Checking 24 hour volume of market 9/225 - BCHUSDT - Insufficient volume
+Checking 24 hour volume of market 9/224 - LINKUSDT - Sufficient volume
+Checking 24 hour volume of market 10/224 - WAVESUSDT - Insufficient volume
+Checking 24 hour volume of market 10/223 - BTTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/222 - ONGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/221 - HOTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/220 - ZILUSDT - Insufficient volume
+Checking 24 hour volume of market 10/219 - ZRXUSDT - Insufficient volume
+Checking 24 hour volume of market 10/218 - FETUSDT - Insufficient volume
+Checking 24 hour volume of market 10/217 - BATUSDT - Insufficient volume
+Checking 24 hour volume of market 10/216 - XMRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/215 - ZECUSDT - Insufficient volume
+Checking 24 hour volume of market 10/214 - IOSTUSDT - Insufficient volume
+Checking 24 hour volume of market 10/213 - CELRUSDT - Insufficient volume
+Checking 24 hour volume of market 10/212 - DASHUSDT - Insufficient volume
+Checking 24 hour volume of market 10/211 - NANOUSDT - Insufficient volume
+Checking 24 hour volume of market 10/210 - OMGUSDT - Insufficient volume
+Checking 24 hour volume of market 10/209 - THETAUSDT - Sufficient volume
+Checking 24 hour volume of market 11/209 - ENJUSDT - Sufficient volume
+Checking 24 hour volume of market 12/209 - MITHUSDT - Sufficient volume
+Checking 24 hour volume of market 13/209 - MATICUSDT - Sufficient volume
+Checking 24 hour volume of market 14/209 - ATOMUSDT - Sufficient volume
+Checking 24 hour volume of market 15/209 - TFUELUSDT - Insufficient volume
+Checking 24 hour volume of market 15/208 - ONEUSDT - Insufficient volume
+Checking 24 hour volume of market 15/207 - FTMUSDT - Insufficient volume
+Checking 24 hour volume of market 15/206 - ALGOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/205 - GTOUSDT - Insufficient volume
+Checking 24 hour volume of market 15/204 - DOGEUSDT - Sufficient volume
+Checking 24 hour volume of market 16/204 - DUSKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/203 - ANKRUSDT - Insufficient volume
+Checking 24 hour volume of market 16/202 - WINUSDT - Insufficient volume
+Checking 24 hour volume of market 16/201 - COSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/200 - COCOSUSDT - Insufficient volume
+Checking 24 hour volume of market 16/199 - MTLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/198 - TOMOUSDT - Insufficient volume
+Checking 24 hour volume of market 16/197 - PERLUSDT - Insufficient volume
+Checking 24 hour volume of market 16/196 - DENTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/195 - MFTUSDT - Insufficient volume
+Checking 24 hour volume of market 16/194 - KEYUSDT - Insufficient volume
+Checking 24 hour volume of market 16/193 - DOCKUSDT - Insufficient volume
+Checking 24 hour volume of market 16/192 - WANUSDT - Insufficient volume
+Checking 24 hour volume of market 16/191 - FUNUSDT - Insufficient volume
+Checking 24 hour volume of market 16/190 - CVCUSDT - Insufficient volume
+Checking 24 hour volume of market 16/189 - CHZUSDT - Sufficient volume
+Checking 24 hour volume of market 17/189 - BANDUSDT - Insufficient volume
+Checking 24 hour volume of market 17/188 - BEAMUSDT - Insufficient volume
+Checking 24 hour volume of market 17/187 - XTZUSDT - Insufficient volume
+Checking 24 hour volume of market 17/186 - RENUSDT - Insufficient volume
+Checking 24 hour volume of market 17/185 - RVNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/184 - HBARUSDT - Insufficient volume
+Checking 24 hour volume of market 17/183 - NKNUSDT - Insufficient volume
+Checking 24 hour volume of market 17/182 - STXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/181 - KAVAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/180 - ARPAUSDT - Insufficient volume
+Checking 24 hour volume of market 17/179 - IOTXUSDT - Insufficient volume
+Checking 24 hour volume of market 17/178 - RLCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/177 - CTXCUSDT - Insufficient volume
+Checking 24 hour volume of market 17/176 - TROYUSDT - Insufficient volume
+Checking 24 hour volume of market 17/175 - VITEUSDT - Insufficient volume
+Checking 24 hour volume of market 17/174 - FTTUSDT - Insufficient volume
+Checking 24 hour volume of market 17/173 - EURUSDT - Sufficient volume
+Checking 24 hour volume of market 18/173 - OGNUSDT - Insufficient volume
+Checking 24 hour volume of market 18/172 - DREPUSDT - Insufficient volume
+Checking 24 hour volume of market 18/171 - TCTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/170 - WRXUSDT - Insufficient volume
+Checking 24 hour volume of market 18/169 - BTSUSDT - Insufficient volume
+Checking 24 hour volume of market 18/168 - LSKUSDT - Insufficient volume
+Checking 24 hour volume of market 18/167 - BNTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/166 - LTOUSDT - Insufficient volume
+Checking 24 hour volume of market 18/165 - AIONUSDT - Insufficient volume
+Checking 24 hour volume of market 18/164 - MBLUSDT - Insufficient volume
+Checking 24 hour volume of market 18/163 - COTIUSDT - Insufficient volume
+Checking 24 hour volume of market 18/162 - STPTUSDT - Insufficient volume
+Checking 24 hour volume of market 18/161 - WTCUSDT - Insufficient volume
+Checking 24 hour volume of market 18/160 - DATAUSDT - Insufficient volume
+Checking 24 hour volume of market 18/159 - SOLUSDT - Sufficient volume
+Checking 24 hour volume of market 19/159 - CTSIUSDT - Insufficient volume
+Checking 24 hour volume of market 19/158 - HIVEUSDT - Insufficient volume
+Checking 24 hour volume of market 19/157 - CHRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/156 - GXSUSDT - Insufficient volume
+Checking 24 hour volume of market 19/155 - ARDRUSDT - Insufficient volume
+Checking 24 hour volume of market 19/154 - MDTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/153 - STMXUSDT - Insufficient volume
+Checking 24 hour volume of market 19/152 - KNCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/151 - REPUSDT - Insufficient volume
+Checking 24 hour volume of market 19/150 - LRCUSDT - Insufficient volume
+Checking 24 hour volume of market 19/149 - PNTUSDT - Insufficient volume
+Checking 24 hour volume of market 19/148 - COMPUSDT - Sufficient volume
+Checking 24 hour volume of market 20/148 - SCUSDT - Insufficient volume
+Checking 24 hour volume of market 20/147 - ZENUSDT - Insufficient volume
+Checking 24 hour volume of market 20/146 - SNXUSDT - Sufficient volume
+Checking 24 hour volume of market 21/146 - VTHOUSDT - Insufficient volume
+Checking 24 hour volume of market 21/145 - DGBUSDT - Insufficient volume
+Checking 24 hour volume of market 21/144 - GBPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/143 - SXPUSDT - Insufficient volume
+Checking 24 hour volume of market 21/142 - MKRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/141 - DCRUSDT - Insufficient volume
+Checking 24 hour volume of market 21/140 - STORJUSDT - Insufficient volume
+Checking 24 hour volume of market 21/139 - MANAUSDT - Insufficient volume
+Checking 24 hour volume of market 21/138 - AUDUSDT - Insufficient volume
+Checking 24 hour volume of market 21/137 - YFIUSDT - Insufficient volume
+Checking 24 hour volume of market 21/136 - BALUSDT - Insufficient volume
+Checking 24 hour volume of market 21/135 - BLZUSDT - Insufficient volume
+^C
