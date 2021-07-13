@@ -157,6 +157,17 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         }
       }
     }
+  } else {
+
+    if (currentMarket === undefined) {
+
+      let currentMarketSymbol =  { name: `${activeCurrency}USDT` }
+      let response = await fetchOneHistory(symbolName)
+
+      if (response === 'No response')
+
+    }
+
   }
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 }
