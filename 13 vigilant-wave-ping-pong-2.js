@@ -133,6 +133,18 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     let bulls = getBulls(markets)
     console.log('\n')
     await displayMarkets(bulls)
+
+    if (bulls.length === 0) {
+
+      console.log('No viable markets\n')
+  
+  } else {
+
+    let bestMarket = bulls[0]
+    let response = await newBuyOrder(wallet, bestMarket)
+    wallet = response['wallet']
+  }
+
   }
 
 }
