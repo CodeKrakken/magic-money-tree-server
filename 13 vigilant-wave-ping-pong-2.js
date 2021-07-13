@@ -121,6 +121,7 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
   if (activeCurrency === 'USDT') {
 
+    currentMarket = undefined
     console.log(`Fetching overview\n`)
     markets = await fetchMarkets()
     allMarketNames = Object.keys(markets)
@@ -132,21 +133,32 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     await displayMarkets(markets)
     let bulls = getBulls(markets)
     console.log('\n')
-    await displayMarkets(bulls)
+    console.log(bulls)
 
     if (bulls.length === 0) {
 
       console.log('No viable markets\n')
   
-  } else {
+    } else {
 
-    let bestMarket = bulls[0]
-    let response = await newBuyOrder(wallet, bestMarket)
-    wallet = response['wallet']
+      let n = bulls.length
+
+      for (let i = 0; i < n; i ++) {
+
+        let bull = bulls[i]
+        let currentPrice = await fetchPrice(bull.name)
+
+        if (currentPrice > bull.ema233) {
+
+          let response = await newBuyOrder(wallet, bull)
+          currentMarket = response['market']
+          wallet = response['wallet']
+          i = n
+        }
+      }
+    }
   }
-
-  }
-
+  tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 }
 
 
@@ -570,8 +582,79 @@ function displayMarkets(markets) {
 
 function getBulls(markets) {
 
-  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
+  let bulls = markets.filter(market => market.shape > 0) // && market.trend === 'up' && market.ema1 > market.ema233) // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
   return bulls
 }
+
+
+
+async function fetchPrice(marketName) {
+
+  try {
+
+    let symbolName = marketName.replace('/', '')
+    let rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
+    let price = parseFloat(rawPrice.data.price)
+    return price
+
+  } catch (error) {
+
+    console.log(error)
+  }
+}
+
+
+
+async function newBuyOrder(wallet, market) {
+  
+  try {
+
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash+1)
+    let response = await fetchPrice(market.name)
+
+    if (response === 'No response') {
+
+      console.log(`No response - starting new tick`)
+      tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+
+    } else {
+
+      let currentPrice = response
+      let baseVolume = wallet.currencies[base]['quantity']
+      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = { 'quantity': 0 } }
+      let volumeToTrade = baseVolume * (1 - fee)
+      wallet.currencies[base]['quantity'] -= volumeToTrade
+      wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
+      let targetVolume = baseVolume * (1 + fee)
+      wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
+      wallet.stopLossPrice = wallet.targetPrice * stopLossThreshold
+      wallet.highPrice = currentPrice
+      wallet.boughtTime = Date.now()
+      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      await record(tradeReport)
+      tradeReport = ''
+      
+      return {
+        'market': market, 
+        'wallet': wallet
+      }
+    }
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
+function n(n, d) {
+  return Number.parseFloat(n).toFixed(d);
+}
+
+
 
 run();
