@@ -128,6 +128,8 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     let viableMarketNames = await getViableMarketNames(marketNames)
     markets = await fetchAllHistory(viableMarketNames)
     markets = await sortByArc(markets)
+    markets = await addEMA(markets)
+
     console.log(markets)
   }
 
@@ -477,6 +479,65 @@ async function sortByArc(markets) {
     }
   }
   return markets.sort((a, b) => b.shape - a.shape)
+}
+
+
+
+async function addEMA(markets) {
+
+  try {
+
+    console.log('Analysing markets\n\n')
+
+    let n = markets.length
+
+    for (let i = 0; i < n; i++) {
+
+      let market = markets[i]
+      
+      market.ema1 = ema(market.history, 1, 'close')
+      market.ema233 = ema(market.history, 233, 'close')
+    }
+    return markets
+
+  } catch (error) {
+
+    console.log(error)
+
+  }
+}
+
+
+
+function ema(rawData, time, parameter) {
+  
+  let data = extractData(rawData, parameter)
+  const k = 2/(time + 1)
+  let emaData = []
+  emaData[0] = data[0]
+
+  for (let i = 1; i < data.length; i++) {
+
+    let newPoint = (data[i] * k) + (emaData[i-1] * (1-k))
+    emaData.push(newPoint)
+
+  }
+
+  let currentEma = [...emaData].pop()
+  return +currentEma
+
+}
+
+function extractData(dataArray, key) {
+
+  let outputArray = []
+
+  dataArray.forEach(obj => {
+    outputArray.push(obj[key])
+  })
+
+  return outputArray
+
 }
 
 
