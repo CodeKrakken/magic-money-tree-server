@@ -159,12 +159,33 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     }
   } else {
 
-    if (currentMarket === undefined) {
+    let currentMarketName = `${activeCurrency}/USDT`
 
-      let currentMarketSymbol =  { name: `${activeCurrency}USDT` }
-      let response = await fetchOneHistory(symbolName)
+    if (markets === undefined) {
 
-      if (response === 'No response')
+      markets = await fetchMarkets()
+      allMarketNames = Object.keys(markets)
+      marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
+      let viableMarketNames = await getViableMarketNames(marketNames)
+
+      if (!viableMarketNames.includes(currentMarketName)) {
+        viableMarketNames.push(currentMarketName)
+      }
+
+      let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
+      
+      if (viableMarkets[viableMarkets.length-1] === 'No response for current market') {
+
+        markets.pop()
+        return tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+
+      }
+      
+      markets = await sortByArc(markets)
+      markets = await addEMA(markets)
+      
+    }
+
 
     }
 
