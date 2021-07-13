@@ -109,6 +109,9 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     } else {
 
+
+      // THIS MAY BE THE PROBLEM - WHY WOULD MARKETNAMES BE UNDEFINED?
+
       if (marketNames === undefined) {
 
         marketNames = []
@@ -116,6 +119,10 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
         markets.forEach(market => {
           marketNames.push(market.name)
         })
+
+        if (!marketNames.includes(currentMarket.name)) {
+          marketNames.push(currentMarket.name)
+        }
 
       }
 
