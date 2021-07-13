@@ -84,7 +84,7 @@ async function run() {
 
 function record(report) {
 
-  fs.appendFile(`${process.env.COMPUTER} trade-history.txt`, report, function(err) {
+  fs.appendFile(`${process.env.COMPUTER} trade-history-13.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 
