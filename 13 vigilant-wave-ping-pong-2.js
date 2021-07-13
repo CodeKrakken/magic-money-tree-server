@@ -130,7 +130,9 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     markets = await sortByArc(markets)
     markets = await addEMA(markets)
     await displayMarkets(markets)
-
+    let bulls = getBulls(markets)
+    console.log('\n')
+    await displayMarkets(bulls)
   }
 
 }
@@ -553,5 +555,11 @@ function displayMarkets(markets) {
 }
 
 
+
+function getBulls(markets) {
+
+  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up' && market.ema1 > market.ema233)
+  return bulls
+}
 
 run();
