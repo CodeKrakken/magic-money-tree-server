@@ -129,8 +129,8 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
     markets = await fetchAllHistory(viableMarketNames)
     markets = await sortByArc(markets)
     markets = await addEMA(markets)
+    await displayMarkets(markets)
 
-    console.log(markets)
   }
 
 }
@@ -538,6 +538,18 @@ function extractData(dataArray, key) {
 
   return outputArray
 
+}
+
+
+
+function displayMarkets(markets) {
+
+  markets.forEach(market => {
+
+    console.log(`${market.name} ... ${market.shape} ... trending ${market.trend} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
+
+  })
+  console.log('\n\n')
 }
 
 
