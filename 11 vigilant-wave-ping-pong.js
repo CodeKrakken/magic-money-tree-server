@@ -296,7 +296,7 @@ async function displayWallet(wallet, marketNames, activeCurrency, currentMarket)
     if (dollarPrice === 'No response') {
 
       console.log('Currency information unavailable  - starting new tick')
-      tick(wallet)
+      tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     } else {
       
@@ -763,7 +763,7 @@ async function newBuyOrder(wallet, market) {
     if (response === 'No response') {
 
       console.log(`No response - starting new tick`)
-      tick(wallet)
+      tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
     } else {
 

@@ -116,9 +116,20 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  console.log(activeCurrency)
   await displayWallet(wallet, markets, allMarketNames, marketNames, activeCurrency, currentMarket)
+  console.log('\n')
 
+  if (activeCurrency === 'USDT') {
+
+    console.log(`Fetching overview\n`)
+    markets = await fetchMarkets()
+    allMarketNames = Object.keys(markets)
+    marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
+    let viableMarketNames = await getViableMarketNames(marketNames)
+    markets = await fetchAllHistory(viableMarketNames)
+    markets = await sortByArc(markets)
+    console.log(markets)
+  }
 
 }
 
@@ -189,8 +200,283 @@ async function displayWallet(wallet, markets, allMarketNames, marketNames, activ
     if (currency === activeCurrency && currency !== 'USDT') {
 
       console.log(`Target Price - ${wallet.targetPrice}`)
+      console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
     }
   })
+}
+
+
+
+function goodMarketName(marketName, markets) {
+
+  return markets[marketName].active
+  && marketName.includes('USDT') 
+  && !marketName.includes('USDT/')
+  && !marketName.includes('UP') 
+  && !marketName.includes('DOWN') 
+  && !marketName.includes('BUSD')
+  && !marketName.includes('TUSD')
+  && !marketName.includes('USDC')
+  && !marketName.includes('BNB')
+
+}
+
+
+
+async function getViableMarketNames(marketNames) {
+
+  let voluminousMarketNames = []
+  let symbolNames = marketNames.map(marketName => marketName = marketName.replace('/', ''))
+  let n = symbolNames.length
+
+  for (let i = 0; i < n; i++) {
+
+    let symbolName = symbolNames[i]
+    let marketName = marketNames[i]
+    let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
+    let response = await checkVolumeAndMovement(symbolName)
+
+    if (response.includes("Insufficient") || response === "No response") {
+      
+      symbolNames.splice(i, 1)
+      marketNames.splice(i, 1)
+      i--
+      n--
+
+    } else {
+
+      voluminousMarketNames.push(marketName)
+    }
+
+    console.log(announcement + response)
+  }
+  console.log('\n')
+  return voluminousMarketNames
+
+}
+
+
+
+async function checkVolumeAndMovement(symbolName) {
+
+  let twentyFourHour = await fetch24Hour(symbolName)
+  
+  if (twentyFourHour.data !== undefined) {
+
+    if (twentyFourHour.data.quoteVolume < minimumDollarVolume) { return "Insufficient volume" }
+    return 'Sufficient volume'
+  
+  } else {
+
+    return "No response"
+  }
+}
+
+
+
+async function fetch24Hour(symbolName) {
+
+  try {
+
+    let twentyFourHour = await axios.get(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbolName}`, { timeout: 10000 })
+    return twentyFourHour
+
+  } catch (error) {
+
+    return 'Invalid market'
+  }
+}
+
+
+
+async function fetchAllHistory(marketNames, currentMarketName) {
+
+  console.log('Fetching history\n')
+  let n = marketNames.length
+  let returnArray = []
+
+  for (let i = 0; i < n; i ++) {
+
+    try {
+
+      let marketName = marketNames[i]
+      let symbolName = marketName.replace('/', '')
+      let response = await fetchOneHistory(symbolName)
+
+      if (response === 'No response' && marketName === currentMarketName) { 
+
+        console.log(`No response for current market`)
+        markets.push(`No response for current market`)
+        return markets
+
+      } else if (response === 'No response') { 
+
+        console.log(`No response for market ${i+1}/${n} - ${marketName}`)
+      
+      } else {
+
+        let symbolHistory = response
+
+        let symbolObject = {
+  
+          'history': symbolHistory,
+          'name': marketName
+  
+        }
+  
+        symbolObject = await annotateData(symbolObject)
+        console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
+        await returnArray.push(symbolObject)
+
+      }
+
+    } catch (error) {
+
+    }
+  }
+
+  console.log('\n')
+  return returnArray
+
+}
+
+
+
+async function fetchOneHistory(symbolName) {
+
+  try {
+    
+    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
+    return history.data
+
+  } catch (error) {
+    
+    return 'No response'
+
+  }
+}
+
+
+
+async function annotateData(data) {
+
+  try {
+
+    let history = []
+
+    data.history.forEach(period => {
+  
+      let average = (
+  
+        parseFloat(period[1]) +
+        parseFloat(period[2]) +
+        parseFloat(period[3]) +
+        parseFloat(period[4])
+  
+      )/4
+  
+      history.push(
+        {
+          'startTime': period[0],
+          'open'     : parseFloat(period[1]),
+          'high'     : parseFloat(period[2]),
+          'low'      : parseFloat(period[3]),
+          'close'    : parseFloat(period[4]),
+          'endTime'  : period[6],
+          'average'  : average
+        }
+      )
+    })
+  
+    let outputObject = {
+  
+      'history': history,
+      'name': data.name
+  
+    }
+  
+    return outputObject
+
+  } catch(error) {
+
+    console.log(error.message)
+
+  }
+}
+
+
+
+async function sortByArc(markets) {
+
+  let n = markets.length
+
+  for (let i = 0; i < n; i++) {
+    let m = markets[i].history.length
+    markets[i].shape = 0
+    markets[i].pointHigh = 0
+    markets[i].pointLow = 0
+
+    for (let t = 1; t < m-1; t++) {
+
+      let lastPeriod = markets[i].history[t-1]
+      let thisPeriod = markets[i].history[t]
+      let nextPeriod = markets[i].history[t+1]
+
+      if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) {
+         
+        // console.log(`lastPeriod['close'] (${lastPeriod['close']}) < thisPeriod['close'] (${thisPeriod['close']}) < nextPeriod['close'] (${nextPeriod['close']})`)
+
+        if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close'] && thisPeriod['high']) {
+
+          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
+
+          markets[i].trend = 'up'
+          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])} = `)
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])
+          markets[i].pointLow = t
+          // console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}\n`)
+
+        } else if (thisPeriod['open'] < markets[i].history[markets[i].pointLow]['close']) {
+
+          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
+
+          markets[i].trend = 'down'
+          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])} = `)
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])
+          markets[i].pointLow = t
+          // console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}\n`)
+        }
+
+      }
+
+      if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) {
+        
+        // console.log(`lastPeriod['close'] (${lastPeriod['close']}) > thisPeriod['close'] (${thisPeriod['close']}) > nextPeriod['close'] (${nextPeriod['close']})`)
+
+        if (thisPeriod['open'] > markets[i].history[markets[i].pointHigh]['close']) {
+
+          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
+
+          markets[i].trend = 'up'
+          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])} = `)
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])
+          markets[i].pointHigh = t
+          // console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}\n`)
+
+        } else if (thisPeriod['open'] < markets[i].history[markets[i].pointHigh]['close']) {
+
+          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
+
+          markets[i].trend = 'down'
+          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])} = `)
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])
+          markets[i].pointHigh = t
+          // console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}\n`)
+        }
+      }
+    }
+  }
+  return markets.sort((a, b) => b.shape - a.shape)
 }
 
 
