@@ -59,14 +59,23 @@ async function run() {
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
 
   let wallet = simulatedWallet()
-
-  let markets
   let allMarkets = await fetchMarkets()
-  let allMarketNames = Object.keys(allMarkets)
+  let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
   let currentMarket
-  let marketNames
 
-  tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+  tick(wallet, goodMarketNames, allMarkets, currentMarket)
+
+}
+
+
+
+function record(report) {
+
+  fs.appendFile(`${process.env.COMPUTER} trade-history-13.txt`, report, function(err) {
+    if (err) return console.log(err);
+  })
+
+  console.log(report)
 
 }
 
@@ -83,18 +92,6 @@ function simulatedWallet() {
       }
     }
   }
-}
-
-
-
-function record(report) {
-
-  fs.appendFile(`${process.env.COMPUTER} trade-history-13.txt`, report, function(err) {
-    if (err) return console.log(err);
-  })
-
-  console.log(report)
-
 }
 
 
@@ -116,46 +113,46 @@ async function fetchMarkets() {
 
 
 
-async function tick(wallet, markets, allMarketNames, currentMarket, marketNames) {
+async function tick(wallet, goodMarketNames, allMarkets, currentMarket) {
 
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
-  await displayWallet(wallet, markets, allMarketNames, marketNames, activeCurrency, currentMarket)
+  let allMarketNames = Object.keys(allMarkets)
+  await displayWallet(wallet, activeCurrency, goodMarketNames, allMarkets, currentMarket)
   console.log('\n')
 
   if (activeCurrency === 'USDT') {
 
-    currentMarket = undefined
     console.log(`Fetching overview\n`)
-    markets = await fetchMarkets()
-    allMarketNames = Object.keys(markets)
-    marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
-    let viableMarketNames = await getViableMarketNames(marketNames)
-    markets = await fetchAllHistory(viableMarketNames)
-    markets = await sortByArc(markets)
-    markets = await addEMA(markets)
-    await displayMarkets(markets)
-    let bulls = getBulls(markets)
-    console.log('\n')
-    console.log(bulls)
 
-    if (bulls.length === 0) {
+    currentMarket = undefined
+    allMarkets = await fetchMarkets()
+    let viableMarketNames = await getViableMarketNames(goodMarketNames)
+    let viableMarkets = await fetchAllHistory(viableMarketNames)
+    viableMarkets = await sortByArc(viableMarkets)
+    viableMarkets = await addEMA(viableMarkets)
+    await displayMarkets(viableMarkets)
+    viableMarkets = getViableMarkets(viableMarkets)
+    console.log('\n')
+    console.log(viableMarkets)
+
+    if (viableMarkets.length === 0) {
 
       console.log('No viable markets\n')
   
     } else {
 
-      let n = bulls.length
+      let n = viableMarkets.length
 
       for (let i = 0; i < n; i ++) {
 
-        let bull = bulls[i]
-        let currentPrice = await fetchPrice(bull.name)
+        let bestMarket = viableMarkets[i]
+        let currentPrice = await fetchPrice(bestMarket.name)
 
-        if (currentPrice > bull.ema233) {
+        if (currentPrice > bestMarket.ema233) {
 
-          let response = await newBuyOrder(wallet, bull)
+          let response = await newBuyOrder(wallet, bestMarket, goodMarketNames, allMarkets, currentMarket)
           currentMarket = response['market']
           wallet = response['wallet']
           i = n
@@ -165,37 +162,31 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
   } else {
 
     let currentMarketName = `${activeCurrency}/USDT`
+    let viableMarketNames = await getViableMarketNames(goodMarketNames)
 
-    if (markets === undefined) {
-
-      markets = await fetchMarkets()
-      allMarketNames = Object.keys(markets)
-      marketNames = Object.keys(markets).filter(marketName => goodMarketName(marketName, markets))
-      let viableMarketNames = await getViableMarketNames(marketNames)
-
-      if (!viableMarketNames.includes(currentMarketName)) {
-        viableMarketNames.push(currentMarketName)
-      }
-
-      let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
-      
-      if (viableMarkets[viableMarkets.length-1] === 'No response for current market') {
-
-        markets.pop()
-        return tick(wallet, markets, allMarketNames, currentMarket, marketNames)
-
-      }
-      
-      markets = await sortByArc(markets)
-      markets = await addEMA(markets)
-      
+    if (!viableMarketNames.includes(currentMarketName)) {
+      viableMarketNames.push(currentMarketName)
     }
-    tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+
+    let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
+    
+    if (viableMarkets[viableMarkets.length-1] === 'No response for current market') {
+
+      viableMarkets.pop()
+      return tick(wallet, goodMarketNames, allMarkets, currentMarket)
+
+    }
+    
+    viableMarkets = await sortByArc(viableMarkets)
+    viableMarkets = await addEMA(viableMarkets)
+    console.log(viableMarkets)
+    
+    console.log('Buy and sell complete with no issues')
 
   }
 
+  tick(wallet, goodMarketNames, allMarkets, currentMarket)
 }
-
 
 
 
@@ -227,7 +218,7 @@ async function getActiveCurrency(wallet) {
 
 
 
-async function displayWallet(wallet, markets, allMarketNames, marketNames, activeCurrency, currentMarket) {
+async function displayWallet(wallet, activeCurrency, goodMarketNames, allMarkets, currentMarket) {
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency]['quantity'] > 0)
   console.log('Wallet')
@@ -242,7 +233,7 @@ async function displayWallet(wallet, markets, allMarketNames, marketNames, activ
     if (dollarPrice === 'No response') {
 
       console.log('Currency information unavailable  - starting new tick')
-      tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+      tick(wallet, goodMarketNames, allMarkets, currentMarket)
     
     } else {
 
@@ -616,7 +607,7 @@ function displayMarkets(markets) {
 
 
 
-function getBulls(markets) {
+function getViableMarkets(markets) {
 
   let bulls = markets.filter(market => market.shape > 0) // && market.trend === 'up' && market.ema1 > market.ema233) // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
   return bulls
@@ -641,7 +632,7 @@ async function fetchPrice(marketName) {
 
 
 
-async function newBuyOrder(wallet, market) {
+async function newBuyOrder(wallet, market, goodMarketNames, allMarkets, currentMarket) {
   
   try {
 
@@ -653,7 +644,7 @@ async function newBuyOrder(wallet, market) {
     if (response === 'No response') {
 
       console.log(`No response - starting new tick`)
-      tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+      tick(wallet, goodMarketNames, allMarkets, currentMarket)
 
     } else {
 
