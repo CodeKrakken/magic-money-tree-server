@@ -730,4 +730,32 @@ function n(n, d) {
 
 
 
+async function newSellOrder(wallet, market, sellType) {
+
+  let tradeReport
+
+  try {
+    
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash + 1)
+    let assetVolume = wallet.currencies[asset]['quantity']
+
+    if (wallet.currencies[base] === undefined) { wallet.currencies[base] = { 'quantity': 0 } }
+    wallet.currencies[base]['quantity'] += assetVolume * (1 - fee) * market.currentPrice
+    wallet.currencies[asset]['quantity'] -= assetVolume
+    wallet.targetPrice = undefined
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
+    record(tradeReport)
+    tradeReport = ''
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
 run();
