@@ -176,42 +176,22 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     viableMarkets = await sortByArc(viableMarkets)
     viableMarkets = await addEMA(viableMarkets)
     await displayMarkets(viableMarkets)
-    currentMarket = viableMarkets.filter(market => market.name === currentMarketName) 
+    console.log('Current market name')
+    console.log(currentMarketName)
+    console.log(viableMarkets)
+    let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
+    currentMarket = currentMarketArray[0]
     let bulls = getBulls(viableMarkets)
+    console.log('Current market')
+    console.log(currentMarket)
 
     if (bulls.length === 0) {
 
       console.log('No bullish markets\n')
   
-    } else {
-
-      let n = bulls.length
-
-      for (let i = 0; i < n; i ++) {
-
-        let bestMarket = bulls[i]
-        let currentPrice = await fetchPrice(bestMarket.name)
-
-        if (currentPrice > bestMarket.ema233) {
-
-          let bestMarket = bulls[0]
-          i = n
-        }
-      }
     }
     
     currentMarket.currentPrice = await fetchPrice(currentMarket.name)
-
-    if (bestMarket !== undefined) {
-
-      console.log('Best market name')
-      console.log(bestMarket.name)
-
-    } else {
-
-      console.log('No viable markets')
-
-    }
     
     console.log('Current market price')
     console.log(currentMarket.currentPrice)
