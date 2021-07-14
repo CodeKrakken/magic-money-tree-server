@@ -49,10 +49,8 @@ const binance = new ccxt.binance({
 
 const minimumDollarVolume = 28000000
 const fee = 0.00075
-const volatilityDuration = 2
-const minimumMovement = 2
 const stopLossThreshold = 0.98
-const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
+// const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
 
@@ -60,15 +58,7 @@ async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
 
-  let wallet = { 
-  
-    currencies: {
-      'USDT': {
-        'quantity': 1000,
-        'dollarValue': 1000
-      }
-    }
-  }
+  let wallet = simulatedWallet()
 
   let markets
   let allMarkets = await fetchMarkets()
@@ -78,6 +68,21 @@ async function run() {
 
   tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
+}
+
+
+
+function simulatedWallet() {
+
+  return { 
+  
+    currencies: {
+      'USDT': {
+        'quantity': 1000,
+        'dollarValue': 1000
+      }
+    }
+  }
 }
 
 
@@ -185,13 +190,12 @@ async function tick(wallet, markets, allMarketNames, currentMarket, marketNames)
       markets = await addEMA(markets)
       
     }
-
-
-    }
+    tick(wallet, markets, allMarketNames, currentMarket, marketNames)
 
   }
-  tick(wallet, markets, allMarketNames, currentMarket, marketNames)
+
 }
+
 
 
 
