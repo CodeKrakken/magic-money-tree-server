@@ -6,7 +6,9 @@ const ccxt = require('ccxt');
 const { runInContext } = require('vm');
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 8000;
+// const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
+
 
 
 
@@ -61,9 +63,10 @@ async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
 
-  let wallet = simulatedWallet()
+  // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
+  let wallet = await liveWallet(goodMarketNames)
   let currentMarket
 
   tick(wallet, goodMarketNames, currentMarket)
@@ -96,6 +99,36 @@ function simulatedWallet() {
     }
   }
 }
+
+
+
+async function liveWallet(goodMarketNames) {
+
+  let wallet = {
+
+    'currencies': {}
+  }
+
+  let balancesRaw = await binance.fetchBalance()
+
+  Object.keys(balancesRaw.free).forEach(currency => {
+
+    let dollarMarket = `${currency}/USDT`
+
+    if (goodMarketNames.includes(dollarMarket)) {
+
+      wallet['currencies'][currency] = {
+        'quantity': balancesRaw.free[currency]
+      }
+    }
+  })
+
+  console.log(wallet)
+  return wallet
+
+}
+
+
 
 
 
