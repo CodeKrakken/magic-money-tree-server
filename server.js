@@ -23,14 +23,14 @@ const retryDelay = (retryNumber = 0) => {
 
 
 
-axiosRetry(axios, {
+// axiosRetry(axios, {
 
-  retries: Infinity,
-  retryDelay,
-  // retry on Network Error & 5xx responses
-  retryCondition: axiosRetry.isRetryableError,
+//   retries: Infinity,
+//   retryDelay,
+//   // retry on Network Error & 5xx responses
+//   retryCondition: axiosRetry.isRetryableError,
 
-});
+// });
 
 
 
