@@ -182,7 +182,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     await displayMarkets(viableMarkets)
     console.log('Current market name')
     console.log(currentMarketName)
-    console.log(viableMarkets)
     let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
     currentMarket = currentMarketArray[0]
     let bulls = getBulls(viableMarkets)
