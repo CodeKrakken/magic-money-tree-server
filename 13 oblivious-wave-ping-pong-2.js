@@ -4,6 +4,10 @@ const axiosRetry = require('axios-retry')
 const fs = require('fs');
 const ccxt = require('ccxt');
 const { runInContext } = require('vm');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8000;
+
 
 
 
@@ -756,6 +760,6 @@ async function newSellOrder(wallet, market, sellType) {
   }
 }
 
-
+app.listen(port);
 
 run();
