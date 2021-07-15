@@ -170,7 +170,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
     
-    if (viableMarkets[viableMarkets.length-1] === 'No response for current market') {
+    if (viableMarkets.includes('No response for current market')) {
 
       viableMarkets.pop()
       return tick(wallet, goodMarketNames, currentMarket)
@@ -182,7 +182,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     await displayMarkets(viableMarkets)
     console.log('Current market name')
     console.log(currentMarketName)
-    console.log(viableMarkets)
+    // console.log(viableMarkets)
     let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
     currentMarket = currentMarketArray[0]
     let bulls = getBulls(viableMarkets)
