@@ -1,5 +1,4 @@
 require('dotenv').config();
-const math = require('mathjs');
 const axios = require('axios')
 const axiosRetry = require('axios-retry')
 const fs = require('fs');
