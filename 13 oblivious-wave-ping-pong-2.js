@@ -123,12 +123,9 @@ async function liveWallet(goodMarketNames) {
     }
   })
 
-  console.log(wallet)
   return wallet
 
 }
-
-
 
 
 
@@ -151,6 +148,7 @@ async function fetchMarkets() {
 
 async function tick(wallet, goodMarketNames, currentMarket) {
 
+  wallet = await liveWallet(goodMarketNames)
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
@@ -219,8 +217,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
     currentMarket = currentMarketArray[0]
     let bulls = getBulls(viableMarkets)
-    console.log('Current market')
-    console.log(currentMarket)
 
     if (bulls.length === 0) {
 
