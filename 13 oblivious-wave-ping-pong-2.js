@@ -162,6 +162,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     if (!viableMarketNames.includes(currentMarketName)) {
       viableMarketNames.push(currentMarketName)
+      console.log('Current market not viable - manually added')
     }
 
     let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
