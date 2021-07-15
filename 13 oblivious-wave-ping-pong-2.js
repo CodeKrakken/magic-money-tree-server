@@ -182,7 +182,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
         if (currentPrice > bestMarket.ema233) {
 
-          let response = await newBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+          // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+          let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
           currentMarket = response['market']
           wallet = response['wallet']
           i = n
@@ -710,7 +711,7 @@ async function fetchPrice(marketName) {
 
 
 
-async function newBuyOrder(wallet, market, goodMarketNames, currentMarket) {
+async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket) {
   
   try {
 
@@ -739,6 +740,54 @@ async function newBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       wallet.highPrice = currentPrice
       wallet.boughtTime = Date.now()
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      await record(tradeReport)
+      tradeReport = ''
+      
+      return {
+        'market': market, 
+        'wallet': wallet
+      }
+    }
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
+async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
+  
+  try {
+
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash+1)
+    let response = await fetchPrice(market.name)
+
+    if (response === 'No response') {
+
+      console.log(`No response - starting new tick`)
+      tick(wallet, goodMarketNames, currentMarket)
+
+    } else {
+
+      let currentPrice = response
+      let baseVolume = wallet.currencies[base]['quantity']
+      let volumeToTrade = baseVolume * (1 - fee)
+      // wallet.currencies[base]['quantity'] -= volumeToTrade
+      // wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
+      wallet.targetPrice = currentPrice * (1 + fee)
+      wallet.boughtPrice = currentPrice
+      wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
+      wallet.highPrice = currentPrice
+      wallet.boughtTime = Date.now()
+      await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
+      
+      let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      wallet = await liveWallet(goodMarketNames)
       await record(tradeReport)
       tradeReport = ''
       
