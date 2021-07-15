@@ -302,3 +302,22 @@ Wave Shape: 274261689785.61758  Target Price - 0.32092135150900336
 15/07/2021, 10:48:16 - Bought 4279.13569389 CHZ @ 0.27242000 ($1166.597093549302)
 Wave Shape: 209100232913.86523  Target Price - 0.2730337119865169
 
+End of test - crashed at 11:01:11 - 
+
+Current market
+undefined
+/home/pea/Code/magic-money-tree-server/13 oblivious-wave-ping-pong-2.js:195
+    currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+                                                                ^
+
+TypeError: Cannot read property 'name' of undefined
+    at tick (/home/pea/Code/magic-money-tree-server/13 oblivious-wave-ping-pong-2.js:195:65)
+
+---
+
+Final wallet
+0.8756045235547845 USDT  
+4279.135693888627 CHZ @ 0.27235 = $1165.4226062305677 
+Target Price - 0.2730337119865169
+Stop Loss Price - 0.26858859999999996
+
