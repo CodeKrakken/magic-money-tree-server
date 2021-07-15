@@ -66,7 +66,13 @@ async function run() {
   // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
-  let wallet = await liveWallet(goodMarketNames)
+  
+  let wallet = {
+
+    'currencies': {}
+  
+  }
+
   let currentMarket
 
   tick(wallet, goodMarketNames, currentMarket)
@@ -102,12 +108,7 @@ function simulatedWallet() {
 
 
 
-async function liveWallet(goodMarketNames) {
-
-  let wallet = {
-
-    'currencies': {}
-  }
+async function liveWallet(wallet, goodMarketNames) {
 
   let balancesRaw = await binance.fetchBalance()
 
@@ -148,7 +149,7 @@ async function fetchMarkets() {
 
 async function tick(wallet, goodMarketNames, currentMarket) {
 
-  wallet = await liveWallet(goodMarketNames)
+  wallet = await liveWallet(wallet, goodMarketNames)
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
@@ -329,7 +330,7 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
   
   nonZeroWallet.forEach(currency => {
 
-    console.log(`${wallet.currencies[currency]['quantity']} ${currency} ${currency !== 'USDT' ? `@ ${currentPrice} = $${dollarVolume}` : '' } `)
+    console.log(`${wallet.currencies[currency]['quantity']} ${currency} ${currency === activeCurrency && currency !== 'USDT' ? `@ ${currentPrice} = $${dollarVolume}` : '' } `)
     
     if (currency === activeCurrency && currency !== 'USDT') {
 
@@ -784,10 +785,13 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
       wallet.highPrice = currentPrice
       wallet.boughtTime = Date.now()
+      console.log(baseVolume)
+      console.log(baseVolume * (1 - fee))
+      console.log(currentPrice)
       await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
       
       let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
-      wallet = await liveWallet(goodMarketNames)
+      wallet = await liveWallet(wallet, goodMarketNames)
       await record(tradeReport)
       tradeReport = ''
       
