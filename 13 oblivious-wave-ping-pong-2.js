@@ -250,7 +250,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(currentMarket.currentPrice)
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
-      await newSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch')
+      await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch')
     
     } else if (
 
@@ -262,7 +262,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(currentMarket.currentPrice)
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
-      await newSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
+      await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
     }
   }
   tick(wallet, goodMarketNames, currentMarket)
@@ -334,6 +334,7 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
     
     if (currency === activeCurrency && currency !== 'USDT') {
 
+      console.log(`High Price - ${wallet.highPrice}`)
       console.log(`Target Price - ${wallet.targetPrice}`)
       console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
     }
@@ -816,7 +817,7 @@ function n(n, d) {
 
 
 
-async function newSellOrder(wallet, market, sellType) {
+async function simulatedSellOrder(wallet, market, sellType) {
 
   let tradeReport
 
@@ -831,6 +832,32 @@ async function newSellOrder(wallet, market, sellType) {
     wallet.currencies[base]['quantity'] += assetVolume * (1 - fee) * market.currentPrice
     wallet.currencies[asset]['quantity'] -= assetVolume
     wallet.targetPrice = undefined
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
+    record(tradeReport)
+    tradeReport = ''
+
+  } catch (error) {
+    
+    console.log(error)
+
+  }
+}
+
+
+
+async function liveSellOrder(wallet, market, sellType) {
+
+  let tradeReport
+
+  try {
+    
+    let slash = market.name.indexOf('/')
+    let asset = market.name.substring(0, slash)
+    let base = market.name.substring(slash + 1)
+    let assetVolume = wallet.currencies[asset]['quantity']
+    await binance.createMarketSellOrder(market.name, assetVolume)
+    wallet.targetPrice = undefined
+    wallet = await getWallet(wallet)
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
