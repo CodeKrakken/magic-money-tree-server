@@ -263,6 +263,20 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
       await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
+    } else if (
+      (
+        wallet.targetPrice === undefined ||
+        wallet.stopLossPrice === undefined ||
+        wallet.highPrice === undefined
+      ) 
+      && activeCurrency !== 'USDT'
+    ) 
+    {
+      console.log(wallet.targetPrice)
+      console.log(wallet.stopLossPrice)
+      console.log(wallet.highPrice)
+      await liveSellOrder(wallet, currentMarket, 'Price information undefined')
+
     }
   }
   tick(wallet, goodMarketNames, currentMarket)
