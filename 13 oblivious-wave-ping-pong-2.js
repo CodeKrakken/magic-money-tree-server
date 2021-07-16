@@ -250,7 +250,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(currentMarket.currentPrice)
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
-      await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch')
+      await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
     
     } else if (
 
@@ -262,7 +262,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(currentMarket.currentPrice)
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
-      await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss')
+      await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
     } else if (
       (
         wallet.targetPrice === undefined ||
@@ -275,7 +275,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
       console.log(wallet.highPrice)
-      await liveSellOrder(wallet, currentMarket, 'Price information undefined')
+      await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
 
     }
   }
@@ -336,7 +336,11 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
-        wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+
+        if (wallet.highPrice * stopLossThreshold > wallet.targetPrice) {
+          
+          wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+        }
       
       }
     }
@@ -859,7 +863,7 @@ async function simulatedSellOrder(wallet, market, sellType) {
 
 
 
-async function liveSellOrder(wallet, market, sellType) {
+async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
 
   let tradeReport
 
@@ -871,7 +875,7 @@ async function liveSellOrder(wallet, market, sellType) {
     let assetVolume = wallet.currencies[asset]['quantity']
     await binance.createMarketSellOrder(market.name, assetVolume)
     wallet.targetPrice = undefined
-    wallet = await getWallet(wallet)
+    wallet = await liveWallet(wallet, goodMarketNames)
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
