@@ -120,10 +120,6 @@ async function liveWallet(wallet, goodMarketNames, currentMarket) {
 
       let dollarMarket = `${currency}/USDT`
   
-      if (!goodMarketNames.includes(dollarMarket)) {
-        console.log(dollarMarket)
-      }
-  
       if (
         balancesRaw.free[currency] > 0 && (currency === 'USDT' || 
         goodMarketNames.includes(dollarMarket))
@@ -265,7 +261,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log(wallet.targetPrice)
       console.log(wallet.stopLossPrice)
       await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
-    
+
     } else if (
 
       currentMarketArray.length > 0 &&
@@ -889,7 +885,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
     let assetVolume = wallet.currencies[asset]['quantity']
     await binance.createMarketSellOrder(market.name, assetVolume)
     wallet.targetPrice = undefined
-    wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+    wallet = await liveWallet(wallet, goodMarketNames, market)
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
