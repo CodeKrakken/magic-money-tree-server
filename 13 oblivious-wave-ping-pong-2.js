@@ -110,13 +110,15 @@ function simulatedWallet() {
 
 async function liveWallet(wallet, goodMarketNames) {
 
+  wallet['currencies'] = {}
+
   let balancesRaw = await binance.fetchBalance()
 
   Object.keys(balancesRaw.free).forEach(currency => {
 
     let dollarMarket = `${currency}/USDT`
 
-    if ((goodMarketNames.includes(dollarMarket) || currency === 'USDT') && balancesRaw.free[currency] > 0) {
+    if (balancesRaw.free[currency] > 0) {
 
       wallet['currencies'][currency] = {
         'quantity': balancesRaw.free[currency]
