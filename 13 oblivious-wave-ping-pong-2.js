@@ -108,26 +108,38 @@ function simulatedWallet() {
 
 
 
-async function liveWallet(wallet, goodMarketNames) {
+async function liveWallet(wallet, goodMarketNames, currentMarket) {
 
   wallet['currencies'] = {}
 
   let balancesRaw = await binance.fetchBalance()
 
-  Object.keys(balancesRaw.free).forEach(currency => {
+  if (balancesRaw !== undefined) {
 
-    let dollarMarket = `${currency}/USDT`
+    Object.keys(balancesRaw.free).forEach(currency => {
 
-    if (balancesRaw.free[currency] > 0) {
-
-      wallet['currencies'][currency] = {
-        'quantity': balancesRaw.free[currency]
+      let dollarMarket = `${currency}/USDT`
+  
+      if (!goodMarketNames.includes(dollarMarket)) {
+        console.log(dollarMarket)
       }
-    }
-  })
+  
+      if (
+        balancesRaw.free[currency] > 0 && (currency === 'USDT' || 
+        goodMarketNames.includes(dollarMarket))
+      ) {
+        wallet['currencies'][currency] = {
+          'quantity': balancesRaw.free[currency]
+        }
+      }
+    })
+    return wallet
 
-  return wallet
+  } else {
 
+    tick(wallet, goodMarketNames, currentMarket)
+
+  }
 }
 
 
@@ -151,7 +163,7 @@ async function fetchMarkets() {
 
 async function tick(wallet, goodMarketNames, currentMarket) {
 
-  wallet = await liveWallet(wallet, goodMarketNames)
+  wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
   console.log('\n\n----------\n\n')
   console.log(`Tick at ${timeNow()}\n`)
   let activeCurrency = await getActiveCurrency(wallet)
@@ -812,7 +824,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
       
       let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
-      wallet = await liveWallet(wallet, goodMarketNames)
+      wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
       await record(tradeReport)
       tradeReport = ''
       
@@ -877,7 +889,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
     let assetVolume = wallet.currencies[asset]['quantity']
     await binance.createMarketSellOrder(market.name, assetVolume)
     wallet.targetPrice = undefined
-    wallet = await liveWallet(wallet, goodMarketNames)
+    wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
