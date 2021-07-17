@@ -382,20 +382,10 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
+        wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+        // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+        process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
 
-        if (wallet.highPrice * stopLossThreshold > wallet.targetPrice) {
-          
-          wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
-          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-          process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
-        } else {
-
-          console.log(`Theoretical stop loss too low: ${wallet.highPrice * stopLossThreshold}`)
-        }
-      
-      } else {
-
-        console.log(`Current price (${currentPrice}) is no greater than high price (${wallet.highPrice})`)
       }
     }
   }
