@@ -258,11 +258,17 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     try {
       currentMarket.currentPrice = await fetchPrice(currentMarket.name)
-      // retrieve here
-      if (wallet.targetPrice   === undefined && process.env.TARGET_PRICE    !== undefined) { wallet.targetPrice   === process.env.TARGET_PRICE    }
-      if (wallet.stopLossPrice === undefined && process.env.STOP_LOSS_PRICE !== undefined) { wallet.stopLossPrice === process.env.STOP_LOSS_PRICE }
-      if (wallet.highPrice     === undefined && process.env.HIGH_PRICE      !== undefined) { wallet.highPrice     === process.env.HIGH_PRICE      }
-    
+            
+      // if (wallet.targetPrice   === undefined) { 
+        wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
+      // }
+      // if (wallet.stopLossPrice === undefined) { 
+        wallet.stopLossPrice === collection.findOne({ key: 'stopLossPrice' })
+      // }
+      // if (wallet.highPrice     === undefined) { 
+        wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
+      // }
+
       console.log('Current market price')
       console.log(currentMarket.currentPrice)
       console.log('Current market shape')
