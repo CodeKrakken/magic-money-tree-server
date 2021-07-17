@@ -9,6 +9,15 @@ const app = express();
 // const port = process.env.PORT || 8000;
 const port = process.env.PORT || 8001;
 
+const username = process.env.MONGODB_USERNAME
+const password = process.env.MONGODB_PASSWORD
+const { MongoClient } = require('mongodb');
+const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+let db
+let collection
+const dbName = "magic-money-tree";
 
 
 
@@ -62,11 +71,12 @@ const stopLossThreshold = 0.98
 async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-
+  await setupDB();
   // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
-  
+  await dbInsert('goodMarketNames', goodMarketNames)
+
   let wallet = {
 
     'currencies': {}
@@ -89,6 +99,15 @@ function record(report) {
 
   console.log(report)
 
+}
+
+
+
+async function setupDB() {
+  console.log("Setting up database\n");
+  await mongo.connect()
+  db = mongo.db(dbName);
+  collection = db.collection("symbols")
 }
 
 
@@ -235,11 +254,11 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     }
 
     console.log('Current Market')
-    console.log(currentMarket)
+    console.log(currentMarket.name)
 
     try {
       currentMarket.currentPrice = await fetchPrice(currentMarket.name)
-
+      // retrieve here
       if (wallet.targetPrice   === undefined && process.env.TARGET_PRICE    !== undefined) { wallet.targetPrice   === process.env.TARGET_PRICE    }
       if (wallet.stopLossPrice === undefined && process.env.STOP_LOSS_PRICE !== undefined) { wallet.stopLossPrice === process.env.STOP_LOSS_PRICE }
       if (wallet.highPrice     === undefined && process.env.HIGH_PRICE      !== undefined) { wallet.highPrice     === process.env.HIGH_PRICE      }
@@ -355,11 +374,13 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
+        await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
 
         if (wallet.highPrice * stopLossThreshold > wallet.targetPrice) {
           
           wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+          await dbInsert('stopLossPrice', wallet.stopLossPrice)
           process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
         } else {
 
@@ -384,6 +405,17 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
       console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
     }
   })
+}
+
+
+
+async function dbInsert(key, value) {
+  console.log(`Adding to database\n`)
+  const query = { key: value };
+  const options = {
+    upsert: true,
+  };
+  const result = await collection.replaceOne(query, data, options);
 }
 
 
@@ -782,13 +814,18 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
-      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
       wallet.boughtPrice = currentPrice
-      process.env.BOUGHT_PRICE = currentPrice
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
-      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
       wallet.highPrice = currentPrice
+      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
+      process.env.BOUGHT_PRICE = currentPrice
+      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
       process.env.HIGH_PRICE = currentPrice
+      await dbInsert('targetPrice', wallet.targetPrice)
+      await dbInsert('boughtPrice', wallet.boughtPrice)
+      await dbInsert('stopLossPrice', wallet.stopLossPrice)
+      await dbInsert('highPrice', wallet.highPrice)
+
       wallet.boughtTime = Date.now()
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await record(tradeReport)
@@ -828,8 +865,6 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       let currentPrice = response
       let baseVolume = wallet.currencies[base]['quantity']
       let volumeToTrade = baseVolume * (1 - fee)
-      // wallet.currencies[base]['quantity'] -= volumeToTrade
-      // wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
       wallet.targetPrice = currentPrice * (1 + fee)
       wallet.boughtPrice = currentPrice
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
@@ -838,6 +873,10 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       process.env.BOUGHT_PRICE = currentPrice
       process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
       process.env.HIGH_PRICE = currentPrice
+      await dbInsert('targetPrice', wallet.targetPrice)
+      await dbInsert('boughtPrice', wallet.boughtPrice)
+      await dbInsert('stopLossPrice', wallet.stopLossPrice)
+      await dbInsert('highPrice', wallet.highPrice)
       wallet.boughtTime = Date.now()
       console.log(baseVolume)
       console.log(baseVolume * (1 - fee))
@@ -885,6 +924,7 @@ async function simulatedSellOrder(wallet, market, sellType) {
     wallet.currencies[base]['quantity'] += assetVolume * (1 - fee) * market.currentPrice
     wallet.currencies[asset]['quantity'] -= assetVolume
     wallet.targetPrice = undefined
+
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
