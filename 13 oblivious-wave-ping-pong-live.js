@@ -83,7 +83,7 @@ async function run() {
 
 function record(report) {
 
-  fs.appendFile(`${process.env.COMPUTER} trade-history-13.txt`, report, function(err) {
+  fs.appendFile(`live-trade-history-13.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 
@@ -239,6 +239,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     try {
       currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+
+      if (wallet.targetPrice   === undefined && process.env.TARGET_PRICE    !== undefined) { wallet.targetPrice   === process.env.TARGET_PRICE    }
+      if (wallet.stopLossPrice === undefined && process.env.STOP_LOSS_PRICE !== undefined) { wallet.stopLossPrice === process.env.STOP_LOSS_PRICE }
+      if (wallet.highPrice     === undefined && process.env.HIGH_PRICE      !== undefined) { wallet.highPrice     === process.env.HIGH_PRICE      }
     
       console.log('Current market price')
       console.log(currentMarket.currentPrice)
@@ -277,9 +281,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
       } else if (
         (
-          wallet.targetPrice === undefined ||
+          wallet.targetPrice   === undefined ||
           wallet.stopLossPrice === undefined ||
-          wallet.highPrice === undefined
+          wallet.highPrice     === undefined
         ) 
         && activeCurrency !== 'USDT'
       ) 
@@ -351,12 +355,20 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
+        process.env.HIGH_PRICE = currentPrice
 
         if (wallet.highPrice * stopLossThreshold > wallet.targetPrice) {
           
           wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+          process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
+        } else {
+
+          console.log(`Theoretical stop loss too low: ${wallet.highPrice * stopLossThreshold}`)
         }
       
+      } else {
+
+        console.log(`Current price (${currentPrice}) is no greater than high price (${wallet.highPrice})`)
       }
     }
   }
@@ -770,9 +782,13 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
       let targetVolume = baseVolume * (1 + fee)
       wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
+      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
       wallet.boughtPrice = currentPrice
+      process.env.BOUGHT_PRICE = currentPrice
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
+      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
       wallet.highPrice = currentPrice
+      process.env.HIGH_PRICE = currentPrice
       wallet.boughtTime = Date.now()
       let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await record(tradeReport)
@@ -818,6 +834,10 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       wallet.boughtPrice = currentPrice
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
       wallet.highPrice = currentPrice
+      process.env.TARGET_PRICE = currentPrice * (1 + fee)
+      process.env.BOUGHT_PRICE = currentPrice
+      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
+      process.env.HIGH_PRICE = currentPrice
       wallet.boughtTime = Date.now()
       console.log(baseVolume)
       console.log(baseVolume * (1 - fee))
