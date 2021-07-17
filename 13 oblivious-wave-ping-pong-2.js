@@ -223,8 +223,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     viableMarkets = await sortByArc(viableMarkets)
     viableMarkets = await addEMA(viableMarkets)
     await displayMarkets(viableMarkets)
-    console.log('Current market name')
-    console.log(currentMarketName)
     // console.log(viableMarkets)
     let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
     currentMarket = currentMarketArray[0]
@@ -235,58 +233,65 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       console.log('No bullish markets\n')
   
     }
+
+    console.log('Current Market')
+    console.log(currentMarket)
+
+    try {
+      currentMarket.currentPrice = await fetchPrice(currentMarket.name)
     
-    currentMarket.currentPrice = await fetchPrice(currentMarket.name)
-    
-    console.log('Current market price')
-    console.log(currentMarket.currentPrice)
-    console.log('Current market shape')
-    console.log(currentMarket.shape)
-    console.log('currentMarket.ema1')
-    console.log(currentMarket.ema1)
-    console.log('currentMarket.ema233')
-    console.log(currentMarket.ema233)
-    console.log('currentMarket.trend')
-    console.log(currentMarket.trend)
-    console.log('Wallet')
-    console.log(wallet)
-
-    if (
-      currentMarketArray.length > 0 &&
-      currentMarket.currentPrice > wallet.targetPrice &&
-      currentMarket.currentPrice < wallet.stopLossPrice
-    ) 
-    {
+      console.log('Current market price')
       console.log(currentMarket.currentPrice)
-      console.log(wallet.targetPrice)
-      console.log(wallet.stopLossPrice)
-      await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
-
-    } else if (
-
-      currentMarketArray.length > 0 &&
-      currentMarket.currentPrice < wallet.targetPrice &&
-      currentMarket.currentPrice < wallet.stopLossPrice
-    ) 
-    {
-      console.log(currentMarket.currentPrice)
-      console.log(wallet.targetPrice)
-      console.log(wallet.stopLossPrice)
-      await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
-    } else if (
-      (
-        wallet.targetPrice === undefined ||
-        wallet.stopLossPrice === undefined ||
-        wallet.highPrice === undefined
+      console.log('Current market shape')
+      console.log(currentMarket.shape)
+      console.log('currentMarket.ema1')
+      console.log(currentMarket.ema1)
+      console.log('currentMarket.ema233')
+      console.log(currentMarket.ema233)
+      console.log('currentMarket.trend')
+      console.log(currentMarket.trend)
+      console.log('Wallet')
+      console.log(wallet)
+  
+      if (
+        currentMarketArray.length > 0 &&
+        currentMarket.currentPrice > wallet.targetPrice &&
+        currentMarket.currentPrice < wallet.stopLossPrice
       ) 
-      && activeCurrency !== 'USDT'
-    ) 
-    {
-      console.log(wallet.targetPrice)
-      console.log(wallet.stopLossPrice)
-      console.log(wallet.highPrice)
-      await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
-
+      {
+        console.log(currentMarket.currentPrice)
+        console.log(wallet.targetPrice)
+        console.log(wallet.stopLossPrice)
+        await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+  
+      } else if (
+  
+        currentMarketArray.length > 0 &&
+        currentMarket.currentPrice < wallet.targetPrice &&
+        currentMarket.currentPrice < wallet.stopLossPrice
+      ) 
+      {
+        console.log(currentMarket.currentPrice)
+        console.log(wallet.targetPrice)
+        console.log(wallet.stopLossPrice)
+        await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
+      } else if (
+        (
+          wallet.targetPrice === undefined ||
+          wallet.stopLossPrice === undefined ||
+          wallet.highPrice === undefined
+        ) 
+        && activeCurrency !== 'USDT'
+      ) 
+      {
+        console.log(wallet.targetPrice)
+        console.log(wallet.stopLossPrice)
+        console.log(wallet.highPrice)
+        await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
+  
+      }
+    } catch(error) {
+      console.log(error)
     }
   }
   tick(wallet, goodMarketNames, currentMarket)
