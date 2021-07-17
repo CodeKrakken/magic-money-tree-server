@@ -71,11 +71,11 @@ const stopLossThreshold = 0.98
 async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-  await setupDB();
+  // await setupDB();
   // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
-  await dbInsert('goodMarketNames', goodMarketNames)
+  // await dbInsert('goodMarketNames', goodMarketNames)
 
   let wallet = {
 
@@ -260,13 +260,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       currentMarket.currentPrice = await fetchPrice(currentMarket.name)
             
       // if (wallet.targetPrice   === undefined) { 
-        wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
+        // wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
       // }
       // if (wallet.stopLossPrice === undefined) { 
-        wallet.stopLossPrice === collection.findOne({ key: 'stopLossPrice' })
+        // wallet.stopLossPrice === collection.findOne({ key: 'stopLossPrice' })
       // }
       // if (wallet.highPrice     === undefined) { 
-        wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
+        // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
       // }
 
       console.log('Current market price')
@@ -380,13 +380,13 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
-        await dbInsert('highPrice', wallet.highPrice)
+        // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
 
         if (wallet.highPrice * stopLossThreshold > wallet.targetPrice) {
           
           wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
-          await dbInsert('stopLossPrice', wallet.stopLossPrice)
+          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
           process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
         } else {
 
@@ -879,10 +879,10 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       process.env.BOUGHT_PRICE = currentPrice
       process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
       process.env.HIGH_PRICE = currentPrice
-      await dbInsert('targetPrice', wallet.targetPrice)
-      await dbInsert('boughtPrice', wallet.boughtPrice)
-      await dbInsert('stopLossPrice', wallet.stopLossPrice)
-      await dbInsert('highPrice', wallet.highPrice)
+      // await dbInsert('targetPrice', wallet.targetPrice)
+      // await dbInsert('boughtPrice', wallet.boughtPrice)
+      // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+      // await dbInsert('highPrice', wallet.highPrice)
       wallet.boughtTime = Date.now()
       console.log(baseVolume)
       console.log(baseVolume * (1 - fee))
