@@ -225,14 +225,14 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     } else {
 
       let currentMarketName = `${activeCurrency}/USDT`
-      let viableMarketNames = await getViableMarketNames(goodMarketNames)
+      // let viableMarketNames = await getViableMarketNames(goodMarketNames)
 
-      if (!viableMarketNames.includes(currentMarketName)) {
-        viableMarketNames.push(currentMarketName)
-        console.log('Current market not viable - manually added')
-      }
+      // if (!viableMarketNames.includes(currentMarketName)) {
+      //   viableMarketNames.push(currentMarketName)
+      //   console.log('Current market not viable - manually added')
+      // }
 
-      let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarketName)
+      let viableMarkets = await fetchAllHistory([currentMarketName], currentMarketName)
       
       if (viableMarkets.includes('No response for current market')) {
 
@@ -244,22 +244,22 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       viableMarkets = await sortByArc(viableMarkets)
       viableMarkets = await addEMA(viableMarkets)
       await displayMarkets(viableMarkets)
-      // console.log(viableMarkets)
+      // // console.log(viableMarkets)
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
       currentMarket = currentMarketArray[0]
-      let bulls = getBulls(viableMarkets)
+      // let bulls = getBulls(viableMarkets)
 
-      if (bulls.length === 0) {
+      // if (bulls.length === 0) {
 
-        console.log('No bullish markets\n')
+      //   console.log('No bullish markets\n')
     
-      }
+      // }
 
-      console.log('Current Market')
-      console.log(currentMarket.name)
+      // console.log('Current Market')
+      // console.log(currentMarket.name)
 
       try {
-        currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+        currentMarket.currentPrice = await fetchPrice(currentMarketName)
               
         // if (wallet.targetPrice   === undefined) { 
           // wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
@@ -285,7 +285,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         console.log(wallet)
     
         if (
-          currentMarketArray.length > 0 &&
+          currentMarket.currentPrice !== undefined &&
           currentMarket.currentPrice > wallet.targetPrice &&
           currentMarket.currentPrice < wallet.stopLossPrice
         ) 
@@ -297,7 +297,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
         } else if (
     
-          currentMarketArray.length > 0 &&
+          currentMarket.currentPrice !== undefined &&
           currentMarket.currentPrice < wallet.targetPrice &&
           currentMarket.currentPrice < wallet.stopLossPrice
         ) 
@@ -392,7 +392,7 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
         process.env.HIGH_PRICE = currentPrice
         wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-        process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
+        process.env.STOP_LOSS_PRICE = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
 
       }
     }
