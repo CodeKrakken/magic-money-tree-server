@@ -382,7 +382,7 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
-        wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+        wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
         process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
 
