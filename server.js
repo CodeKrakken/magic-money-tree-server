@@ -303,7 +303,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+          await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
 
         } else if (
@@ -316,7 +316,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
+          await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
         } else if (
           (
@@ -331,7 +331,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(wallet.stopLossPrice)
           console.log(wallet.highPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
-          await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
+          await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
     
         }
       } catch(error) {
@@ -917,7 +917,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       // console.log(baseVolume)
       // console.log(baseVolume * (1 - fee))
       // console.log(currentPrice)
-      await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
+      await binance.createLimitBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice, currentPrice)
       
       let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
@@ -974,7 +974,7 @@ async function simulatedSellOrder(wallet, market, sellType) {
 
 
 
-async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
+async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentPrice) {
 
   let tradeReport
 
@@ -984,7 +984,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]['quantity']
-    await binance.createMarketSellOrder(market.name, assetVolume)
+    await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
     wallet.targetPrice = undefined
     wallet = await liveWallet(wallet, goodMarketNames, market)
     tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
