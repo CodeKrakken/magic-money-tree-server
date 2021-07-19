@@ -6,8 +6,8 @@ const ccxt = require('ccxt');
 const { runInContext } = require('vm');
 const express = require('express');
 const app = express();
-// const port = process.env.PORT || 8000;
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8000;
+// const port = process.env.PORT || 8001;
 
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
@@ -72,17 +72,16 @@ const highStopLossThreshold = 0.8
 async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-  // await setupDB();
-  // let wallet = simulatedWallet()
+  await setupDB();
+  let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
-  // await dbInsert('goodMarketNames', goodMarketNames)
 
-  let wallet = {
+  // let wallet = {
 
-    'currencies': {}
+  //   'currencies': {}
   
-  }
+  // }
 
   let currentMarket
 
@@ -105,10 +104,19 @@ function record(report) {
 
 
 async function setupDB() {
-  console.log("Setting up database\n");
-  await mongo.connect()
-  db = mongo.db(dbName);
-  collection = db.collection("symbols")
+
+  try {
+
+    console.log("Setting up database\n");
+    await mongo.connect()
+    db = mongo.db(dbName);
+    collection = db.collection("symbols")
+  
+  } catch(error) {
+
+    console.log(error.message)
+
+  }
 }
 
 
@@ -181,7 +189,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
     
-    wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+    // wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
@@ -215,8 +223,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
           if (currentPrice > bestMarket.ema233) {
 
-            // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-            let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+            let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+            // let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             currentMarket = response['market']
             wallet = response['wallet']
             i = n
@@ -296,8 +304,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
-    
+          // await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+          await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+
         } else if (
     
           currentMarket.currentPrice !== undefined &&
@@ -308,7 +317,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
+          // await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames)
+          await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
         } else if (
           (
             wallet.targetPrice   === undefined ||
@@ -321,7 +331,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
           console.log(wallet.highPrice)
-          await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
+          await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+          // await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames)
     
         }
       } catch(error) {
