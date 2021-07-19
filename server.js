@@ -64,6 +64,7 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const stopLossThreshold = 0.98
+const highStopLossThreshold = 0.8
 // const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
@@ -395,10 +396,26 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
         if (currentPrice > wallet.targetPrice) {
 
-          wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
+          wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * highStopLossThreshold)
           // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-          process.env.STOP_LOSS_PRICE = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
+
+        } else {
+
+          wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         }
+        process.env.HIGH_STOP_LOSS_PRICE = wallet.stopLossPrice
+
+      }
+
+      if (currentPrice > wallet.highPrice) { 
+      
+        wallet.highPrice = currentPrice
+        // await dbInsert('highPrice', wallet.highPrice)
+        process.env.HIGH_PRICE = currentPrice
+        wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+        // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+        process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
+
       }
     }
   }
