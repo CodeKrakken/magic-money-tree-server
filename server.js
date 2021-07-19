@@ -93,9 +93,9 @@ async function run() {
 
 function record(report) {
 
-  fs.appendFile(`live-trade-history-13.txt`, report, function(err) {
-    if (err) return console.log(err);
-  })
+  // fs.appendFile(`live-trade-history-13.txt`, report, function(err) {
+  //   if (err) return console.log(err);
+  // })
 
   console.log(report)
 
@@ -271,18 +271,20 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
         // }
 
-        console.log('Current market price')
-        console.log(currentMarket.currentPrice)
-        console.log('Current market shape')
-        console.log(currentMarket.shape)
-        console.log('currentMarket.ema1')
-        console.log(currentMarket.ema1)
-        console.log('currentMarket.ema233')
-        console.log(currentMarket.ema233)
-        console.log('currentMarket.trend')
-        console.log(currentMarket.trend)
-        console.log('Wallet')
-        console.log(wallet)
+        // console.log('currentMarket.currentPrice')
+        // console.log(currentMarket.currentPrice)
+        // console.log('Current market shape')
+        // console.log(currentMarket.shape)
+        // console.log('currentMarket.ema1')
+        // console.log(currentMarket.ema1)
+        // console.log('currentMarket.ema233')
+        // console.log(currentMarket.ema233)
+        // console.log('currentMarket.trend')
+        // console.log(currentMarket.trend)
+        // console.log('wallet.targetPrice')
+        // console.log(wallet.targetPrice)
+        // console.log('wallet.stopLossPrice')
+        // console.log(wallet.stopLossPrice)
     
         if (
           currentMarket.currentPrice !== undefined &&
@@ -322,14 +324,14 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
         }
       } catch(error) {
-        console.log(error)
+        console.log(error.message)
       }
     }
     tick(wallet, goodMarketNames, currentMarket)
 
   } catch (error) {
 
-    console.log(error)
+    console.log(error.message)
     tick(wallet, goodMarketNames, currentMarket)
   }
 }
@@ -465,7 +467,7 @@ async function getViableMarketNames(marketNames) {
       voluminousMarketNames.push(marketName)
     }
 
-    console.log(announcement + response)
+    // console.log(announcement + response)
   }
   console.log('\n')
   return voluminousMarketNames
@@ -528,7 +530,7 @@ async function fetchAllHistory(marketNames, currentMarketName) {
 
       } else if (response === 'No response') { 
 
-        console.log(`No response for market ${i+1}/${n} - ${marketName}`)
+        // console.log(`No response for market ${i+1}/${n} - ${marketName}`)
       
       } else {
 
@@ -542,7 +544,7 @@ async function fetchAllHistory(marketNames, currentMarketName) {
         }
   
         symbolObject = await annotateData(symbolObject)
-        console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
+        // console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
         await returnArray.push(symbolObject)
 
       }
@@ -717,7 +719,7 @@ async function addEMA(markets) {
 
   } catch (error) {
 
-    console.log(error)
+    console.log(error.message)
 
   }
 }
@@ -788,7 +790,7 @@ async function fetchPrice(marketName) {
 
   } catch (error) {
 
-    console.log(error)
+    console.log(error.message)
   }
 }
 
@@ -843,7 +845,7 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
 
   } catch (error) {
     
-    console.log(error)
+    console.log(error.message)
 
   }
 }
@@ -882,9 +884,9 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       // await dbInsert('stopLossPrice', wallet.stopLossPrice)
       // await dbInsert('highPrice', wallet.highPrice)
       wallet.boughtTime = Date.now()
-      console.log(baseVolume)
-      console.log(baseVolume * (1 - fee))
-      console.log(currentPrice)
+      // console.log(baseVolume)
+      // console.log(baseVolume * (1 - fee))
+      // console.log(currentPrice)
       await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
       
       let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
@@ -900,7 +902,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
   } catch (error) {
     
-    console.log(error)
+    console.log(error.message)
 
   }
 }
@@ -935,7 +937,7 @@ async function simulatedSellOrder(wallet, market, sellType) {
 
   } catch (error) {
     
-    console.log(error)
+    console.log(error.message)
 
   }
 }
@@ -961,7 +963,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames) {
 
   } catch (error) {
     
-    console.log(error)
+    console.log(error.message)
 
   }
 }
