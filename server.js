@@ -184,7 +184,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
-    await displayWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
+    await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
 
     if (activeCurrency === 'USDT') {
@@ -366,7 +366,7 @@ async function getActiveCurrency(wallet) {
 
 
 
-async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMarket) {
+async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket) {
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency]['quantity'] > 0)
   console.log('Wallet')
@@ -392,10 +392,13 @@ async function displayWallet(wallet, activeCurrency, goodMarketNames, currentMar
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
-        wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
-        // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-        process.env.STOP_LOSS_PRICE = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
 
+        if (currentPrice > wallet.targetPrice) {
+
+          wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
+          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+          process.env.STOP_LOSS_PRICE = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * stopLossThreshold)
+        }
       }
     }
   }
