@@ -803,7 +803,7 @@ function displayMarkets(markets) {
 
 function getBulls(markets) {
 
-  let bulls = markets.filter(market => market.shape > 0 && market.trend === 'up') // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
+  let bulls = markets.filter(market => market.shape > 0) // && market.trend === 'up') // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
   return bulls
 }
 
@@ -918,7 +918,6 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       // console.log(baseVolume * (1 - fee))
       // console.log(currentPrice)
       await binance.createLimitBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice, currentPrice)
-      
       let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
       await record(tradeReport)
