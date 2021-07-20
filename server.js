@@ -803,7 +803,11 @@ function displayMarkets(markets) {
 
 function getBulls(markets) {
 
-  let bulls = markets.filter(market => market.shape > 0) // && market.trend === 'up') // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
+  let bulls = markets.filter(market => 
+    // market.shape > 0 
+    // && 
+    market.trend === 'up'
+  ) // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
   return bulls
 }
 
