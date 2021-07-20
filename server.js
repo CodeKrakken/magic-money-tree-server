@@ -809,6 +809,8 @@ function getBulls(markets) {
     market.trend === 'up'
     && 
     market.pointLow > market.pointHigh
+    &&
+    market.ema1 > market.ema233
   )
   return bulls
 }
