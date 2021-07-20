@@ -223,7 +223,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           // if (currentPrice > bestMarket.ema233) {
 
             // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-            await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+            let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             currentMarket = response['market']
             wallet = response['wallet']
             i = n
@@ -807,6 +807,8 @@ function getBulls(markets) {
     // market.shape > 0 
     // && 
     market.trend === 'up'
+    && 
+    market.pointLow > market.pointHigh
   ) // Try picking a market where the point low is more recent than the point high - this should guarantee it is moving up
   return bulls
 }
