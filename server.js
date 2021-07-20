@@ -303,7 +303,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames, currentMarket.currentPrice)
+          await liveSellOrder(wallet, currentMarket, 'Profitable switch', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
 
         } else if (
@@ -316,7 +316,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log(currentMarket.currentPrice)
           console.log(wallet.targetPrice)
           console.log(wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss - switch at loss', goodMarketNames, currentMarket.currentPrice)
+          await liveSellOrder(wallet, currentMarket, 'Switch at loss', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
         } else if (
           (
@@ -990,7 +990,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
     wallet.targetPrice = undefined
     wallet = await liveWallet(wallet, goodMarketNames, market)
-    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${wallet.currencies[base]['quantity']}) [${sellType}]\n\n`
+    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${assetVolume * market.currentPrice}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
 
