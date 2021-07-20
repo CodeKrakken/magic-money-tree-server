@@ -213,22 +213,22 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
       } else {
 
-        let n = bulls.length
+        // let n = bulls.length
 
-        for (let i = 0; i < n; i ++) {
+        // for (let i = 0; i < n; i ++) {
 
-          let bestMarket = bulls[i]
-          let currentPrice = await fetchPrice(bestMarket.name)
+          let bestMarket = bulls[0]
+          // let currentPrice = await fetchPrice(bestMarket.name)
 
-          if (currentPrice > bestMarket.ema233) {
+          // if (currentPrice > bestMarket.ema233) {
 
             // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-            let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+            await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             currentMarket = response['market']
             wallet = response['wallet']
             i = n
-          }
-        }
+          // }
+        // }
       }
     } else {
 
