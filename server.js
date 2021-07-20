@@ -406,7 +406,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
         if (currentPrice > wallet.targetPrice) {
 
-          wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * highStopLossThreshold)
+          wallet.stopLossPrice = wallet.targetPrice + ((wallet.highPrice - wallet.targetPrice) * highStopLossThreshold)
         //   // await dbInsert('stopLossPrice', wallet.stopLossPrice)
 
         } else {
