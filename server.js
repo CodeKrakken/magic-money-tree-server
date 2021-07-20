@@ -871,7 +871,7 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
       await dbInsert('highPrice', wallet.highPrice)
 
       wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      let tradeReport = `${timeNow()} - Transaction - Bought ${n(wallet.currencies[asset]['quantity'], 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await record(tradeReport)
       tradeReport = ''
       
@@ -994,7 +994,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     await binance.createMarketSellOrder(market.name, assetVolume)
     wallet.targetPrice = undefined
     wallet = await liveWallet(wallet, goodMarketNames, market)
-    tradeReport = `${timeNow()} - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${assetVolume * market.currentPrice}) [${sellType}]\n\n`
+    tradeReport = `${timeNow()} - Transaction - Sold ${n(assetVolume, 8)} ${asset} @ ${n(market.currentPrice, 8)} ($${assetVolume * market.currentPrice}) [${sellType}]\n\n`
     record(tradeReport)
     tradeReport = ''
 
