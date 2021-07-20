@@ -63,7 +63,7 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.00075
 const stopLossThreshold = 0.98
-const highStopLossThreshold = 0.5
+const highStopLossThreshold = 0.75
 // const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
@@ -213,22 +213,22 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
       } else {
 
-        let n = bulls.length
+        // let n = bulls.length
 
-        for (let i = 0; i < n; i ++) {
+        // for (let i = 0; i < n; i ++) {
 
-          let bestMarket = bulls[i]
-          let currentPrice = await fetchPrice(bestMarket.name)
+          let bestMarket = bulls[0]
+          // let currentPrice = await fetchPrice(bestMarket.name)
 
-          if (currentPrice > bestMarket.ema233) {
+          // if (currentPrice > bestMarket.ema233) {
 
             // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             currentMarket = response['market']
             wallet = response['wallet']
             i = n
-          }
-        }
+          // }
+        // }
       }
     } else {
 
@@ -404,15 +404,15 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
 
-        // if (currentPrice > wallet.targetPrice) {
+        if (currentPrice > wallet.targetPrice) {
 
-        //   wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * highStopLossThreshold)
+          wallet.stopLossPrice = wallet.boughtPrice + ((wallet.highPrice - wallet.boughtPrice) * highStopLossThreshold)
         //   // await dbInsert('stopLossPrice', wallet.stopLossPrice)
 
-        // } else {
+        } else {
 
           wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
-        // }
+        }
         process.env.HIGH_STOP_LOSS_PRICE = wallet.stopLossPrice
 
       }
