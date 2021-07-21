@@ -1,0 +1,80 @@
+1626867036228 - Transaction - Bought 23.1 MATIC @ 0.832 ($19.2192) Wave Shape: 419871960647.59985  Target Price - 0.8328319999999999
+7/21/2021, 12:31:43 - Transaction - Sold 23.11060000 MATIC @ 0.83301000 ($19.251360906000002) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale - High stop loss
+
+
+1626867142804 - Transaction - Bought 23.1 MATIC @ 0.8330599999999999 ($19.243686) Wave Shape: 420709258131.8392  Target Price - 0.8338930599999999
+7/21/2021, 12:33:03 - Transaction - Sold 23.08750000 MATIC @ 0.83387000 ($19.251973624999998) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale, and prevented profit - High stop loss
+
+
+1626867224064 - Transaction - Bought 0.57 ICP @ 33.65 ($19.1805) Wave Shape: 342489466854.2674  Target Price - 33.68364999999999
+7/21/2021, 12:35:01 - Transaction - Sold 0.57884000 ICP @ 33.85000000 ($19.593734) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626867336107 - Transaction - Bought 4.528 THETA @ 4.259 ($19.284752) Wave Shape: 291315366041.7724  Target Price - 4.263259
+7/21/2021, 12:38:30 - Transaction - Sold 4.52347200 THETA @ 4.26100000 ($19.274514192) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale, and prevented profit - High stop loss
+
+
+1626867544469 - Transaction - Bought 22.9 MATIC @ 0.83805 ($19.191345) Wave Shape: 424293033563.5866  Target Price - 0.8388880499999999
+7/21/2021, 12:39:16 - Transaction - Sold 22.96460000 MATIC @ 0.83924000 ($19.272810904) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale, and prevented profit - High stop loss
+
+
+1626867593356 - Transaction - Bought 23 MATIC @ 0.83758 ($19.26434) Wave Shape: 426600989406.91345  Target Price - 0.8384175799999999
+7/21/2021, 12:49:21 - Transaction - Sold 23.04160000 MATIC @ 0.83820000 ($19.313469119999997) [Switch at loss]
+Weird glitchy sale
+
+
+1626868240282 - Transaction - Bought 22.9 MATIC @ 0.8388900000000001 ($19.210581) Wave Shape: 433617747941.50946  Target Price - 0.8397288900000001
+7/21/2021, 12:51:34 - Transaction - Sold 22.91870000 MATIC @ 0.83999000 ($19.251478813000002) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626868337295 - Transaction - Bought 68.1 TFUEL @ 0.2833 ($19.29273) Wave Shape: 392756157419.4979  Target Price - 0.2835833
+7/21/2021, 12:54:45 - Transaction - Sold 68.05810000 TFUEL @ 0.28342000 ($19.289026701999997) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale, and prevented profit - High stop loss
+
+
+1626868517797 - Transaction - Bought 22.9 MATIC @ 0.8380700000000001 ($19.191803) Wave Shape: 451949642006.911  Target Price - 0.83890807
+7/21/2021, 12:55:26 - Transaction - Sold 22.89580000 MATIC @ 0.83905000 ($19.21072099) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626868563324 - Transaction - Bought 22.8 MATIC @ 0.8385599999999999 ($19.119168) Wave Shape: 451949642006.911  Target Price - 0.8393985599999998
+7/21/2021, 12:56:41 - Transaction - Sold 22.87300000 MATIC @ 0.83933000 ($19.197995090000003) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale, and prevented profit - High stop loss
+
+
+1626868638156 - Transaction - Bought 22.8 MATIC @ 0.8373999999999999 ($19.09272) Wave Shape: 441518225670.44165  Target Price - 0.8382373999999998
+7/21/2021, 12:57:47 - Transaction - Sold 22.85020000 MATIC @ 0.83879000 ($19.166519258) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626868734580 - Transaction - Bought 13.2 MATIC @ 0.83877 ($11.071764) Wave Shape: 432538492418.1331  Target Price - 0.8396087699999999
+7/21/2021, 12:59:23 - Transaction - Sold 13.23700000 MATIC @ 0.84086000 ($11.130463820000001) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626868802094 - Transaction - Bought 67.6 TFUEL @ 0.28315 ($19.14094) Wave Shape: 400598503143.0516  Target Price - 0.28343314999999997
+7/21/2021, 13:09:44 - Transaction - Sold 67.59050000 TFUEL @ 0.28396000 ($19.192998380000002) [Profitable switch]
+Could have hung on longer - moving stop loss forced sale and prevented greater profit - High stop loss
+
+
+1626869425044 - Transaction - Bought 4.464 THETA @ 4.2989999999999995 ($19.190736) Wave Shape: 283569058720.4723  Target Price - 4.303298999999999
+7/21/2021, 13:10:32 - Transaction - Sold 4.46000800 THETA @ 4.30200000 ($19.186954416) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale and prevented profit - High stop loss
+
+
+1626869473200 - Transaction - Bought 67.2 TFUEL @ 0.28526999999999997 ($19.170144) Wave Shape: 409142801932.6057  Target Price - 0.2855552699999999
+7/21/2021, 13:11:29 - Transaction - Sold 67.22330000 TFUEL @ 0.28538000 ($19.184185354) [Switch at loss]
+Could have hung on longer - moving stop loss forced sale and prevented profit - High stop loss
+
+---
+
+Remove increasing stop loss
+
+---
+
