@@ -78,3 +78,22 @@ Remove increasing stop loss
 
 ---
 
+
+ ---------- 
+
+
+Running at 7/21/2021, 17:47:21
+
+7/21/2021, 17:49:33 - Transaction - Bought 109.43 TLM @ 0.1751 ($19.161193)
+Wave Shape: 590517968534.9766  Target Price - 0.1752751
+
+7/21/2021, 17:59:37 - Transaction - Sold 109.32057 TLM @ 0.1722 ($18.825002154) [Switch at loss]
+
+7/21/2021, 18:00:48 - Transaction - Bought 1.145 UNI @ 16.418 ($18.79861)
+Wave Shape: 215021586390.9837  Target Price - 16.434417999999997
+
+7/21/2021, 19:56:33 - Transaction - Sold 1.143855 UNI @ 16.43 ($18.79353765) [Switch at loss]
+
+7/21/2021, 19:57:11 - Transaction - Bought 16.05 EUR @ 1.1692999999999998 ($18.767265)
+Wave Shape: 27832304885.375526  Target Price - 1.1704692999999997
+
