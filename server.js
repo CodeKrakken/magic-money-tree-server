@@ -6,7 +6,7 @@ const ccxt = require('ccxt');
 const { runInContext } = require('vm');
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 
 // const username = process.env.MONGODB_USERNAME
 // const password = process.env.MONGODB_PASSWORD
@@ -61,7 +61,7 @@ const binance = new ccxt.binance({
 // Config
 
 const minimumDollarVolume = 28000000
-const fee = 0.00075
+const fee = 0.001
 const stopLossThreshold = 0.98
 const highStopLossThreshold = 0.75
 // const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
@@ -226,7 +226,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
             let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
             currentMarket = response['market']
             wallet = response['wallet']
-            i = n
+            // i = n
           // }
         // }
       }
@@ -908,35 +908,44 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
       let currentPrice = response
       let baseVolume = wallet.currencies[base]['quantity']
-      let volumeToTrade = baseVolume * (1 - fee)
-      wallet.targetPrice = currentPrice * (1 + fee)
-      wallet.boughtPrice = currentPrice
-      wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
-      wallet.highPrice = currentPrice
-      process.env.TARGET_PRICE = currentPrice * (1 + fee)
-      process.env.BOUGHT_PRICE = currentPrice
-      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
-      process.env.HIGH_PRICE = currentPrice
-      // await dbInsert('targetPrice', wallet.targetPrice)
-      // await dbInsert('boughtPrice', wallet.boughtPrice)
-      // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-      // await dbInsert('highPrice', wallet.highPrice)
-      wallet.boughtTime = Date.now()
-      // console.log(baseVolume)
-      // console.log(baseVolume * (1 - fee))
-      // console.log(currentPrice)
-      await binance.createMarketBuyOrder(market.name, baseVolume * (1 - fee) / currentPrice)
-      let tradeReport = `${timeNow()} - Bought ${n(baseVolume * (1 - fee) / currentPrice, 8)} ${asset} @ ${n(currentPrice, 8)} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
-      wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
-      await record(tradeReport)
-      tradeReport = ''
-      
-      return {
-        'market': market, 
-        'wallet': wallet
+      let baseVolumeToTrade = baseVolume * (1 - fee)
+      let assetVolumeToBuy = baseVolumeToTrade / currentPrice
+
+      response = await binance.createMarketBuyOrder(market.name, assetVolumeToBuy)
+      console.log(response)
+
+      if (response !== undefined) {
+
+        let lastBuy = response
+
+        wallet.boughtPrice = lastBuy.price
+        wallet.highPrice = wallet.boughtPrice
+        wallet.targetPrice = wallet.boughtPrice * (1 + fee)
+        wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
+        process.env.TARGET_PRICE = wallet.targetPrice
+        process.env.BOUGHT_PRICE = wallet.boughtPrice
+        process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
+        process.env.HIGH_PRICE = wallet.highPrice
+        // await dbInsert('targetPrice', wallet.targetPrice)
+        // await dbInsert('boughtPrice', wallet.boughtPrice)
+        // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+        // await dbInsert('highPrice', wallet.highPrice)
+        wallet.boughtTime = lastBuy.timestamp
+        // console.log(baseVolume)
+        // console.log(baseVolume * (1 - fee))
+        // console.log(currentPrice)
+        
+        let tradeReport = `${lastBuy.timestamp} - Transaction - Bought ${lastBuy.amount} ${asset} @ ${lastBuy.price} ($${lastBuy.cost})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+        wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+        await record(tradeReport)
+        tradeReport = ''
+        
+        return {
+          'market': market, 
+          'wallet': wallet
+        }
       }
     }
-
   } catch (error) {
     
     console.log(error.message)
