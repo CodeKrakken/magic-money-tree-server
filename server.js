@@ -279,8 +279,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
         // }
 
-        // console.log('currentMarket.currentPrice')
-        // console.log(currentMarket.currentPrice)
+        console.log('currentMarket.currentPrice')
+        console.log(currentMarket.currentPrice)
         // console.log('Current market shape')
         // console.log(currentMarket.shape)
         // console.log('currentMarket.ema1')
@@ -289,35 +289,28 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         // console.log(currentMarket.ema233)
         // console.log('currentMarket.trend')
         // console.log(currentMarket.trend)
-        // console.log('wallet.targetPrice')
-        // console.log(wallet.targetPrice)
-        // console.log('wallet.stopLossPrice')
-        // console.log(wallet.stopLossPrice)
+        console.log('wallet.targetPrice')
+        console.log(wallet.targetPrice)
+        console.log('wallet.stopLossPrice')
+        console.log(wallet.stopLossPrice)
+        console.log('wallet.highPrice')
+        console.log(wallet.highPrice)
+        console.log('currentMarket.currentPrice')
+        console.log(currentMarket.currentPrice)
     
         if (
           currentMarket.currentPrice !== undefined &&
-          currentMarket.currentPrice > wallet.targetPrice &&
-          (
-            market.shape < 0 
-          || 
-            market.trend === 'down'
-          || 
-          //   market.pointLow < market.pointHigh
-          // ||
-            market.ema1 < market.ema233
-          )
+          currentMarket.currentPrice > wallet.targetPrice
         ) 
         {
           console.log('Current Price: ' + currentMarket.currentPrice)
           console.log('Target Price:  ' + wallet.targetPrice)
-          console.log('Market Shape:  ' + wallet.stopLossPrice)
-          console.log('Market Trend:  ' + market.trend)
-          console.log('EMA1:          ' + market.ema1)
-          console.log('EMA233:        ' + market.ema233)
           await liveSellOrder(wallet, currentMarket, 'Profitable switch', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
 
-        } else if (
+        } else 
+        
+        if (
     
           currentMarket.currentPrice !== undefined &&
           currentMarket.currentPrice < wallet.targetPrice &&
@@ -329,7 +322,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log('Stop Loss Price: ' + wallet.stopLossPrice)
           await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
-        } else if (
+        } else 
+        if (
           (
             wallet.targetPrice   === undefined ||
             wallet.stopLossPrice === undefined ||
@@ -344,7 +338,16 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
           await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
     
-        }
+        } 
+        else if (currentMarket.currentPrice !== undefined && (market.shape < 0 || market.trend === 'down' || market.ema1 < market.ema233 || market.pointLow < market.pointHigh)) {
+            console.log('Market Shape:  ' + wallet.stopLossPrice)
+            console.log('Market Trend:  ' + market.trend)
+            console.log('EMA1:          ' + market.ema1)
+            console.log('EMA233:        ' + market.ema233)
+            await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)
+            // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
+  
+          }
       } catch(error) {
         console.log(error.message)
       }
@@ -1010,3 +1013,6 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
 app.listen(port);
 
 run();
+
+
+

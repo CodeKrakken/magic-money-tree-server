@@ -127,3 +127,67 @@ Running at 7/22/2021, 12:11:01
 
 7/22/2021, 12:11:04 - Transaction - Sold 3.981073 RUNE @ 4.532 ($18.042222836) [Price information undefined]
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:52:00
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:54:51
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:56:45
+
+7/22/2021, 12:56:49 - Transaction - Sold 3.928141 RUNE @ 4.583 ($18.002670203) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:57:27
+
+7/22/2021, 12:57:32 - Transaction - Sold 3.922215 RUNE @ 4.578 ($17.95590027) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:58:06
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:59:12
+
+7/22/2021, 12:59:16 - Transaction - Sold 3.909302 RUNE @ 4.594 ($17.959333388) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 13:03:42
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 13:04:21
+
+7/22/2021, 13:04:25 - Transaction - Sold 3.927371 RUNE @ 4.561 ($17.912739131) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 13:07:34
+
+7/22/2021, 13:07:38 - Transaction - Sold 3.915452 RUNE @ 4.542 ($17.783982984) [Price information undefined]
+
