@@ -296,25 +296,27 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
         if (
           currentMarket.currentPrice !== undefined &&
-          currentMarket.currentPrice > wallet.targetPrice &&
-          (
-            market.shape < 0 
-          || 
-            market.trend === 'down'
-          || 
-          //   market.pointLow < market.pointHigh
-          // ||
-            market.ema1 < market.ema233
-          )
-        ) 
+          currentMarket.currentPrice > wallet.targetPrice
+        )
         {
-          console.log('Current Price: ' + currentMarket.currentPrice)
-          console.log('Target Price:  ' + wallet.targetPrice)
+          console.log(currentMarket.currentPrice)
+          console.log(wallet.targetPrice)
+          await liveSellOrder(wallet, currentMarket, 'Target price met', goodMarketNames, currentMarket.currentPrice)
+        } else if (
+          market.shape < 0 
+        || 
+          market.trend === 'down'
+        || 
+        //   market.pointLow < market.pointHigh
+        // ||
+          market.ema1 < market.ema233
+        )
+        {
           console.log('Market Shape:  ' + wallet.stopLossPrice)
           console.log('Market Trend:  ' + market.trend)
           console.log('EMA1:          ' + market.ema1)
           console.log('EMA233:        ' + market.ema233)
-          await liveSellOrder(wallet, currentMarket, 'Profitable switch', goodMarketNames, currentMarket.currentPrice)
+          await liveSellOrder(wallet, currentMarket, 'Market turning bad', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
 
         } else if (
@@ -327,7 +329,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log('Current Price: ' + currentMarket.currentPrice)
           console.log('Target Price:  ' + wallet.targetPrice)
           console.log('Stop Loss Price: ' + wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Switch at loss', goodMarketNames, currentMarket.currentPrice)
+          await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
           // await simulatedSellOrder(wallet, currentMarket, 'Below stop loss - profitable switch', goodMarketNames)
         } else if (
           (
@@ -414,26 +416,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
-
-        // if (currentPrice > wallet.targetPrice) {
-
-        //   wallet.stopLossPrice = wallet.targetPrice + ((wallet.highPrice - wallet.targetPrice) * highStopLossThreshold)
-        // //   // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-
-        // } else {
-
-          wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
-        // }
-        process.env.HIGH_STOP_LOSS_PRICE = wallet.stopLossPrice
-
-      }
-
-      if (currentPrice > wallet.highPrice) { 
-      
-        wallet.highPrice = currentPrice
-        // await dbInsert('highPrice', wallet.highPrice)
-        process.env.HIGH_PRICE = currentPrice
-        wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
+        // wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
         process.env.STOP_LOSS_PRICE = wallet.highPrice * stopLossThreshold
 
@@ -686,7 +669,7 @@ async function sortByArc(markets) {
          
         // console.log(`lastPeriod['close'] (${lastPeriod['close']}) < thisPeriod['close'] (${thisPeriod['close']}) < nextPeriod['close'] (${nextPeriod['close']})`)
 
-        if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close'] && thisPeriod['high']) {
+        if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close']) {
 
           // console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
 

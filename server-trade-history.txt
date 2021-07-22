@@ -97,3 +97,19 @@ Wave Shape: 215021586390.9837  Target Price - 16.434417999999997
 7/21/2021, 19:57:11 - Transaction - Bought 16.05 EUR @ 1.1692999999999998 ($18.767265)
 Wave Shape: 27832304885.375526  Target Price - 1.1704692999999997
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 08:57:10
+
+7/22/2021, 08:57:16 - Transaction - Sold 16.03395 EUR @ 1.1648 ($18.67634496) [Price information undefined]
+
+7/22/2021, 08:59:15 - Transaction - Bought 75.1 XLM @ 0.24818000000000004 ($18.638318)
+Wave Shape: 222804913343.9568  Target Price - 0.24842818
+
+7/22/2021, 10:12:40 - Transaction - Sold 75.0249 XLM @ 0.24842 ($18.637685658000002) [Switch at loss]
+
+7/22/2021, 10:14:24 - Transaction - Bought 3.973 RUNE @ 4.69 ($18.63337)
+Wave Shape: 227545254529.19788  Target Price - 4.69469
+
