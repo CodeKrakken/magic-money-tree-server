@@ -191,3 +191,127 @@ Running at 7/22/2021, 13:07:34
 
 7/22/2021, 13:07:38 - Transaction - Sold 3.915452 RUNE @ 4.542 ($17.783982984) [Price information undefined]
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 13:09:46
+
+7/22/2021, 13:11:12 - Transaction - Bought 2.537 LUNA @ 6.994 ($17.743778)
+Wave Shape: 77873968294.90324  Target Price - 7.000993999999999
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 13:16:46
+
+7/22/2021, 13:16:51 - Transaction - Sold 2.534463 LUNA @ 6.951 ($17.617052313) [Price information undefined]
+
+7/22/2021, 13:18:57 - Transaction - Bought 1.212786 WAVES @ 14.492 ($17.575694712)
+Wave Shape: 388683163622.2368  Target Price - 14.506492
+
+7/22/2021, 13:19:18 - Transaction - Sold 1.212786 WAVES @ 14.511 ($17.598737645999996) [Profitable switch]
+
+7/22/2021, 13:21:42 - Transaction - Bought 1.2117870000000002 WAVES @ 14.491 ($17.560005417)
+Wave Shape: 382196418479.37775  Target Price - 14.505490999999997
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 14:18:02
+
+7/22/2021, 14:18:07 - Transaction - Sold 1.212573 WAVES @ 14.457 ($17.530167861) [Price information undefined]
+
+7/22/2021, 14:20:23 - Transaction - Bought 2.9470500000000004 ALICE @ 5.932 ($17.481900600000003)
+Wave Shape: 208595389874.9278  Target Price - 5.937932
+
+7/22/2021, 14:20:28 - Transaction - Sold 2.94705 ALICE @ 5.932 ($17.4819006) [Bad market]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:21:17
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:21:49
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:22:26
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:22:50
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:23:10
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:23:19
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:23:59
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:24:55
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:25:16
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:25:57
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:34:43
+
+7/22/2021, 15:34:49 - Transaction - Selling 0.00452479 BTC @ 32056.37 ($145.0483424123) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:37:31
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:45:38
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:46:41
+
