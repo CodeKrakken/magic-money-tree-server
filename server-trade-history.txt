@@ -113,3 +113,17 @@ Wave Shape: 222804913343.9568  Target Price - 0.24842818
 7/22/2021, 10:14:24 - Transaction - Bought 3.973 RUNE @ 4.69 ($18.63337)
 Wave Shape: 227545254529.19788  Target Price - 4.69469
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 11:49:24
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 12:11:01
+
+7/22/2021, 12:11:04 - Transaction - Sold 3.981073 RUNE @ 4.532 ($18.042222836) [Price information undefined]
+
