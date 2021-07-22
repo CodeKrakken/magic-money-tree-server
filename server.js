@@ -229,7 +229,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
             // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
 
-            if (wallet.activeCurrency > minimumBuy) {
+            if (wallet.activeCurrency < minimumBuy) {
 
               let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
               currentMarket = response['market']
