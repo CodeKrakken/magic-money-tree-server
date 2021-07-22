@@ -505,3 +505,14 @@ Wave Shape: 232869053421.12228  Target Price - 4.788558
 7/22/2021, 20:42:53 - Transaction - Bought 2.5184789999999997 LUNA @ 7.410000000000001 ($18.66192939)
 Wave Shape: 250914965679.73242  Target Price - 7.424820000000001
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 20:56:22
+
+7/22/2021, 20:56:27 - Transaction - Selling 2.519269 LUNA @ 7.401 ($18.645109869) [Price information undefined]
+
+7/22/2021, 20:58:42 - Transaction - Bought 1.061937 UNI @ 17.509 ($18.593454933)
+Wave Shape: 135224505985.98799  Target Price - 17.561526999999998
+
