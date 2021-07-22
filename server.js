@@ -334,7 +334,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
         } 
         // else 
-
         // if (currentMarket.currentPrice !== undefined && (currentMarket.shape < 0 || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
             
         //   console.log('Market Shape:  ' + wallet.stopLossPrice)
@@ -867,7 +866,7 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
       let volumeToTrade = baseVolume * (1 - fee)
       wallet.currencies[base]['quantity'] -= volumeToTrade
       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
-      let targetVolume = baseVolume * (1 + fee)
+      let targetVolume = baseVolume * (1 + (2 * fee))
       wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
       wallet.boughtPrice = currentPrice
       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
@@ -931,7 +930,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
-        wallet.targetPrice = wallet.boughtPrice * (1 + fee)
+        wallet.targetPrice = wallet.boughtPrice * (1 + (2 * fee))
         wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
         process.env.TARGET_PRICE = wallet.targetPrice
         process.env.BOUGHT_PRICE = wallet.boughtPrice

@@ -377,3 +377,89 @@ Running at 7/22/2021, 16:07:21
 
 7/22/2021, 16:07:28 - Transaction - Selling 3055901.06 SHIB @ 0.0000065 ($19.86335689) [Price information undefined]
 
+7/22/2021, 16:08:45 - Transaction - Selling 3055901.06 SHIB @ 0.0000065 ($19.86335689) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 16:09:07
+
+7/22/2021, 16:10:35 - Transaction - Bought 12.872114999999999 SXP @ 1.5410000000000001 ($19.835929215)
+Wave Shape: 6861195908.894021  Target Price - 1.542541
+
+7/22/2021, 16:11:45 - Transaction - Selling 12.872115 SXP @ 1.544 ($19.87454556) [Target price reached]
+
+7/22/2021, 16:12:36 - Transaction - Bought 3.3666300000000002 ALICE @ 5.885800000000001 ($19.815310854000003)
+Wave Shape: 175382304477.72906  Target Price - 5.8916858
+
+7/22/2021, 16:12:44 - Transaction - Selling 3.37368 ALICE @ 5.8945 ($19.88615676) [Target price reached]
+
+7/22/2021, 16:13:33 - Transaction - Bought 3.3666300000000002 ALICE @ 5.8871 ($19.819687473000002)
+Wave Shape: 173247542796.04495  Target Price - 5.892987099999999
+
+7/22/2021, 16:14:51 - Transaction - Selling 3.37031 ALICE @ 5.8947 ($19.866966357) [Target price reached]
+
+7/22/2021, 16:17:14 - Transaction - Bought 1.3846139999999998 WAVES @ 14.332 ($19.844287848)
+Wave Shape: 299303291880.70685  Target Price - 14.346331999999999
+
+7/22/2021, 16:18:56 - Transaction - Selling 1.385408 WAVES @ 14.35 ($19.8806048) [Target price reached]
+
+7/22/2021, 16:19:47 - Transaction - Bought 1.3826159999999998 WAVES @ 14.345000000000002 ($19.833626520000003)
+Wave Shape: 293906634991.0032  Target Price - 14.359345000000001
+
+7/22/2021, 16:20:10 - Transaction - Selling 1.383024 WAVES @ 14.369 ($19.872671856) [Target price reached]
+
+7/22/2021, 16:20:52 - Transaction - Bought 1.0399589999999999 WAVES @ 14.367 ($14.941090953)
+Wave Shape: 298179609515.14514  Target Price - 14.381367
+
+7/22/2021, 16:35:08 - Transaction - Selling 1.039983 WAVES @ 14.382 ($14.957035506) [Target price reached]
+
+7/22/2021, 16:36:27 - Transaction - Bought 1.375623 WAVES @ 14.382 ($19.784209985999997)
+Wave Shape: 299030015563.3588  Target Price - 14.396381999999997
+
+7/22/2021, 16:38:02 - Transaction - Selling 1.376606 WAVES @ 14.397 ($19.818996582) [Target price reached]
+
+7/22/2021, 16:38:40 - Transaction - Bought 1.7652329999999998 ATOM @ 11.205 ($19.779435765)
+Wave Shape: 134463140079.75586  Target Price - 11.216204999999999
+
+7/22/2021, 16:42:50 - Transaction - Selling 1.765439 ATOM @ 11.222 ($19.811756457999998) [Target price reached]
+
+7/22/2021, 16:44:21 - Transaction - Bought 1.366632 WAVES @ 14.47740789473684 ($19.785288906)
+Wave Shape: 293514307511.842  Target Price - 14.491885302631577
+
+7/22/2021, 17:05:02 - Transaction - Selling 1.367238 WAVES @ 14.511 ($19.839990617999998) [Target price reached]
+
+7/22/2021, 17:06:00 - Transaction - Bought 0.1134864 KSM @ 174.37999999999997 ($19.789758432)
+Wave Shape: 84902717689.84624  Target Price - 174.55437999999995
+
+7/22/2021, 17:09:04 - Transaction - Selling 0.1134864 KSM @ 174.59 ($19.813590576) [Target price reached]
+
+7/22/2021, 17:10:08 - Transaction - Bought 2.723274 LUNA @ 7.257000000000001 ($19.762799418)
+Wave Shape: 133672091467.64192  Target Price - 7.264257
+
+7/22/2021, 17:12:18 - Transaction - Selling 2.723737 LUNA @ 7.265 ($19.787949304999998) [Target price reached]
+
+7/22/2021, 17:13:01 - Transaction - Bought 1.369629 WAVES @ 14.409 ($19.734984261)
+Wave Shape: 315020031589.75256  Target Price - 14.423409
+
+7/22/2021, 17:53:47 - Transaction - Selling 1.369867 WAVES @ 14.436 ($19.775400012) [Target price reached]
+
+7/22/2021, 17:54:33 - Transaction - Bought 1.369629 WAVES @ 14.405000000000001 ($19.729505745)
+Wave Shape: 249174028842.71417  Target Price - 14.419405
+
+7/22/2021, 17:54:40 - Transaction - Selling 1.370496 WAVES @ 14.42 ($19.762552319999998) [Target price reached]
+
+7/22/2021, 17:55:38 - Transaction - Bought 1.3646340000000001 WAVES @ 14.433 ($19.695762522000003)
+Wave Shape: 254218891339.7884  Target Price - 14.447432999999998
+
+7/22/2021, 17:58:47 - Transaction - Selling 1.36513 WAVES @ 14.45 ($19.726128499999998) [Target price reached]
+
+7/22/2021, 18:00:01 - Transaction - Bought 1.726272 ATOM @ 11.408000000000001 ($19.693310976)
+Wave Shape: 102316887955.33478  Target Price - 11.419408
+
+7/22/2021, 18:37:35 - Transaction - Selling 1.726711 ATOM @ 11.42 ($19.71903962) [Target price reached]
+
+7/22/2021, 18:38:12 - Transaction - Bought 1.3646340000000001 WAVES @ 14.417999999999997 ($19.675293011999997)
+Wave Shape: 247323831962.3781  Target Price - 14.432417999999997
+
