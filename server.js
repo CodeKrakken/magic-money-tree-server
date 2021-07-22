@@ -229,17 +229,17 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
             // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
 
-            if (wallet.activeCurrency < minimumBuy) {
+            // if (wallet.currencies[activeCurrency]['quantity'] < minimumBuy) {
 
               let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
               currentMarket = response['market']
               wallet = response['wallet']
 
-            } else {
+            // } else {
 
-              console.log('Insufficient balance')
+            //   console.log('Insufficient balance')
               
-            }
+            // }
           // }
         // }
       }
@@ -332,16 +332,17 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           console.log('Target Price:  ' + wallet.targetPrice)
           console.log('Stop Loss Price: ' + wallet.stopLossPrice)
           await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
-        } else 
+        } 
+        // else 
 
-        if (currentMarket.currentPrice !== undefined && (currentMarket.shape < 0 || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
+        // if (currentMarket.currentPrice !== undefined && (currentMarket.shape < 0 || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
             
-          console.log('Market Shape:  ' + wallet.stopLossPrice)
-          console.log('Market Trend:  ' + currentMarket.trend)
-          console.log('EMA1:          ' + currentMarket.ema1)
-          console.log('EMA233:        ' + currentMarket.ema233)
-          await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
-        }
+        //   console.log('Market Shape:  ' + wallet.stopLossPrice)
+        //   console.log('Market Trend:  ' + currentMarket.trend)
+        //   console.log('EMA1:          ' + currentMarket.ema1)
+        //   console.log('EMA233:        ' + currentMarket.ema233)
+        //   await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
+        // }
 
       } catch(error) {
         console.log(error.message)

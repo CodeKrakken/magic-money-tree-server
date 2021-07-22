@@ -315,3 +315,65 @@ Running at 7/22/2021, 15:45:38
 
 Running at 7/22/2021, 15:46:41
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:50:27
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:52:08
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:54:17
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:54:45
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:57:15
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 15:59:49
+
+7/22/2021, 16:01:27 - Transaction - Bought 1.3906079999999998 WAVES @ 14.353 ($19.959396624)
+Wave Shape: 306989917110.4775  Target Price - 14.367352999999998
+
+7/22/2021, 16:01:59 - Transaction - Selling 1.391181 WAVES @ 14.397 ($20.028832857) [Target price reached]
+
+7/22/2021, 16:02:45 - Transaction - Bought 1.385613 WAVES @ 14.419 ($19.979153847)
+Wave Shape: 309134303566.0484  Target Price - 14.433418999999999
+
+7/22/2021, 16:03:42 - Transaction - Selling 1.385794 WAVES @ 14.405 ($19.96236257) [Bad market]
+
+7/22/2021, 16:04:23 - Transaction - Bought 1.792206 ATOM @ 11.117 ($19.923954102)
+Wave Shape: 151577386727.7543  Target Price - 11.128117
+
+7/22/2021, 16:04:30 - Transaction - Selling 1.792206 ATOM @ 11.108 ($19.907824248) [Bad market]
+
+7/22/2021, 16:05:23 - Transaction - Bought 3055901.04 SHIB @ 0.0000065000000000000004 ($19.863356760000002)
+Wave Shape: 15279940783.388979  Target Price - 0.0000065064999999999995
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 16:07:21
+
+7/22/2021, 16:07:28 - Transaction - Selling 3055901.06 SHIB @ 0.0000065 ($19.86335689) [Price information undefined]
+
