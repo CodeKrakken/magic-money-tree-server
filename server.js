@@ -930,7 +930,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
-        wallet.targetPrice = wallet.boughtPrice * (1 + (2 * fee))
+        wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
         wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
         process.env.TARGET_PRICE = wallet.targetPrice
         process.env.BOUGHT_PRICE = wallet.boughtPrice

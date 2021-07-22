@@ -463,3 +463,45 @@ Wave Shape: 102316887955.33478  Target Price - 11.419408
 7/22/2021, 18:38:12 - Transaction - Bought 1.3646340000000001 WAVES @ 14.417999999999997 ($19.675293011999997)
 Wave Shape: 247323831962.3781  Target Price - 14.432417999999997
 
+
+ ---------- 
+
+
+Running at 7/22/2021, 18:48:09
+
+7/22/2021, 18:48:19 - Transaction - Selling 1.364764 WAVES @ 14.374 ($19.617117736) [Price information undefined]
+
+
+ ---------- 
+
+
+Running at 7/22/2021, 18:53:20
+
+7/22/2021, 18:54:54 - Transaction - Bought 2.618379 LUNA @ 7.456 ($19.522633824)
+Wave Shape: 234510965667.83044  Target Price - 7.470912
+
+7/22/2021, 19:04:20 - Transaction - Selling 2.618379 LUNA @ 7.303 ($19.122021837) [Below stop loss]
+
+7/22/2021, 19:04:56 - Transaction - Bought 4.079916 THETA @ 4.675000000000001 ($19.0736073)
+Wave Shape: 208625548915.75153  Target Price - 4.684350000000001
+
+7/22/2021, 19:11:23 - Transaction - Selling 4.079916 THETA @ 4.686 ($19.118486376) [Target price reached]
+
+7/22/2021, 19:12:04 - Transaction - Bought 1.647351 ATOM @ 11.575999999999999 ($19.069735176)
+Wave Shape: 201298275139.06476  Target Price - 11.599151999999998
+
+7/22/2021, 19:14:33 - Transaction - Selling 1.647351 ATOM @ 11.61 ($19.12574511) [Target price reached]
+
+7/22/2021, 19:15:58 - Transaction - Bought 2.586411 LUNA @ 7.381 ($19.090299591)
+Wave Shape: 186263838832.9008  Target Price - 7.395762
+
+7/22/2021, 20:19:25 - Transaction - Selling 2.58679 LUNA @ 7.397 ($19.13448563) [Target price reached]
+
+7/22/2021, 20:21:15 - Transaction - Bought 3.9950010000000002 THETA @ 4.779 ($19.092109779)
+Wave Shape: 232869053421.12228  Target Price - 4.788558
+
+7/22/2021, 20:42:19 - Transaction - Selling 3.995917 THETA @ 4.68 ($18.70089156) [Below stop loss]
+
+7/22/2021, 20:42:53 - Transaction - Bought 2.5184789999999997 LUNA @ 7.410000000000001 ($18.66192939)
+Wave Shape: 250914965679.73242  Target Price - 7.424820000000001
+
