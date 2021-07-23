@@ -414,7 +414,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
       if (currentPrice < wallet.lowPrice) {
 
-        wallet.lowPrice = currenPrice
+        wallet.lowPrice = currentPrice
         process.env.LOW_PRICE = currentPrice
       }
     }
