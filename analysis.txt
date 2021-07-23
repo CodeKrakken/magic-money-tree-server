@@ -1,0 +1,167 @@
+Jul 22 17:24:08 magic-money-tree app/web.1 7/23/2021, 01:24:07 AM - Transaction - Bought 4.1958 KAVA @ 4.4498411904761905 ($18.670643667)
+Target Price    - 4.463190714047618
+High Price      - 4.4498411904761905  
+Stop Loss Price - 4.360844366666667
+Sell Price      - 4.3496
+Low price       - 4.3152
+New threshold   - Somewhere below 0.96974247288546894119
+Would profit at - 02:19
+Jul 22 17:26:52 magic-money-tree app/web.1 7/23/2021, 01:26:51 AM - Transaction - Selling 4.20156 KAVA @ 4.3496 ($18.275105376) [Below stop loss]
+
+
+
+
+
+Jul 22 18:19:51 magic-money-tree app/web.1 7/23/2021, 2:19:50 AM - Transaction - Bought 4.07592 KAVA @ 4.5026 ($18.352237392)
+Target Price    - 4.5161077999999995
+High Price      - 4.5026
+Stop Loss Price - 4.412548
+Sell Price      - 4.4095
+Low price       - 4.1748 at 09:00 (10:00 BST)
+New threshold   - Somewhere above 0.92719761915337804824
+Would have hung
+Jul 22 18:37:27 magic-money-tree app/web.1 7/23/2021, 2:37:26 AM - Transaction - Selling 4.08335 KAVA @ 4.4095 ($18.005531825000002) [Below stop loss]
+
+
+
+
+
+Jul 22 19:24:01 magic-money-tree app/web.1 7/23/2021, 3:24:00 AM - Transaction - Bought 4.0459499999999995 KAVA @ 4.4510000000000005 ($18.008523450000002)
+Target Price    - 4.464353
+High Price      - 4.4578
+Stop Loss Price - 4.361980000000001
+Sell Price      - 4.3604
+Low price       - 4.3565
+New threshold   - Somewhere below 0.97876881599640519223
+Would profit at - 05:33
+Jul 22 20:33:58 magic-money-tree app/web.1 7/23/2021, 4:33:57 AM - Transaction - Selling 4.05118 KAVA @ 4.3604 ($17.664765272) [Below stop loss]
+
+
+
+
+
+Jul 22 22:06:41 magic-money-tree app/web.1 7/23/2021, 6:06:40 AM - Transaction - Bought 0.5794199999999999 AXS @ 30.438600000000005 ($17.636733612)
+Target Price    - 30.5299158
+High Price      - 30.438600000000005
+Stop Loss Price - 29.829828000000003
+Sell Price      - 29.8228
+Low Price       - 29.4146
+New threshold   - Somewhere below 0.96635850531890412727
+Would profit at - 07:33
+Jul 22 22:11:53 magic-money-tree app/web.1 7/23/2021, 6:11:52 AM - Transaction - Selling 0.5859 AXS @ 29.8228 ($17.47317852) [Below stop loss]
+
+
+
+
+
+Jul 22 22:14:44 magic-money-tree app/web.1 7/23/2021, 6:14:43 AM - Transaction - Bought 0.5794199999999999 AXS @ 30.2117 ($17.505263214)
+Target Price    - 30.302335099999997
+High Price      - 30.2117
+Stop Loss Price - 29.607466
+Sell Price      - 29.5985
+Low Price       - 29.4146
+New threshold   - Somewhere below 0.9736161818103582387
+Would profit at - 07:27
+Jul 22 22:32:03 magic-money-tree app/web.1 7/23/2021, 6:32:02 AM - Transaction - Selling 0.58474 AXS @ 29.5985 ($17.307426890000002) [Below stop loss]
+
+
+
+
+
+Jul 22 23:45:42 magic-money-tree app/web.1 7/23/2021, 7:45:41 AM - Transaction - Bought 0.385614 ETC @ 45.833999999999996 ($17.674232076)
+Target Price    - 45.971501999999994
+High Price      - 45.863
+Stop Loss Price - 44.91732
+Sell Price      - 44.847
+Low Price       - 43.769
+New threshold   - Somewhere above 0.9549461098747655413
+Would have hung
+Jul 23 01:21:44 magic-money-tree app/web.1 7/23/2021, 9:21:43 AM - Transaction - Selling 0.385614 ETC @ 44.847 ($17.293631058000003) [Below stop loss]
+
+
+
+
+
+Jul 23 01:30:36 magic-money-tree app/web.1 7/23/2021, 9:30:35 AM - Transaction - Bought 0.53946 AXS @ 31.213962962962963 ($16.83868446)
+Target Price    - 31.30760485185185
+High Price      - 31.24
+Stop Loss Price - 30.589683703703702
+Sell Price      - 30.5797
+Low Price       - 28.8785
+New threshold   - Somewhere below 0.92517890260412896778
+Would profit at - 13:20
+Jul 23 01:35:11 magic-money-tree app/web.1 7/23/2021, 9:35:10 AM - Transaction - Selling 0.54837 AXS @ 30.5797 ($16.768990089) [Below stop loss]
+
+
+
+
+
+Jul 23 01:46:44 magic-money-tree app/web.1 7/23/2021, 9:46:43 AM - Transaction - Bought 80.82909 TLM @ 0.2063 ($16.675041267)
+Target Price    - 0.2069189
+High Price      - 0.2066
+Stop Loss Price - 0.20217400000000002
+Sell Price      - 0.2021
+Low Price       - 0.1909
+New threshold   - Somewhere above 0.92535142995637421231
+Would have hung
+Jul 23 01:55:16 magic-money-tree app/web.1 7/23/2021, 9:55:15 AM - Transaction - Selling 80.83669 TLM @ 0.2021 ($16.337095049000002) [Below stop loss]
+
+
+
+
+
+Jul 23 02:22:05 magic-money-tree app/web.1 7/23/2021, 10:22:04 AM - Transaction - Bought 0.52947 AXS @ 30.770799999999994 ($16.292215476)
+Target Price    - 30.86311239999999
+High Price      - 30.8
+Stop Loss Price - 30.155383999999994
+Sell Price      - 30.0973
+Low Price       - 28.8785
+New threshold   - Somewhere below 0.93850338632729749084
+Would profit at - 13:17
+Jul 23 03:00:20 magic-money-tree app/web.1 7/23/2021, 11:00:19 AM - Transaction - Selling 0.53624 AXS @ 30.0973 ($16.139376152) [Below stop loss]
+
+
+
+
+
+Jul 23 04:18:24 magic-money-tree app/web.1 7/23/2021, 12:18:23 PM - Transaction - Bought 0.51948 AXS @ 30.5297 ($15.859568556)
+Target Price    - 30.621289099999995
+High Price      - 30.5602
+Stop Loss Price - 29.919106
+Sell Price      - 29.91
+Low price       - 29.859
+New threshold   - Somewhere below 0.97803122860689754567
+Would profit at - 13:17
+Jul 23 04:32:12 magic-money-tree app/web.1 7/23/2021, 12:32:11 PM - Transaction - Selling 0.52572 AXS @ 29.91 ($15.724285199999999) [Below stop loss]
+
+
+WHERE WILL THE STOP LOSS BE?
+
+Somewhere below 0.97876881599640519223
+
+Somewhere below 0.97803122860689754567
+
+Somewhere below 0.9736161818103582387
+
+Somewhere below 0.96974247288546894119
+
+Somewhere below 0.96635850531890412727
+
+
+
+Somewhere above 0.9549461098747655413
+
+Somewhere below 0.93850338632729749084
+
+Somewhere above 0.92535142995637421231
+
+Somewhere below 0.92517890260412896778
+
+Somewhere above 0.92719761915337804824
+
+
+
+
+
+
+

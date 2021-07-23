@@ -62,8 +62,7 @@ const binance = new ccxt.binance({
 
 const minimumDollarVolume = 28000000
 const fee = 0.001
-const stopLossThreshold = 0.98
-const highStopLossThreshold = 0.75
+const stopLossThreshold = 0.96 // 0.96065230759683483428
 const minimumBuy = 10
 // const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
@@ -411,6 +410,12 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
         // wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
 
+      }
+
+      if (currentPrice < wallet.lowPrice) {
+
+        wallet.lowPrice = currenPrice
+        process.env.LOW_PRICE = currentPrice
       }
     }
   }
@@ -921,7 +926,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       let baseVolumeToTrade = baseVolume * (1 - fee)
       let assetVolumeToBuy = baseVolumeToTrade / currentPrice
 
-      response = await binance.createMarketBuyOrder(market.name, assetVolumeToBuy)
+      response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
       console.log(response)
 
       if (response !== undefined) {
@@ -930,6 +935,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
+        wallet.lowPrice = wallet.boughtPrice
         wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
         wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
         process.env.TARGET_PRICE = wallet.targetPrice
@@ -1014,7 +1020,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     let response = await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
     console.log(response)
     wallet.targetPrice = undefined
-    tradeReport = `${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\n\n`
+    tradeReport = `${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\nHigh Price: ${wallet.highPrice} ... Low Price: ${wallet.lowPrice}\n`
     wallet = await liveWallet(wallet, goodMarketNames, market)
     record(tradeReport)
     tradeReport = ''
