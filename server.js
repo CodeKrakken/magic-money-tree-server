@@ -1019,8 +1019,9 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     let assetVolume = wallet.currencies[asset]['quantity']
     let response = await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
     console.log(response)
+
+    tradeReport = `Target price: ${wallet.targetPrice}\nHigh Price: ${wallet.highPrice}\nBought Price: ${wallet.boughtPrice}\nStop Loss Price: ${wallet.stopLossPrice}\nLow Price: ${wallet.lowPrice}\n${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\nHigh Price: ${wallet.highPrice} ... Low Price: ${wallet.lowPrice}\n`
     wallet.targetPrice = undefined
-    tradeReport = `${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\nHigh Price: ${wallet.highPrice} ... Low Price: ${wallet.lowPrice}\n`
     wallet = await liveWallet(wallet, goodMarketNames, market)
     record(tradeReport)
     tradeReport = ''
