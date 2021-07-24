@@ -147,7 +147,7 @@ Somewhere below 0.96974247288546894119
 
 Somewhere below 0.96635850531890412727
 
-
+Average of lower and higher figures
 
 Somewhere above 0.9549461098747655413
 
@@ -161,7 +161,48 @@ Somewhere above 0.92719761915337804824
 
 
 
+Tweaked to average as stated above
 
+Jul 23 13:15:16 magic-money-tree app/web.1 7/23/2021, 9:15:15 PM - Transaction - Selling 16.932 C98 @ 0.85857 ($14.53730724) [Below stop loss]
+Bought price - 0.8952 ... Target Price - 0.8978856 ... Profit - 3:41 AM ... Interim low - 0.70222
+Below 0.78442806076854334227
 
+Jul 23 15:51:54 magic-money-tree app/web.1 7/23/2021, 11:51:53 PM - Transaction - Selling 0.32816 AXS @ 46.316 ($15.199058560000001) [Below stop loss]
+Bought price - 48.2746 ... Target Price - 48.4194238 ... Interim low - 45.6554
+Below 0.94574372444308186914
 
+Jul 23 15:55:43 magic-money-tree app/web.1 7/23/2021, 11:55:42 PM - Transaction - Selling 0.32784 AXS @ 44.7959 ($14.685887856000003) [Below stop loss]
+Bought Price - 46.8144 ... Target Price - 46.95484319999999 ... Profit at 11:07 ... Interim low - 38.3449
+Below 0.81908344441026692642
 
+Jul 23 16:13:42 magic-money-tree app/web.1 7/23/2021, 12:13:41 AM - Transaction - Selling 0.32688 AXS @ 43.4 ($14.186592) [Below stop loss]
+Bought Price - 45.318 ... Target Price - 45.453953999999996 ... Profit at 11:00 ... Interim low - 38.3449
+Below 0.84612957323800697295
+
+Jul 23 16:16:23 magic-money-tree app/web.1 7/23/2021, 12:16:22 AM - Transaction - Selling 53.58608 TLM @ 0.2466 ($13.214327328000001) [Below stop loss]
+Bought price - 0.2589 ... Target Price - 0.2596767 ... Interim low - 0.2449
+Below 0.94592506759366550792
+
+Jul 23 17:03:31 magic-money-tree app/web.1 7/24/2021, 1:03:30 AM - Transaction - Selling 1.71052 ALICE @ 7.4123 ($12.678887396) [Below stop loss]
+Bought price - 7.7365 ... Target Price - 7.7597095 ... Interim low - 7.3732
+Below 0.95304078071479351128
+
+Jul 23 17:45:40 magic-money-tree app/web.1 7/24/2021, 1:45:39 AM - Transaction - Selling 0.29509 AXS @ 41.8742 ($12.356657678000001) [Below stop loss]
+Bought Price - 43.7319 ... Target Price - 43.863095699999995 ... Interim low - 38.3449
+Below 0.87681760911371333054
+
+Jul 23 17:55:25 magic-money-tree app/web.1 7/24/2021, 1:55:24 AM - Transaction - Selling 49.92184 TLM @ 0.2391 ($11.936311944000002) [Below stop loss]
+Bought price - 0.2513 ... Target Price - 0.2520539 ... Profit - 5:01 AM ... Interim low: 0.2286
+Below 0.9096697174691603661
+
+Jul 23 21:02:13 magic-money-tree app/web.1 7/24/2021, 5:02:12 AM - Transaction - Selling 11.881 C98 @ 1.00863 ($11.983533029999998) [Below stop loss]
+Bought price - 1.05529 ... Target Price - 1.05845587 ... Profit - 5:18 AM ... Interim low: 0.96633
+Below 0.9157008973836575728
+
+Jul 23 22:03:08 magic-money-tree app/web.1 7/24/2021, 6:03:07 AM - Transaction - Selling 0.28371 AXS @ 42.2128 ($11.976193488000002) [Below stop loss]
+Bought price - 44.0424 ... Target Price - 44.17452719999999 ... Interim low: 40.1604
+Below 0.91185766443245599695
+
+Jul 23 23:42:09 magic-money-tree app/web.1 7/24/2021, 7:42:08 AM - Transaction - Selling 0.28343 AXS @ 40.5333 ($11.488353219) [Below stop loss]
+Bought price - 42.3462 ... Target Price - 42.4732386 ... Interim low: 41.1604
+Below 0.9719974873778520859

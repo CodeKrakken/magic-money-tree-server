@@ -62,7 +62,7 @@ const binance = new ccxt.binance({
 
 const minimumDollarVolume = 28000000
 const fee = 0.001
-const stopLossThreshold = 0.96 // 0.96065230759683483428
+const stopLossThreshold = 0.78 // 0.78442806076854334227
 const minimumBuy = 10
 // const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 

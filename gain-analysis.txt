@@ -172,3 +172,4 @@ Jul 23 06:01:06 magic-money-tree app/web.1 7/23/2021, 2:01:05 PM - Transaction -
 
 Jul 23 06:01:32 magic-money-tree app/web.1 7/23/2021, 2:01:31 PM - Transaction - Bought 2443373.18 SHIB @ 0.00000646 ($15.7841907428)
 Jul 23 06:46:22 magic-money-tree app/web.1 7/23/2021, 2:46:21 PM - Transaction - Selling 0.50366 AXS @ 31.5058 ($15.868211228) [Target price reached]
+
