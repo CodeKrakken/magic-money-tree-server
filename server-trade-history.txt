@@ -522,3 +522,43 @@ Wave Shape: 135224505985.98799  Target Price - 17.561526999999998
 
 Running at 7/23/2021, 14:38:21
 
+
+ ---------- 
+
+
+Running at 7/24/2021, 16:46:43
+
+
+ ---------- 
+
+
+Running at 7/24/2021, 16:52:55
+
+
+ ---------- 
+
+
+Running at 7/24/2021, 16:54:59
+
+
+ ---------- 
+
+
+Running at 7/24/2021, 16:56:58
+
+
+ ---------- 
+
+
+Running at 7/24/2021, 17:01:09
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/24/2021, 17:02:43 - Transaction - Selling 5.3946 BAKE @ 1.9728 ($10.64246688) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+7/24/2021, 17:04:10 - Transaction - Bought 13.0869 SAND @ 0.80704 ($10.561651776)
+Wave Shape: 247156174920.37946  Target Price - 0.8094611199999999
+

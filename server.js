@@ -190,12 +190,15 @@ async function fetchMarkets() {
 
 async function tick(wallet, goodMarketNames, currentMarket) {
 
-  try {
+  // try {
     
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
+
+    if (activeCurrency !== 'USDT') { currentMarket = { name: `${activeCurrency}/USDT` } }
+
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
     console.log(`Fetching overview\n`)
@@ -230,11 +233,17 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       
       } else {
 
-        let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-        currentMarket = response['market']
-        wallet = response['wallet']
-      }
+        if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
+          let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+          currentMarket = response['market']
+          wallet = response['wallet']
+
+        } else {
+
+          console.log('Insufficient funds')
+        }
+      }
     } else {
   
       try {
@@ -301,16 +310,18 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       }
 
       } catch(error) {
+        console.log('Here')
         console.log(error.message)
       }
     }
     tick(wallet, goodMarketNames, currentMarket)
 
-  } catch (error) {
+  // } catch (error) {
 
-    console.log(error.message)
-    tick(wallet, goodMarketNames, currentMarket)
-  }
+  //   console.log('there')
+  //   console.log(error.message)
+  //   tick(wallet, goodMarketNames, currentMarket)
+  // }
   
 }
 
