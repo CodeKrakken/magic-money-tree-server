@@ -214,12 +214,14 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
     if (viableMarkets.includes('No response for current market')) {
 
-      currentMarketArray.pop()
+      viableMarkets.pop()
       return tick(wallet, goodMarketNames, currentMarket)
     }
 
     viableMarkets = await sortByArc(viableMarkets)
     viableMarkets = await addEMA(viableMarkets)
+    let currentMarketArray = viableMarkets.filter(market =>  market.name === currentMarket.name)
+    currentMarket = currentMarketArray[0]
     await displayMarkets(viableMarkets)
     let bulls = getBulls(viableMarkets)
     console.log('\n')
