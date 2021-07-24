@@ -562,3 +562,55 @@ High Price: undefined ... Low Price: undefined
 7/24/2021, 17:04:10 - Transaction - Bought 13.0869 SAND @ 0.80704 ($10.561651776)
 Wave Shape: 247156174920.37946  Target Price - 0.8094611199999999
 
+
+ ---------- 
+
+
+Running at 7/24/2021, 17:12:04
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/24/2021, 17:13:43 - Transaction - Selling 13.1171 SAND @ 0.78768 ($10.332077328) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 7/24/2021, 17:17:13
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/24/2021, 17:18:51 - Transaction - Selling 15.75423 COCOS @ 0.6513 ($10.260729999) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 7/24/2021, 17:46:24
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/24/2021, 17:48:13 - Transaction - Selling 0.23976 ICP @ 43.56 ($10.443945600000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: 0.6661925999999999
+High Price: 1.6914
+Bought Price: 0.6642
+Stop Loss Price: 0.518076
+Low Price: 0.6642
+7/24/2021, 17:53:02 - Transaction - Selling 15.42879 COCOS @ 0.6688 ($10.318774752) [Target price reached - switching market]
+High Price: 1.6914 ... Low Price: 0.6642
+
+ ---------- 
+
+
+Running at 7/24/2021, 18:01:17
+

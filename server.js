@@ -190,7 +190,7 @@ async function fetchMarkets() {
 
 async function tick(wallet, goodMarketNames, currentMarket) {
 
-  // try {
+  try {
     
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
@@ -318,12 +318,12 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     }
     tick(wallet, goodMarketNames, currentMarket)
 
-  // } catch (error) {
+  } catch (error) {
 
-  //   console.log('there')
-  //   console.log(error.message)
-  //   tick(wallet, goodMarketNames, currentMarket)
-  // }
+    console.log('there')
+    console.log(error.message)
+    tick(wallet, goodMarketNames, currentMarket)
+  }
   
 }
 
@@ -393,6 +393,9 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
       if (currentPrice > wallet.highPrice) { 
       
+        console.log('396')
+        console.log(`wallet.highPrice: ${wallet.highPrice}`)
+        console.log(`currentPrice: ${currentPrice}`)
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
@@ -922,8 +925,14 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
         let lastBuy = response
 
+
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
+        console.log('930')
+        console.log(`response: ${response}`)
+        console.log(`lastBuy.price: ${lastBuy.price}`)
+        console.log(`wallet.boughtPrice: ${wallet.boughtPrice}`)
+        console.log(`wallet.highPrice: ${wallet.highPrice}`)
         wallet.lowPrice = wallet.boughtPrice
         wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
         wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
@@ -945,11 +954,11 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
         await record(tradeReport)
         tradeReport = ''
-        
-        return {
+        let returnObject = {
           'market': market, 
           'wallet': wallet
         }
+        return returnObject
       }
     }
   } catch (error) {
