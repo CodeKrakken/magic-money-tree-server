@@ -198,149 +198,107 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     let activeCurrency = await getActiveCurrency(wallet)
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
+    console.log(`Fetching overview\n`)
+    let viableMarketNames = await getViableMarketNames(goodMarketNames)
+
+    if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
+
+      viableMarketNames.push(currentMarket.name)
+      console.log('Current market not viable - manually added')
+    }
+
+    let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarket.name) 
+    
+    if (viableMarkets.includes('No response for current market')) {
+
+      currentMarketArray.pop()
+      return tick(wallet, goodMarketNames, currentMarket)
+    }
+
+    viableMarkets = await sortByArc(viableMarkets)
+    viableMarkets = await addEMA(viableMarkets)
+    await displayMarkets(viableMarkets)
+    let bulls = getBulls(viableMarkets)
+    console.log('\n')
+    let bestMarket = bulls[0]
 
     if (activeCurrency === 'USDT') {
-
-      console.log(`Fetching overview\n`)
-      currentMarket = undefined
-      let viableMarketNames = await getViableMarketNames(goodMarketNames)
-      let viableMarkets = await fetchAllHistory(viableMarketNames)
-      viableMarkets = await sortByArc(viableMarkets)
-      viableMarkets = await addEMA(viableMarkets)
-      await displayMarkets(viableMarkets)
-      let bulls = getBulls(viableMarkets)
-      console.log('\n')
 
       if (bulls.length === 0) {
 
         console.log('No bullish markets\n')
-    
+      
       } else {
 
-        // let n = bulls.length
-
-        // for (let i = 0; i < n; i ++) {
-
-          let bestMarket = bulls[0]
-          // let currentPrice = await fetchPrice(bestMarket.name)
-
-          // if (currentPrice > bestMarket.ema233) {
-
-            // let response = await simulatedBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-
-            // if (wallet.currencies[activeCurrency]['quantity'] < minimumBuy) {
-
-              let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-              currentMarket = response['market']
-              wallet = response['wallet']
-
-            // } else {
-
-            //   console.log('Insufficient balance')
-              
-            // }
-          // }
-        // }
+        let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+        currentMarket = response['market']
+        wallet = response['wallet']
       }
+
     } else {
-
-      let currentMarketName = `${activeCurrency}/USDT`
-      // let viableMarketNames = await getViableMarketNames(goodMarketNames)
-
-      // if (!viableMarketNames.includes(currentMarketName)) {
-      //   viableMarketNames.push(currentMarketName)
-      //   console.log('Current market not viable - manually added')
-      // }
-
-      let viableMarkets = await fetchAllHistory([currentMarketName], currentMarketName)
-      
-      if (viableMarkets.includes('No response for current market')) {
-
-        viableMarkets.pop()
-        return tick(wallet, goodMarketNames, currentMarket)
-
-      }
-      
-      viableMarkets = await sortByArc(viableMarkets)
-      viableMarkets = await addEMA(viableMarkets)
-      await displayMarkets(viableMarkets)
-      // // console.log(viableMarkets)
-      let currentMarketArray = viableMarkets.filter(market => market.name === currentMarketName)
-      currentMarket = currentMarketArray[0]
-      // let bulls = getBulls(viableMarkets)
-
-      // if (bulls.length === 0) {
-
-      //   console.log('No bullish markets\n')
-    
-      // }
-
-      // console.log('Current Market')
-      // console.log(currentMarket.name)
-
+  
       try {
-        currentMarket.currentPrice = await fetchPrice(currentMarketName)
-              
-        // if (wallet.targetPrice   === undefined) { 
-          // wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
-        // }
-        // if (wallet.stopLossPrice === undefined) { 
-          // wallet.stopLossPrice === collection.findOne({ key: 'stopLossPrice' })
-        // }
-        // if (wallet.highPrice     === undefined) { 
-          // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
-        // }
-
-        console.log('currentMarket.currentPrice')
-        console.log(currentMarket.currentPrice)
-        // console.log('Current market shape')
-        // console.log(currentMarket.shape)
-        // console.log('currentMarket.ema1')
-        // console.log(currentMarket.ema1)
-        // console.log('currentMarket.ema233')
-        // console.log(currentMarket.ema233)
-        // console.log('currentMarket.trend')
-        // console.log(currentMarket.trend)
-        console.log('wallet.targetPrice')
-        console.log(wallet.targetPrice)
-        console.log('wallet.stopLossPrice')
-        console.log(wallet.stopLossPrice)
-        console.log('wallet.highPrice')
-        console.log(wallet.highPrice)
-        console.log('currentMarket.currentPrice')
-        console.log(currentMarket.currentPrice)
-    
-        if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice > wallet.targetPrice) {
-
-          console.log('Current Price: ' + currentMarket.currentPrice)
-          console.log('Target Price:  ' + wallet.targetPrice)
-          await liveSellOrder(wallet, currentMarket, 'Target price reached', goodMarketNames, currentMarket.currentPrice)
-        } else
-
-        if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
-          
-          console.log('Current Price: ' + currentMarket.currentPrice)
-          console.log('Target Price:  ' + wallet.targetPrice)
-          console.log('Stop Loss Price: ' + wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
-        } else
-
-        if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined || wallet.highPrice === undefined) && activeCurrency !== 'USDT') {
-
-          console.log('Current Price: ' + currentMarket.currentPrice)
-          console.log('Target Price:  ' + wallet.targetPrice)
-          console.log('Stop Loss Price: ' + wallet.stopLossPrice)
-          await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
-        } 
-        // else 
-        // if (currentMarket.currentPrice !== undefined && (currentMarket.shape < 0 || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
+      currentMarket.currentPrice = await fetchPrice(currentMarket.name)
             
-        //   console.log('Market Shape:  ' + wallet.stopLossPrice)
-        //   console.log('Market Trend:  ' + currentMarket.trend)
-        //   console.log('EMA1:          ' + currentMarket.ema1)
-        //   console.log('EMA233:        ' + currentMarket.ema233)
-        //   await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
-        // }
+      // if (wallet.targetPrice   === undefined) { 
+        // wallet.targetPrice   === collection.findOne({ key: 'targetPrice'   })
+      // }
+      // if (wallet.stopLossPrice === undefined) { 
+        // wallet.stopLossPrice === collection.findOne({ key: 'stopLossPrice' })
+      // }
+      // if (wallet.highPrice     === undefined) { 
+        // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
+      // }
+
+      console.log('Current market shape')
+      console.log(currentMarket.shape)
+      console.log('currentMarket.ema1')
+      console.log(currentMarket.ema1)
+      console.log('currentMarket.ema233')
+      console.log(currentMarket.ema233)
+      console.log('currentMarket.trend')
+      console.log(currentMarket.trend)
+      console.log('wallet.targetPrice')
+      console.log(wallet.targetPrice)
+      console.log('wallet.highPrice')
+      console.log(wallet.highPrice)
+      console.log('wallet.stopLossPrice')
+      console.log(wallet.stopLossPrice)
+      console.log('currentMarket.currentPrice')
+      console.log(currentMarket.currentPrice)
+  
+      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice > wallet.targetPrice && currentMarket.name !== bestMarket.name) {
+
+        console.log('Current Price: ' + currentMarket.currentPrice)
+        console.log('Target Price:  ' + wallet.targetPrice)
+        await liveSellOrder(wallet, currentMarket, 'Target price reached - switching market', goodMarketNames, currentMarket.currentPrice)
+        await switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
+      } else
+
+      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
+        
+        console.log('Current Price: ' + currentMarket.currentPrice)
+        console.log('Target Price:  ' + wallet.targetPrice)
+        console.log('Stop Loss Price: ' + wallet.stopLossPrice)
+        await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
+      } else
+
+      if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined || wallet.highPrice === undefined) && activeCurrency !== 'USDT') {
+
+        console.log('Current Price: ' + currentMarket.currentPrice)
+        console.log('Target Price:  ' + wallet.targetPrice)
+        console.log('Stop Loss Price: ' + wallet.stopLossPrice)
+        await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
+      } 
+      else 
+      if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
+          
+        console.log('Market Shape:  ' + wallet.stopLossPrice)
+        // console.log('Market Trend:  ' + currentMarket.trend)
+        // console.log('EMA1:          ' + currentMarket.ema1)
+        // console.log('EMA233:        ' + currentMarket.ema233)
+        await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
+      }
 
       } catch(error) {
         console.log(error.message)
@@ -352,6 +310,24 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     console.log(error.message)
     tick(wallet, goodMarketNames, currentMarket)
+  }
+  
+}
+
+
+
+async function switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency) {
+
+  wallet = refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
+
+  if (wallet.currencies[activeCurrency]['quantity'] > 10) {
+
+    // Double check market quality in case sell order has been long - but only prospective market for speed
+    await liveBuyOrder(wallet, market, goodMarketNames, currentMarket)
+
+  } else {
+
+    switchMarket(wallet, market, goodMarketNames, currentMarket)
   }
 }
 

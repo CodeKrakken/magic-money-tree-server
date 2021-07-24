@@ -203,6 +203,8 @@ Jul 23 22:03:08 magic-money-tree app/web.1 7/24/2021, 6:03:07 AM - Transaction -
 Bought price - 44.0424 ... Target Price - 44.17452719999999 ... Interim low: 40.1604
 Below 0.91185766443245599695
 
+
+
 Jul 23 23:42:09 magic-money-tree app/web.1 7/24/2021, 7:42:08 AM - Transaction - Selling 0.28343 AXS @ 40.5333 ($11.488353219) [Below stop loss]
 Bought price - 42.3462 ... Target Price - 42.4732386 ... Interim low: 41.1604
 Below 0.9719974873778520859
