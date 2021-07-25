@@ -627,3 +627,9 @@ Stop Loss Price: undefined
 Low Price: undefined
 25/07/2021, 08:32:50 - Transaction - Selling 0.406208 ETC @ 49.135 ($19.95903008) [Price information undefined]
 High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 7/25/2021, 12:36:50
+
