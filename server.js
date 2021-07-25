@@ -242,7 +242,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     let bulls = getBulls(viableMarkets)
     console.log('\n')
     let bestMarket = bulls[0]
-    let bullNames
+    let bullNames = []
     bulls.forEach(bull => { bullNames.push(bull.name) })
 
     if (activeCurrency === 'USDT') {
