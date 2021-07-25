@@ -242,8 +242,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     let bulls = getBulls(viableMarkets)
     console.log('\n')
     let bestMarket = bulls[0]
-    let marketNames = []
-    viableMarkets.forEach(market => { marketNames.push(market.name) })
+    let bullNames = []
+    bulls.forEach(bull => { bullNames.push(bull.name) })
 
     if (activeCurrency === 'USDT') {
 
@@ -255,7 +255,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
         if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
-          await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+          let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
+          // currentMarket = response['market']
+          // wallet = response['wallet']
 
         }
       }
@@ -290,6 +292,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // console.log(wallet.stopLossPrice)
       // console.log('currentMarket.currentPrice')
       // console.log(currentMarket.currentPrice)
+      console.log('bullNames')
+      console.log(bullNames)
   
       if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
@@ -302,13 +306,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       } else
 
-      if (currentMarket.currentPrice !== undefined && !viableMarkets.slice(0, 5).includes(currentMarket.name) && currentMarket.currentPrice < wallet.targetPrice ) { 
+      if (currentMarket.currentPrice !== undefined && !bullNames.includes(currentMarket.name) && currentMarket.currentPrice < wallet.targetPrice ) { 
 
         console.log('Current Price:  ' + currentMarket.currentPrice)
         console.log('Target Price:   ' + wallet.targetPrice)
         console.log('Current Market: ' + currentMarket.name)
-        console.log('Viable markets slice')
-        console.log(viableMarkets.slice(0, 5))
+        console.log('Bull Names: ')
+        console.log(bullNames)
 
         await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
@@ -799,10 +803,10 @@ function getBulls(markets) {
   let bulls = markets.filter(market => 
     market.shape > 0 
     && 
-    market.trend === 'up'
-    && 
-    market.pointLow > market.pointHigh
-    &&
+    // market.trend === 'up'
+    // && 
+    // market.pointLow > market.pointHigh
+    // &&
     market.ema1 > market.ema233
   )
   return bulls
