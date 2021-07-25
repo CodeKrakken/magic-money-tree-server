@@ -925,7 +925,6 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
         console.log('930')
-        console.log(`response: ${response}`)
         console.log(`lastBuy.price: ${lastBuy.price}`)
         console.log(`wallet.boughtPrice: ${wallet.boughtPrice}`)
         console.log(`wallet.highPrice: ${wallet.highPrice}`)
