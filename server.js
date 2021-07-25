@@ -522,13 +522,6 @@ async function getViableMarketNames(marketNames) {
     if (!response.includes("Insufficient") && response !== "No response") {
     
       voluminousMarketNames.push(marketName)
-    } else {
-
-      // delete this else section if disappearing markets problems recurs
-      marketNames.splice(i, 1)
-      symbolNames.splice(i, 1)
-      i--
-      n--
     }
   }
 
