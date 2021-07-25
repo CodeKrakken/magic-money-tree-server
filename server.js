@@ -5,7 +5,6 @@ const fs = require('fs');
 const ccxt = require('ccxt');
 const { runInContext } = require('vm');
 const express = require('express');
-const { DH_NOT_SUITABLE_GENERATOR } = require('constants');
 const app = express();
 const port = process.env.PORT || 8001;
 
@@ -327,14 +326,14 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       }
 
       } catch(error) {
-        console.log(error.message)
+        console.log(error)
       }
     }
     tick(wallet, goodMarketNames, currentMarket)
 
   } catch (error) {
 
-    console.log(error.message)
+    console.log(error)
     tick(wallet, goodMarketNames, currentMarket)
   }
   
@@ -590,7 +589,7 @@ async function fetchAllHistory(marketNames, currentMarketName) {
       }
 
     } catch (error) {
-
+      console.log(error.message)
     }
   }
 
@@ -883,59 +882,87 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
   
   try {
 
-    let slash = market.name.indexOf('/')
-    let asset = market.name.substring(0, slash)
-    let base = market.name.substring(slash+1)
-    let response = await fetchPrice(market.name)
+    if (doubleCheck(market)) {
 
-    if (response === 'No response') {
+      let slash = market.name.indexOf('/')
+      let asset = market.name.substring(0, slash)
+      let base = market.name.substring(slash+1)
+      let response = await fetchPrice(market.name)
 
-      console.log(`No response - starting new tick`)
-      tick(wallet, goodMarketNames, currentMarket)
+      if (response === 'No response') {
 
+        console.log(`No response - starting new tick`)
+        tick(wallet, goodMarketNames, currentMarket)
+
+      } else {
+
+        let currentPrice = response
+        let baseVolume = wallet.currencies[base]['quantity']
+        let baseVolumeToTrade = baseVolume * (1 - fee)
+        let assetVolumeToBuy = baseVolumeToTrade / currentPrice
+
+        response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
+        console.log(response)
+
+        if (response !== undefined) {
+
+          let lastBuy = response
+          wallet.boughtPrice = lastBuy.price
+          wallet.highPrice = wallet.boughtPrice
+          wallet.lowPrice = wallet.boughtPrice
+          wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
+          wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
+          process.env.TARGET_PRICE = wallet.targetPrice
+          process.env.BOUGHT_PRICE = wallet.boughtPrice
+          process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
+          process.env.HIGH_PRICE = wallet.highPrice
+          // await dbInsert('targetPrice', wallet.targetPrice)
+          // await dbInsert('boughtPrice', wallet.boughtPrice)
+          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
+          // await dbInsert('highPrice', wallet.highPrice)
+          wallet.boughtTime = lastBuy.timestamp
+          let netAsset = lastBuy.amount - lastBuy.fee.cost
+          let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+          wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+          await record(tradeReport)
+          tradeReport = ''
+          let returnObject = {
+            'market': market, 
+            'wallet': wallet
+          }
+          return returnObject
+        }
+      }
     } else {
 
-      let currentPrice = response
-      let baseVolume = wallet.currencies[base]['quantity']
-      let baseVolumeToTrade = baseVolume * (1 - fee)
-      let assetVolumeToBuy = baseVolumeToTrade / currentPrice
-
-      response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
-      console.log(response)
-
-      if (response !== undefined) {
-
-        let lastBuy = response
-        wallet.boughtPrice = lastBuy.price
-        wallet.highPrice = wallet.boughtPrice
-        wallet.lowPrice = wallet.boughtPrice
-        wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
-        wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
-        process.env.TARGET_PRICE = wallet.targetPrice
-        process.env.BOUGHT_PRICE = wallet.boughtPrice
-        process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
-        process.env.HIGH_PRICE = wallet.highPrice
-        // await dbInsert('targetPrice', wallet.targetPrice)
-        // await dbInsert('boughtPrice', wallet.boughtPrice)
-        // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-        // await dbInsert('highPrice', wallet.highPrice)
-        wallet.boughtTime = lastBuy.timestamp
-        let netAsset = lastBuy.amount - lastBuy.fee.cost
-        let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
-        wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
-        await record(tradeReport)
-        tradeReport = ''
-        let returnObject = {
-          'market': market, 
-          'wallet': wallet
-        }
-        return returnObject
-      }
+      console.log('Potential market no longer viable')
     }
   } catch (error) {
     
     console.log(error.message)
 
+  }
+}
+
+
+
+function doubleCheck(market) {
+  
+  let marketArray = await fetchAllHistory([market.name], market.name)
+  if (marketArray.includes('No response for current market')) {
+
+    return false
+
+  } else {
+    
+    marketArray = await sortByArc(marketArray)
+    marketArray = await addEMA(marketArray)
+    marketArray = getBulls(marketArray)
+
+    if (marketArray.length === 0) {
+
+      return false
+    }
   }
 }
 

@@ -706,3 +706,49 @@ Stop Loss Price: 0.26590199999999997
 Low Price: 0.3409
 7/25/2021, 14:11:59 - Transaction - Selling 56.2607 TLM @ 0.3454 ($19.43244578) [Target price reached - switching market]
 High Price: 0.3489 ... Low Price: 0.3409
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:17:57
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/25/2021, 14:19:27 - Transaction - Selling 16.23375 AUDIO @ 1.192 ($19.35063) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:21:03
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:31:07
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:38:57
+
+7/25/2021, 14:40:50 - Transaction - Bought 839.16 SUN @ 0.023 ($19.32)
+Wave Shape: 171183617466.33682  Target Price - 0.023068999999999996
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:45:30
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 14:45:39
+
