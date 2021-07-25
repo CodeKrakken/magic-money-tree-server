@@ -290,8 +290,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // console.log(wallet.stopLossPrice)
       // console.log('currentMarket.currentPrice')
       // console.log(currentMarket.currentPrice)
-      console.log('bullNames')
-      console.log(bullNames)
   
       if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
@@ -309,8 +307,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         console.log('Current Price:  ' + currentMarket.currentPrice)
         console.log('Target Price:   ' + wallet.targetPrice)
         console.log('Current Market: ' + currentMarket.name)
-        console.log('Bull Names: ')
-        console.log(bullNames)
+        console.log('Viable markets slice')
+        console.log(viableMarkets.slice(0, 5))
 
         await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
