@@ -5,6 +5,7 @@ const fs = require('fs');
 const ccxt = require('ccxt');
 const { runInContext } = require('vm');
 const express = require('express');
+const { DH_NOT_SUITABLE_GENERATOR } = require('constants');
 const app = express();
 const port = process.env.PORT || 8001;
 
@@ -201,26 +202,48 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
     console.log(`Fetching overview\n`)
+    console.log('204')
     let viableMarketNames = await getViableMarketNames(goodMarketNames)
-
+    console.log('206')
+    
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
-
+    
+      console.log('208')
       viableMarketNames.push(currentMarket.name)
       console.log('Current market not viable - manually added')
     }
 
-    let viableMarkets = await fetchAllHistory(viableMarketNames, currentMarket.name) 
-    
-    if (viableMarkets.includes('No response for current market')) {
+    let viableMarkets
 
+    if (currentMarket !== undefined) {
+
+      viableMarkets = await fetchAllHistory(viableMarketNames, currentMarket.name) 
+
+    } else {
+
+      viableMarkets = await fetchAllHistory(viableMarketNames)
+
+    }
+
+    console.log('213')
+    if (viableMarkets.includes('No response for current market')) {
+      console.log('216')
       viableMarkets.pop()
       return tick(wallet, goodMarketNames, currentMarket)
     }
 
     viableMarkets = await sortByArc(viableMarkets)
+    console.log('223')
     viableMarkets = await addEMA(viableMarkets)
-    let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
-    currentMarket = currentMarketArray[0]
+    console.log('225')
+
+    if (currentMarket !== undefined) {
+      
+      let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
+      console.log('226')
+      currentMarket = currentMarketArray[0]
+    }
+    
     await displayMarkets(viableMarkets)
     let bulls = getBulls(viableMarkets)
     console.log('\n')

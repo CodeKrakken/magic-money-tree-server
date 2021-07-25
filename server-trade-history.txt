@@ -633,3 +633,36 @@ High Price: undefined ... Low Price: undefined
 
 Running at 7/25/2021, 12:36:50
 
+
+ ---------- 
+
+
+Running at 7/25/2021, 12:44:07
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 12:48:27
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 13:05:24
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 13:35:10
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 13:35:29
+
+7/25/2021, 13:37:01 - Transaction - Bought 2.230767 DEGO @ 8.699 ($19.404037133)
+Wave Shape: 716161690016.3392  Target Price - 8.725096999999998
+
