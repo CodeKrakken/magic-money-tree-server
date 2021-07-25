@@ -202,13 +202,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
     console.log(`Fetching overview\n`)
-    console.log('204')
     let viableMarketNames = await getViableMarketNames(goodMarketNames)
-    console.log('206')
     
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
     
-      console.log('208')
       viableMarketNames.push(currentMarket.name)
       console.log('Current market not viable - manually added')
     }
@@ -225,22 +222,18 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     }
 
-    console.log('213')
     if (viableMarkets.includes('No response for current market')) {
-      console.log('216')
+
       viableMarkets.pop()
       return tick(wallet, goodMarketNames, currentMarket)
     }
 
     viableMarkets = await sortByArc(viableMarkets)
-    console.log('223')
     viableMarkets = await addEMA(viableMarkets)
-    console.log('225')
 
     if (currentMarket !== undefined) {
-      
+
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
-      console.log('226')
       currentMarket = currentMarketArray[0]
     }
     
@@ -283,22 +276,22 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         // wallet.highPrice     === collection.findOne({ key: 'highPrice'     })
       // }
 
-      console.log('Current market shape')
-      console.log(currentMarket.shape)
-      console.log('currentMarket.ema1')
-      console.log(currentMarket.ema1)
-      console.log('currentMarket.ema233')
-      console.log(currentMarket.ema233)
-      console.log('currentMarket.trend')
-      console.log(currentMarket.trend)
-      console.log('wallet.targetPrice')
-      console.log(wallet.targetPrice)
-      console.log('wallet.highPrice')
-      console.log(wallet.highPrice)
-      console.log('wallet.stopLossPrice')
-      console.log(wallet.stopLossPrice)
-      console.log('currentMarket.currentPrice')
-      console.log(currentMarket.currentPrice)
+      // console.log('Current market shape')
+      // console.log(currentMarket.shape)
+      // console.log('currentMarket.ema1')
+      // console.log(currentMarket.ema1)
+      // console.log('currentMarket.ema233')
+      // console.log(currentMarket.ema233)
+      // console.log('currentMarket.trend')
+      // console.log(currentMarket.trend)
+      // console.log('wallet.targetPrice')
+      // console.log(wallet.targetPrice)
+      // console.log('wallet.highPrice')
+      // console.log(wallet.highPrice)
+      // console.log('wallet.stopLossPrice')
+      // console.log(wallet.stopLossPrice)
+      // console.log('currentMarket.currentPrice')
+      // console.log(currentMarket.currentPrice)
   
       if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice > wallet.targetPrice && currentMarket.name !== bestMarket.name) {
 
@@ -327,14 +320,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
           
         console.log('Market Shape:  ' + wallet.stopLossPrice)
-        // console.log('Market Trend:  ' + currentMarket.trend)
-        // console.log('EMA1:          ' + currentMarket.ema1)
-        // console.log('EMA233:        ' + currentMarket.ema233)
         await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
       }
 
       } catch(error) {
-        console.log('Here')
         console.log(error.message)
       }
     }
@@ -342,7 +331,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
   } catch (error) {
 
-    console.log('there')
     console.log(error.message)
     tick(wallet, goodMarketNames, currentMarket)
   }
@@ -415,9 +403,6 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
       if (currentPrice > wallet.highPrice) { 
       
-        console.log('396')
-        console.log(`wallet.highPrice: ${wallet.highPrice}`)
-        console.log(`currentPrice: ${currentPrice}`)
         wallet.highPrice = currentPrice
         // await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
@@ -464,6 +449,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
       console.log('\n')
       console.log(`High Price - ${wallet.highPrice}`)
+      console.log(`Current Price - ${wallet.currencies[currency]['price']}`)
       console.log(`Target Price - ${wallet.targetPrice}`)
       console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
       console.log('\n')
@@ -511,7 +497,6 @@ async function getViableMarketNames(marketNames) {
 
     let symbolName = symbolNames[i]
     let marketName = marketNames[i]
-    let announcement = `Checking 24 hour volume of market ${i+1}/${n} - ${symbolName} - `
     let response = await checkVolumeAndMovement(symbolName)
 
     if (response.includes("Insufficient") || response === "No response") {
@@ -525,9 +510,7 @@ async function getViableMarketNames(marketNames) {
 
       voluminousMarketNames.push(marketName)
     }
-
-    // console.log(announcement + response)
-  }
+   }
   console.log('\n')
   return voluminousMarketNames
 
@@ -587,10 +570,6 @@ async function fetchAllHistory(marketNames, currentMarketName) {
         markets.push(`No response for current market`)
         return markets
 
-      } else if (response === 'No response') { 
-
-        // console.log(`No response for market ${i+1}/${n} - ${marketName}`)
-      
       } else {
 
         let symbolHistory = response
@@ -603,7 +582,6 @@ async function fetchAllHistory(marketNames, currentMarketName) {
         }
   
         symbolObject = await annotateData(symbolObject)
-        // console.log(`Fetching history of market ${i+1}/${n} - ${marketName}`)
         await returnArray.push(symbolObject)
 
       }
@@ -702,54 +680,33 @@ async function sortByArc(markets) {
 
       if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) {
          
-        // console.log(`lastPeriod['close'] (${lastPeriod['close']}) < thisPeriod['close'] (${thisPeriod['close']}) < nextPeriod['close'] (${nextPeriod['close']})`)
-
         if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close']) {
 
-          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
-
           markets[i].trend = 'up'
-          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])} = `)
           markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])
           markets[i].pointLow = t
-          // console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}\n`)
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointLow]['close']) {
 
-          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointLow]['close'] (${markets[i].history[markets[i].pointLow]['close']})`)
-
           markets[i].trend = 'down'
-          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point low (${markets[i].pointLow}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])} = `)
           markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])
           markets[i].pointLow = t
-          // console.log(`${markets[i].shape} ... New point low: ${markets[i].pointLow}\n`)
         }
-
       }
 
       if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) {
         
-        // console.log(`lastPeriod['close'] (${lastPeriod['close']}) > thisPeriod['close'] (${thisPeriod['close']}) > nextPeriod['close'] (${nextPeriod['close']})`)
-
         if (thisPeriod['open'] > markets[i].history[markets[i].pointHigh]['close']) {
 
-          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) > markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
-
           markets[i].trend = 'up'
-          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} + ${thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])} = `)
           markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])
           markets[i].pointHigh = t
-          // console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}\n`)
 
         } else if (thisPeriod['open'] < markets[i].history[markets[i].pointHigh]['close']) {
 
-          // console.log(`thisPeriod['open'] (${thisPeriod['open']}) < markets[i].history[markets[i].pointHigh]['close'] (${markets[i].history[markets[i].pointHigh]['close']})`)
-
           markets[i].trend = 'down'
-          // console.log(`Trending ${markets[i].trend} @ index ${t} vs point high (${markets[i].pointHigh}) ... Shape: ${markets[i].shape} - ${thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])} = `)
           markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])
           markets[i].pointHigh = t
-          // console.log(`${markets[i].shape} ... New point high: ${markets[i].pointHigh}\n`)
         }
       }
     }
@@ -950,10 +907,6 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
-        console.log('930')
-        console.log(`lastBuy.price: ${lastBuy.price}`)
-        console.log(`wallet.boughtPrice: ${wallet.boughtPrice}`)
-        console.log(`wallet.highPrice: ${wallet.highPrice}`)
         wallet.lowPrice = wallet.boughtPrice
         wallet.targetPrice = wallet.boughtPrice * (1 + (3 * fee))
         wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
@@ -966,11 +919,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
         // await dbInsert('highPrice', wallet.highPrice)
         wallet.boughtTime = lastBuy.timestamp
-        // console.log(baseVolume)
-        // console.log(baseVolume * (1 - fee))
-        // console.log(currentPrice)
         let netAsset = lastBuy.amount - lastBuy.fee.cost
-        
         let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.cost - (lastBuy.fee.cost * lastBuy.price)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
         wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
         await record(tradeReport)
