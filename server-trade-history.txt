@@ -666,3 +666,43 @@ Running at 7/25/2021, 13:35:29
 7/25/2021, 13:37:01 - Transaction - Bought 2.230767 DEGO @ 8.699 ($19.404037133)
 Wave Shape: 716161690016.3392  Target Price - 8.725096999999998
 
+
+ ---------- 
+
+
+Running at 7/25/2021, 13:55:49
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/25/2021, 13:57:16 - Transaction - Selling 2.230767 DEGO @ 8.435 ($18.816519645000003) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+7/25/2021, 13:57:55 - Transaction - Bought 56.573370000000004 TLM @ 0.332 ($18.78235884)
+Wave Shape: 845835242464.9646  Target Price - 0.33299599999999996
+
+Target price: 0.33299599999999996
+High Price: 0.3407
+Bought Price: 0.332
+Stop Loss Price: 0.25896
+Low Price: 0.332
+7/25/2021, 14:02:44 - Transaction - Selling 56.57337 TLM @ 0.3387 ($19.161400419) [Target price reached - switching market]
+High Price: 0.3407 ... Low Price: 0.332
+Target price: 0.3406188
+High Price: 0.3402
+Bought Price: 0.3396
+Stop Loss Price: 0.264888
+Low Price: 0.3396
+7/25/2021, 14:06:04 - Transaction - Selling 56.30701 TLM @ 0.3413 ($19.217582513) [Target price reached - switching market]
+High Price: 0.3402 ... Low Price: 0.3396
+7/25/2021, 14:06:40 - Transaction - Bought 56.25369 TLM @ 0.3409 ($19.176882921)
+Wave Shape: 822399485144.9904  Target Price - 0.34192269999999997
+
+Target price: 0.34192269999999997
+High Price: 0.3489
+Bought Price: 0.3409
+Stop Loss Price: 0.26590199999999997
+Low Price: 0.3409
+7/25/2021, 14:11:59 - Transaction - Selling 56.2607 TLM @ 0.3454 ($19.43244578) [Target price reached - switching market]
+High Price: 0.3489 ... Low Price: 0.3409

@@ -201,7 +201,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
-    console.log(`Fetching overview\n`)
+    console.log(`Fetching overview`)
     let viableMarketNames = await getViableMarketNames(goodMarketNames)
     
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
@@ -253,7 +253,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
           let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
-          currentMarket = response['market']
+          // currentMarket = response['market']
           wallet = response['wallet']
 
         } else {
@@ -295,8 +295,11 @@ async function tick(wallet, goodMarketNames, currentMarket) {
   
       if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice > wallet.targetPrice && currentMarket.name !== bestMarket.name) {
 
-        console.log('Current Price: ' + currentMarket.currentPrice)
-        console.log('Target Price:  ' + wallet.targetPrice)
+        console.log('Current Price:  ' + currentMarket.currentPrice)
+        console.log('Target Price:   ' + wallet.targetPrice)
+        console.log('Current Market: ' + currentMarket.name)
+        console.log('Next market:    ' + bestMarket.name)
+
         await liveSellOrder(wallet, currentMarket, 'Target price reached - switching market', goodMarketNames, currentMarket.currentPrice)
         await switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
       } else
@@ -311,7 +314,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
       if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined || wallet.highPrice === undefined) && activeCurrency !== 'USDT') {
 
-        console.log('Current Price: ' + currentMarket.currentPrice)
+        console.log('High Price: ' + wallet.highPrice)
         console.log('Target Price:  ' + wallet.targetPrice)
         console.log('Stop Loss Price: ' + wallet.stopLossPrice)
         await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
@@ -319,7 +322,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       else 
       if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
           
-        console.log('Market Shape:  ' + wallet.stopLossPrice)
+        console.log('Market Shape:  ' + currentMarket.shape)
         await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
       }
 
@@ -903,8 +906,6 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       if (response !== undefined) {
 
         let lastBuy = response
-
-
         wallet.boughtPrice = lastBuy.price
         wallet.highPrice = wallet.boughtPrice
         wallet.lowPrice = wallet.boughtPrice
@@ -920,7 +921,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         // await dbInsert('highPrice', wallet.highPrice)
         wallet.boughtTime = lastBuy.timestamp
         let netAsset = lastBuy.amount - lastBuy.fee.cost
-        let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.cost - (lastBuy.fee.cost * lastBuy.price)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+        let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
         wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
         await record(tradeReport)
         tradeReport = ''
