@@ -614,3 +614,16 @@ High Price: 1.6914 ... Low Price: 0.6642
 
 Running at 7/24/2021, 18:01:17
 
+
+ ---------- 
+
+
+Running at 25/07/2021, 08:30:58
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+25/07/2021, 08:32:50 - Transaction - Selling 0.406208 ETC @ 49.135 ($19.95903008) [Price information undefined]
+High Price: undefined ... Low Price: undefined

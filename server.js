@@ -151,13 +151,9 @@ async function liveWallet(wallet, goodMarketNames, currentMarket) {
       let currency = currencyArray[i]
       let dollarMarket = `${currency}/USDT`
   
-      if (
-        balancesRaw.free[currency] > 0 && (currency === 'USDT' || 
-        goodMarketNames.includes(dollarMarket))
-      ) {
-        wallet['currencies'][currency] = {
-          'quantity': balancesRaw.free[currency],
-        }
+      if (balancesRaw.free[currency] > 0) {
+
+        wallet['currencies'][currency] = { 'quantity': balancesRaw.free[currency] }
       }
     }
     return wallet
