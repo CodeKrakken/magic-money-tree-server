@@ -946,7 +946,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
 
 
-function doubleCheck(market) {
+async function doubleCheck(market) {
   
   let marketArray = await fetchAllHistory([market.name], market.name)
   if (marketArray.includes('No response for current market')) {
