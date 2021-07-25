@@ -752,3 +752,151 @@ Running at 7/25/2021, 14:45:30
 
 Running at 7/25/2021, 14:45:39
 
+
+ ---------- 
+
+
+Running at 7/25/2021, 15:19:05
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/25/2021, 15:21:15 - Transaction - Selling 839.16 SUN @ 0.02426 ($20.3580216) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+7/25/2021, 15:22:52 - Transaction - Bought 836.163 SUN @ 0.02431 ($20.347469999999998)
+Wave Shape: 352081687548.1165  Target Price - 0.024382929999999997
+
+Target price: 0.024382929999999997
+High Price: 0.02549
+Bought Price: 0.02431
+Stop Loss Price: 0.0189618
+Low Price: 0.02426
+7/25/2021, 15:36:08 - Transaction - Selling 836.323 SUN @ 0.02501 ($20.91643823) [Target price reached - switching market]
+High Price: 0.02549 ... Low Price: 0.02426
+
+ ---------- 
+
+
+Running at 7/25/2021, 16:02:15
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/25/2021, 16:03:47 - Transaction - Selling 832.49 SUN @ 0.02443 ($20.3377307) [Target price reached - switching market]
+High Price: undefined ... Low Price: undefined
+Target price: 0.024523349999999996
+High Price: 0.02445
+Bought Price: 0.02445
+Stop Loss Price: 0.019071
+Low Price: 0.02444
+7/25/2021, 16:05:49 - Transaction - Selling 830.659 SUN @ 0.02452 ($20.36775868) [Target price reached - switching market]
+High Price: 0.02445 ... Low Price: 0.02444
+7/25/2021, 16:07:58 - Transaction - Bought 61.75818 TLM @ 0.3289 ($20.332598)
+Wave Shape: 609768087245.2052  Target Price - 0.3298867
+
+Target price: 0.3298867
+High Price: 0.329
+Bought Price: 0.3289
+Stop Loss Price: 0.25654200000000005
+Low Price: 0.3289
+7/25/2021, 16:08:37 - Transaction - Selling 61.75888 TLM @ 0.3286 ($20.293967968) [Target price reached - switching market]
+High Price: 0.329 ... Low Price: 0.3289
+Target price: 0.024904489999999998
+High Price: 0.02487
+Bought Price: 0.02483
+Stop Loss Price: 0.019367400000000003
+Low Price: 0.02483
+7/25/2021, 16:11:33 - Transaction - Selling 815.843 SUN @ 0.02499 ($20.387916569999998) [Target price reached - switching market]
+High Price: 0.02487 ... Low Price: 0.02483
+7/25/2021, 16:12:13 - Transaction - Bought 812.187 SUN @ 0.02502 ($20.341260000000002)
+Wave Shape: 379042468753.95135  Target Price - 0.02509506
+
+
+ ---------- 
+
+
+Running at 7/25/2021, 16:18:57
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+7/25/2021, 16:21:20 - Transaction - Selling 813.03 SUN @ 0.02441 ($19.8460623) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: 1.2893565
+High Price: 1.29
+Bought Price: 1.2855
+Stop Loss Price: 1.00269
+Low Price: 1.2813
+7/25/2021, 16:34:42 - Transaction - Selling 15.41457 ENJ @ 1.2911 ($19.901751327) [Target price reached - switching market]
+High Price: 1.29 ... Low Price: 1.2813
+7/25/2021, 16:35:25 - Transaction - Bought 62.247690000000006 TLM @ 0.3191 ($19.883121)
+Wave Shape: 432278355638.25354  Target Price - 0.32005729999999993
+
+Target price: 0.32005729999999993
+High Price: 0.3196
+Bought Price: 0.3191
+Stop Loss Price: 0.248898
+Low Price: 0.3191
+7/25/2021, 16:36:08 - Transaction - Selling 62.25657 TLM @ 0.3206 ($19.959456342) [Target price reached - switching market]
+High Price: 0.3196 ... Low Price: 0.3191
+Target price: 6.283794999999999
+High Price: 6.265
+Bought Price: 6.265
+Stop Loss Price: 4.8867
+Low Price: 6.265
+7/25/2021, 16:38:14 - Transaction - Selling 3.178818 THETA @ 6.29 ($19.99476522) [Target price reached - switching market]
+High Price: 6.265 ... Low Price: 6.265
+Target price: 0.32376839999999996
+High Price: 0.3234
+Bought Price: 0.3228
+Stop Loss Price: 0.251784
+Low Price: 0.3203
+7/25/2021, 16:44:45 - Transaction - Selling 61.8147 TLM @ 0.324 ($20.0279628) [Target price reached - switching market]
+High Price: 0.3234 ... Low Price: 0.3203
+Target price: 0.33078939999999996
+High Price: 0.3299
+Bought Price: 0.3298
+Stop Loss Price: 0.257244
+Low Price: 0.3298
+7/25/2021, 16:48:17 - Transaction - Selling 60.60404 TLM @ 0.3308 ($20.047816431999998) [Target price reached - switching market]
+High Price: 0.3299 ... Low Price: 0.3298
+7/25/2021, 16:49:06 - Transaction - Bought 59.88006 TLM @ 0.3341 ($20.025954)
+Wave Shape: 521648943813.9334  Target Price - 0.33510229999999996
+
+Target price: 0.33510229999999996
+High Price: 0.3386
+Bought Price: 0.3341
+Stop Loss Price: 0.260598
+Low Price: 0.3253
+7/25/2021, 17:07:42 - Transaction - Selling 59.8841 TLM @ 0.3355 ($20.09111555) [Target price reached - switching market]
+High Price: 0.3386 ... Low Price: 0.3253
+Target price: 0.34021759999999995
+High Price: 0.3421
+Bought Price: 0.3392
+Stop Loss Price: 0.26457600000000003
+Low Price: 0.3392
+7/25/2021, 17:10:03 - Transaction - Selling 59.13491 TLM @ 0.3421 ($20.230052711) [Target price reached - switching market]
+High Price: 0.3421 ... Low Price: 0.3392
+Target price: 0.34262479999999995
+High Price: 0.3475
+Bought Price: 0.3416
+Stop Loss Price: 0.266448
+Low Price: 0.3375
+7/25/2021, 17:20:45 - Transaction - Selling 59.09576 TLM @ 0.3464 ($20.470771264) [Target price reached - switching market]
+High Price: 0.3475 ... Low Price: 0.3375
+7/25/2021, 17:22:11 - Transaction - Bought 58.87107 TLM @ 0.347 ($20.44871)
+Wave Shape: 608992139299.448  Target Price - 0.34804099999999993
+
+Target price: 0.34804099999999993
+High Price: 0.3492
+Bought Price: 0.347
+Stop Loss Price: 0.27066
+Low Price: 0.3434
+7/25/2021, 17:30:57 - Transaction - Selling 58.87683 TLM @ 0.3483 ($20.506799889) [Target price reached - switching market]
+High Price: 0.3492 ... Low Price: 0.3434

@@ -201,7 +201,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
     console.log(`Fetching overview`)
+    console.log(`goodMarketNames length: ${goodMarketNames.length}`)
     let viableMarketNames = await getViableMarketNames(goodMarketNames)
+    console.log(`goodMarketNames length: ${goodMarketNames.length}`)
     
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
     
@@ -240,6 +242,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     let bulls = getBulls(viableMarkets)
     console.log('\n')
     let bestMarket = bulls[0]
+    let bullNames
+    bulls.forEach(bull => { bullNames.push(bull.name) })
 
     if (activeCurrency === 'USDT') {
 
@@ -291,8 +295,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // console.log(wallet.stopLossPrice)
       // console.log('currentMarket.currentPrice')
       // console.log(currentMarket.currentPrice)
+      console.log('bullNames')
+      console.log(bullNames)
   
-      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice > wallet.targetPrice && currentMarket.name !== bestMarket.name) {
+      if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
         console.log('Current Price:  ' + currentMarket.currentPrice)
         console.log('Target Price:   ' + wallet.targetPrice)
@@ -300,7 +306,19 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         console.log('Next market:    ' + bestMarket.name)
 
         await liveSellOrder(wallet, currentMarket, 'Target price reached - switching market', goodMarketNames, currentMarket.currentPrice)
-        await switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
+        await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
+      } else
+
+      if (currentMarket.currentPrice !== undefined && !bullNames.includes(currentMarket.name) && currentMarket.currentPrice < wallet.targetPrice ) { 
+
+        console.log('Current Price:  ' + currentMarket.currentPrice)
+        console.log('Target Price:   ' + wallet.targetPrice)
+        console.log('Current Market: ' + currentMarket.name)
+        console.log('Bull Names: ')
+        console.log(bullNames)
+
+        await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
+        await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       } else
 
       if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
@@ -501,18 +519,19 @@ async function getViableMarketNames(marketNames) {
     let marketName = marketNames[i]
     let response = await checkVolumeAndMovement(symbolName)
 
-    if (response.includes("Insufficient") || response === "No response") {
-      
-      symbolNames.splice(i, 1)
-      marketNames.splice(i, 1)
-      i--
-      n--
-
+    if (!response.includes("Insufficient") && response !== "No response") {
+    
+      voluminousMarketNames.push(marketName)
     } else {
 
-      voluminousMarketNames.push(marketName)
+      // delete this else section if disappearing markets problems recurs
+      marketNames.splice(i, 1)
+      symbolNames.splice(i, 1)
+      i--
+      n--
     }
-   }
+  }
+
   console.log('\n')
   return voluminousMarketNames
 
