@@ -64,7 +64,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78 // 0.78442806076854334227
 const minimumBuy = 10
-// const timeOut = 8 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
+const timeOut = 10 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
 
@@ -295,8 +295,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // console.log(wallet.stopLossPrice)
       // console.log('currentMarket.currentPrice')
       // console.log(currentMarket.currentPrice)
-      console.log('bullNames')
-      console.log(bullNames)
+      let currentTime = Date.now()
+      console.log(`Time now: ${currentTime}`)
   
       if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
@@ -309,25 +309,36 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       } else
 
-      if (currentMarket.currentPrice !== undefined && !bullNames.includes(currentMarket.name) && currentMarket.currentPrice < wallet.targetPrice ) { 
+      // if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && ) { 
 
-        console.log('Current Price:  ' + currentMarket.currentPrice)
-        console.log('Target Price:   ' + wallet.targetPrice)
-        console.log('Current Market: ' + currentMarket.name)
-        console.log('Bull Names: ')
-        console.log(bullNames)
+      //   console.log('Current Price:  ' + currentMarket.currentPrice)
+      //   console.log('Target Price:   ' + wallet.targetPrice)
+      //   console.log('Current Market: ' + currentMarket.name)
+      //   console.log('Bull Names: ')
+      //   console.log(bullNames)
 
-        await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
-        await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
-      } else
+      //   await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
+      //   await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
+      // } else
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
+      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && wallet.boughtTime + timeOut > currentTime) {
         
         console.log('Current Price: ' + currentMarket.currentPrice)
         console.log('Target Price:  ' + wallet.targetPrice)
-        console.log('Stop Loss Price: ' + wallet.stopLossPrice)
-        await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
+        console.log('Bought Time:   ' + wallet.boughtTime)
+        console.log('Timeout:       ' + timeOut)
+        console.log('Current Time:  ' + wallet.currentTime)
+        await liveSellOrder(wallet, currentMarket, 'Timed out - loss', goodMarketNames, currentMarket.currentPrice)
       } else
+
+
+      // if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
+        
+      //   console.log('Current Price: ' + currentMarket.currentPrice)
+      //   console.log('Target Price:  ' + wallet.targetPrice)
+      //   console.log('Stop Loss Price: ' + wallet.stopLossPrice)
+      //   await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
+      // } else
 
       if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined || wallet.highPrice === undefined) && activeCurrency !== 'USDT') {
 
