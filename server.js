@@ -257,8 +257,11 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
           let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
           // currentMarket = response['market']
-          // wallet = response['wallet']
+          wallet = response['wallet']
 
+        } else {
+
+          console.log('Insufficient funds')
         }
       }
     } else {
@@ -369,7 +372,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
 async function switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency) {
 
-  wallet = await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
+  wallet = refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
 
   if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
@@ -378,7 +381,7 @@ async function switchMarket(wallet, market, goodMarketNames, currentMarket, acti
 
   } else {
 
-    await switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
+    switchMarket(wallet, market, goodMarketNames, currentMarket)
   }
 }
 
@@ -460,7 +463,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
     if (currency === 'USDT') {
 
-      dollarVolume = wallet.currencies[currency]['quantity']
+      dollarVolume = dollarVolume = wallet.currencies[currency]['quantity']
       wallet.currencies[currency]['price'] = 1
 
     } else {
@@ -814,10 +817,10 @@ function getBulls(markets) {
   let bulls = markets.filter(market => 
     market.shape > 0 
     && 
-    // market.trend === 'up'
-    // && 
-    // market.pointLow > market.pointHigh
-    // &&
+    market.trend === 'up'
+    && 
+    market.pointLow > market.pointHigh
+    &&
     market.ema1 > market.ema233
   )
   return bulls
@@ -879,7 +882,7 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket)
       await dbInsert('highPrice', wallet.highPrice)
 
       wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Transaction - Buying ${wallet.currencies[asset]['quantity']} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      let tradeReport = `${timeNow()} - Transaction - Bought ${wallet.currencies[asset]['quantity']} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
       await record(tradeReport)
       tradeReport = ''
       
@@ -941,12 +944,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           // await dbInsert('stopLossPrice', wallet.stopLossPrice)
           // await dbInsert('highPrice', wallet.highPrice)
           wallet.boughtTime = lastBuy.timestamp
-          let netAsset = lastBuy.amount
-          if (lastBuy.fee === undefined) {
-            netAsset *= (1 - fee)
-          } else {
-            netAsset -= lastBuy.fee.cost
-          }
+          let netAsset = lastBuy.amount - lastBuy.fee.cost
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
           wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
           await record(tradeReport)
