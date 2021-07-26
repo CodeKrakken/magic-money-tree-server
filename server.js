@@ -318,10 +318,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       //   await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       // } else
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && wallet.boughtTime + timeOut < currentTime) {
+      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.boughtPrice && wallet.boughtTime + timeOut < currentTime) {
         
         console.log('Current Price: ' + currentMarket.currentPrice)
-        console.log('Target Price:  ' + wallet.targetPrice)
+        console.log('Target Price:  ' + wallet.boughtPrice)
         console.log('Bought Time:   ' + wallet.boughtTime)
         console.log('Timeout:       ' + timeOut)
         console.log('Current Time:  ' + currentTime)
