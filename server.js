@@ -1053,8 +1053,8 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
 }
 
 app.listen(port);
-console.log(Date.now())
-// run();
+
+run();
 
 
 
