@@ -257,11 +257,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
           let response = await liveBuyOrder(wallet, bestMarket, goodMarketNames, currentMarket)
           // currentMarket = response['market']
-          wallet = response['wallet']
+          // wallet = response['wallet']
 
-        } else {
-
-          console.log('Insufficient funds')
         }
       }
     } else {
