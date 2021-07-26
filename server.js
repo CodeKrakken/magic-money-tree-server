@@ -460,7 +460,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
     if (currency === 'USDT') {
 
-      dollarVolume = dollarVolume = wallet.currencies[currency]['quantity']
+      dollarVolume = wallet.currencies[currency]['quantity']
       wallet.currencies[currency]['price'] = 1
 
     } else {
@@ -941,7 +941,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           // await dbInsert('stopLossPrice', wallet.stopLossPrice)
           // await dbInsert('highPrice', wallet.highPrice)
           wallet.boughtTime = lastBuy.timestamp
-          let netAsset = lastBuy.amount - lastBuy.fee.cost
+          let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
           wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
           await record(tradeReport)
