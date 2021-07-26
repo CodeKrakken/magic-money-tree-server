@@ -306,13 +306,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       } else
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.ema1 < currentMarket.ema233 && currentMarket.currentPrice < wallet.targetPrice ) { 
+      if (currentMarket.currentPrice !== undefined && !bullNames.includes(currentMarket.name) && currentMarket.currentPrice < wallet.targetPrice ) { 
 
         console.log('Current Price:  ' + currentMarket.currentPrice)
         console.log('Target Price:   ' + wallet.targetPrice)
         console.log('Current Market: ' + currentMarket.name)
-        console.log('EMA1:           ' + currentMarket.ema1)
-        console.log('EMA233:         ' + currentMarket.ema233)
+        console.log('Bull Names: ')
+        console.log(bullNames)
 
         await liveSellOrder(wallet, currentMarket, 'Current market not viable - switching market', goodMarketNames, currentMarket.currentPrice)
         await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
@@ -740,7 +740,6 @@ async function addEMA(markets) {
       let market = markets[i]
       
       market.ema1 = ema(market.history, 1, 'close')
-      market.ema144 = ema(market.history, 144, 'close')
       market.ema233 = ema(market.history, 233, 'close')
     }
     return markets
@@ -808,9 +807,7 @@ function getBulls(markets) {
     // && 
     // market.pointLow > market.pointHigh
     // &&
-    market.ema1 > market.ema144
-    &&
-    market.ema144 > market.ema233
+    market.ema1 > market.ema233
   )
   return bulls
 }
