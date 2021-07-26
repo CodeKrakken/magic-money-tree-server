@@ -321,13 +321,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       //   await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       // } else
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && wallet.boughtTime + timeOut > currentTime) {
+      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && wallet.boughtTime + timeOut < currentTime) {
         
         console.log('Current Price: ' + currentMarket.currentPrice)
         console.log('Target Price:  ' + wallet.targetPrice)
         console.log('Bought Time:   ' + wallet.boughtTime)
         console.log('Timeout:       ' + timeOut)
-        console.log('Current Time:  ' + wallet.currentTime)
+        console.log('Current Time:  ' + currentTime)
         await liveSellOrder(wallet, currentMarket, 'Timed out - loss', goodMarketNames, currentMarket.currentPrice)
       } else
 
@@ -1053,8 +1053,8 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
 }
 
 app.listen(port);
-
-run();
+console.log(Date.now())
+// run();
 
 
 
