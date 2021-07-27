@@ -371,7 +371,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 async function switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency) {
 
   wallet = await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
-
+  console.log('Wallet:')
+  console.log(wallet)
   if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
     // Double check market quality in case sell order has been long - but only prospective market for speed
