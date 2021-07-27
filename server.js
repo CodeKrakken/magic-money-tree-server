@@ -64,7 +64,7 @@ const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78 // 0.78442806076854334227
 const minimumBuy = 10
-const timeOut = 10 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
+const timeOut = 150 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
 

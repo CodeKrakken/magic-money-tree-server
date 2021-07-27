@@ -294,35 +294,42 @@ Jul 26 04:19:19 magic-money-tree app/web.1 7/26/2021, 11:19:18 AM - Transaction 
 
 Using 10 minute timeout
 
-Jul 26 06:38:08 magic-money-tree app/web.1 7/26/2021, 1:38:08 PM - Transaction - Selling 2.7944 KAVA @ 5.3386 ($14.91818384) [Timed out - loss] 
-Target price: 5.4191086999999
+Jul 26 08:55:47 magic-money-tree app/web.1 7/26/2021, 4:55:46 PM - Transaction - Selling 589.815 SUN @ 0.02482 ($14.6392083) [Timed out - loss]
+Target price: 0.024844309999999998 ... Bought at 4:44 PM ... Profit at 5:11 PM
+37 min
 
-Jul 26 07:19:28 magic-money-tree app/web.1 7/26/2021, 2:19:27 PM - Transaction - Selling 0.0454545 AAVE @ 327.1 ($14.86816695) [Timed out - loss]
-Target price: 330.25780999999995
+Jul 26 06:38:08 magic-money-tree app/web.1 7/26/2021, 2:38:08 PM - Transaction - Selling 2.7944 KAVA @ 5.3386 ($14.91818384) [Timed out - loss] 
+Target price: 5.4191086999999 ... Bought at 2:24 PM ... Profit at 3:08 PM
+44 min
 
-Jul 26 07:31:47 magic-money-tree app/web.1 7/26/2021, 2:31:46 PM - Transaction - Selling 3.67632 LIT @ 3.9983 ($14.699030256) [Timed out - loss]
-Target price: 4.035068999999999
+Jul 26 07:45:50 magic-money-tree app/web.1 7/26/2021, 3:45:49 PM - Transaction - Selling 594.405 SUN @ 0.02459 ($14.61641895) [Timed out - loss]
+Target price: 0.02476407 ... Bought at 3:35 PM ... Profit at 4:32 PM
+57 min
 
-Jul 26 07:45:50 magic-money-tree app/web.1 7/26/2021, 2:45:49 PM - Transaction - Selling 594.405 SUN @ 0.02459 ($14.61641895) [Timed out - loss]
-Target price: 0.02476407
+Jul 26 07:31:47 magic-money-tree app/web.1 7/26/2021, 3:31:46 PM - Transaction - Selling 3.67632 LIT @ 3.9983 ($14.699030256) [Timed out - loss]
+Target price: 4.035068999999999 ... Bought at 3:20 PM ... Profit at 4:30 PM
+60 min
 
-Jul 26 08:42:27 magic-money-tree app/web.1 7/26/2021, 3:42:26 PM - Transaction - Selling 3.6227 LIT @ 4.0343 ($14.61505861) [Timed out - loss]
-Target price: 4.0399837
+Jul 26 09:40:25 magic-money-tree app/web.1 7/26/2021, 5:40:24 PM - Transaction - Selling 3.217432 RUNE @ 4.35 ($13.9958292) [Timed out - loss]
+Target price: 4.387121999999999 ... Bought at 5:29 PM ... Profit at 6:41 PM
+72 min
 
-Jul 26 08:55:47 magic-money-tree app/web.1 7/26/2021, 3:55:46 PM - Transaction - Selling 589.815 SUN @ 0.02482 ($14.6392083) [Timed out - loss]
-Target price: 0.024844309999999998
+Jul 26 10:26:46 magic-money-tree app/web.1 7/26/2021, 6:26:45 PM - Transaction - Selling 1.35526 SNX @ 10.28 ($13.932072799999998) [Timed out - loss]
+Target price: 10.404118999999998 ... Bought at 6:16 PM ... Profit at 8:20 PM
+124 min
 
-Jul 26 09:09:31 magic-money-tree app/web.1 7/26/2021, 4:09:30 PM - Transaction - Selling 3.57912 LIT @ 4.0433 ($14.471455896000002) [Timed out - loss]
-Target price: 4.093844799999999
+Jul 26 07:19:28 magic-money-tree app/web.1 7/26/2021, 3:19:27 PM - Transaction - Selling 0.0454545 AAVE @ 327.1 ($14.86816695) [Timed out - loss]
+Target price: 330.25780999999995 ... Bought at 3:08 PM ... Profit at 5:26 PM
+138 min
 
-Jul 26 09:22:54 magic-money-tree app/web.1 7/26/2021, 4:22:53 PM - Transaction - Selling 1.479519 DEGO @ 9.404 ($13.913396676) [Timed out - loss]
-Target price: 9.761195999999998
+Jul 26 09:22:54 magic-money-tree app/web.1 7/26/2021, 5:22:53 PM - Transaction - Selling 1.479519 DEGO @ 9.404 ($13.913396676) [Timed out - loss]
+Target price: 9.761195999999998 ... Bought at 5:11 PM ... Profit at 9:32 AM
+18 hr 21 min
 
-Jul 26 09:40:25 magic-money-tree app/web.1 7/26/2021, 4:40:24 PM - Transaction - Selling 3.217432 RUNE @ 4.35 ($13.9958292) [Timed out - loss]
-Target price: 4.387121999999999
+Jul 26 09:09:31 magic-money-tree app/web.1 7/26/2021, 5:09:30 PM - Transaction - Selling 3.57912 LIT @ 4.0433 ($14.471455896000002) [Timed out - loss]
+Target price: 4.093844799999999 ... Bought at 4:58 PM ... Yet to profit
+Infinity min
 
-Jul 26 10:26:46 magic-money-tree app/web.1 7/26/2021, 5:26:45 PM - Transaction - Selling 1.35526 SNX @ 10.28 ($13.932072799999998) [Timed out - loss]
-Target price: 10.404118999999998
-
-Jul 26 10:53:17 magic-money-tree app/web.1 7/26/2021, 5:53:16 PM - Transaction - Selling 3.185032 RUNE @ 4.335 ($13.80711372) [Timed out - loss]
-Target price: 4.400160999999999
+Jul 26 10:53:17 magic-money-tree app/web.1 7/26/2021, 6:53:16 PM - Transaction - Selling 3.185032 RUNE @ 4.335 ($13.80711372) [Timed out - loss]
+Target price: 4.400160999999999 ... Bought at 6:41 PM - Yet to profit
+Infinity min
