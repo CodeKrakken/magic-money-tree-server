@@ -702,35 +702,31 @@ async function sortByArc(markets) {
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
 
-      if (thisPeriod['close'] < lastPeriod['close'] && thisPeriod['close'] < nextPeriod['close']) {
+      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) {
          
-        if (thisPeriod['open'] > markets[i].history[markets[i].pointLow]['close']) {
+        if (thisPeriod['low'] > markets[i].history[markets[i].pointLow]['low']) {
 
-          markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointLow]['close']) / thisPeriod['open'])
-          markets[i].pointLow = t
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].history[markets[i].pointLow]['low']) / thisPeriod['low'])
 
-        } else if (thisPeriod['open'] < markets[i].history[markets[i].pointLow]['close']) {
+        } else if (thisPeriod['low'] < markets[i].history[markets[i].pointLow]['low']) {
 
           markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointLow]['close'])
           markets[i].pointLow = t
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['low'] - thisPeriod['low']) / markets[i].history[markets[i].pointLow]['low'])
         }
       }
 
-      if (thisPeriod['close'] > lastPeriod['close'] && thisPeriod['close'] > nextPeriod['close']) {
+      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) {
         
-        if (thisPeriod['open'] > markets[i].history[markets[i].pointHigh]['close']) {
+        if (thisPeriod['high'] > markets[i].history[markets[i].pointHigh]['high']) {
 
           markets[i].trend = 'up'
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['open'] - markets[i].history[markets[i].pointHigh]['close']) / thisPeriod['open'])
           markets[i].pointHigh = t
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].history[markets[i].pointHigh]['high']) / thisPeriod['high'])
 
-        } else if (thisPeriod['open'] < markets[i].history[markets[i].pointHigh]['close']) {
+        } else if (thisPeriod['high'] < markets[i].history[markets[i].pointHigh]['high']) {
 
-          markets[i].trend = 'down'
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['close'] - thisPeriod['open']) / markets[i].history[markets[i].pointHigh]['close'])
-          markets[i].pointHigh = t
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['high'] - thisPeriod['high']) / markets[i].history[markets[i].pointHigh]['high'])
         }
       }
     }
