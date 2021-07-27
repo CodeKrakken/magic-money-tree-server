@@ -370,7 +370,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
 async function switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency) {
 
-  wallet = await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
+  wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
   console.log('Wallet:')
   console.log(wallet)
   if (wallet.currencies[activeCurrency]['quantity'] > 10) {
