@@ -345,6 +345,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
       } 
       else 
+      
       if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
           
         console.log('Market Shape:  ' + currentMarket.shape)
