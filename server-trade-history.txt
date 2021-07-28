@@ -900,3 +900,9 @@ Stop Loss Price: 0.27066
 Low Price: 0.3434
 7/25/2021, 17:30:57 - Transaction - Selling 58.87683 TLM @ 0.3483 ($20.506799889) [Target price reached - switching market]
 High Price: 0.3492 ... Low Price: 0.3434
+
+ ---------- 
+
+
+Running at 7/28/2021, 17:04:29
+

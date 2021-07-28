@@ -157,33 +157,44 @@ async function sortByArc(markets) {
       console.log(`Trend: ${markets[i].trend}`)
       console.log('\n')
 
-      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) {
+
+      if (thisPeriod['close'] > thisPeriod['open']) {
+
+        markets[i].shape += 1
+      
+      } else if (thisPeriod['close'] < thisPeriod['open']) {
+
+        markets[i].shape -= 1
+
+      }
+
+  //     if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) {
          
-        if (thisPeriod['low'] > markets[i].history[markets[i].pointLow]['low']) {
+  //       if (thisPeriod['low'] > markets[i].history[markets[i].pointLow]['low']) {
 
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].history[markets[i].pointLow]['low']) / thisPeriod['low'])
+  //         markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].history[markets[i].pointLow]['low']) / thisPeriod['low'])
 
-        } else if (thisPeriod['low'] < markets[i].history[markets[i].pointLow]['low']) {
+  //       } else if (thisPeriod['low'] < markets[i].history[markets[i].pointLow]['low']) {
 
-          markets[i].trend = 'down'
-          markets[i].pointLow = t
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['low'] - thisPeriod['low']) / markets[i].history[markets[i].pointLow]['low'])
-        }
-      }
+  //         markets[i].trend = 'down'
+  //         markets[i].pointLow = t
+  //         markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['low'] - thisPeriod['low']) / markets[i].history[markets[i].pointLow]['low'])
+  //       }
+  //     }
 
-      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) {
+  //     if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) {
         
-        if (thisPeriod['high'] > markets[i].history[markets[i].pointHigh]['high']) {
+  //       if (thisPeriod['high'] > markets[i].history[markets[i].pointHigh]['high']) {
 
-          markets[i].trend = 'up'
-          markets[i].pointHigh = t
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].history[markets[i].pointHigh]['high']) / thisPeriod['high'])
+  //         markets[i].trend = 'up'
+  //         markets[i].pointHigh = t
+  //         markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].history[markets[i].pointHigh]['high']) / thisPeriod['high'])
 
-        } else if (thisPeriod['high'] < markets[i].history[markets[i].pointHigh]['high']) {
+  //       } else if (thisPeriod['high'] < markets[i].history[markets[i].pointHigh]['high']) {
 
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['high'] - thisPeriod['high']) / markets[i].history[markets[i].pointHigh]['high'])
-        }
-      }
+  //         markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['high'] - thisPeriod['high']) / markets[i].history[markets[i].pointHigh]['high'])
+  //       }
+  //     }
     }
   }
   return markets.sort((a, b) => b.shape - a.shape)
@@ -193,7 +204,7 @@ async function sortByArc(markets) {
 
 function newArc(markets) {
 
-  
+
 
 }
 
