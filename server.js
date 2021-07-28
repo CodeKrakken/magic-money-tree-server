@@ -318,15 +318,15 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       //   await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
       // } else
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.boughtPrice && wallet.boughtTime + timeOut < currentTime) {
+      // if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.boughtPrice && wallet.boughtTime + timeOut < currentTime) {
         
-        console.log('Current Price: ' + currentMarket.currentPrice)
-        console.log('Target Price:  ' + wallet.boughtPrice)
-        console.log('Bought Time:   ' + wallet.boughtTime)
-        console.log('Timeout:       ' + timeOut)
-        console.log('Current Time:  ' + currentTime)
-        await liveSellOrder(wallet, currentMarket, 'Timed out - loss', goodMarketNames, currentMarket.currentPrice)
-      } else
+      //   console.log('Current Price: ' + currentMarket.currentPrice)
+      //   console.log('Target Price:  ' + wallet.boughtPrice)
+      //   console.log('Bought Time:   ' + wallet.boughtTime)
+      //   console.log('Timeout:       ' + timeOut)
+      //   console.log('Current Time:  ' + currentTime)
+      //   await liveSellOrder(wallet, currentMarket, 'Timed out - loss', goodMarketNames, currentMarket.currentPrice)
+      // } else
 
 
       // if (currentMarket.currentPrice !== undefined && currentMarket.currentPrice < wallet.targetPrice && currentMarket.currentPrice < wallet.stopLossPrice) {
@@ -353,6 +353,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // }
 
       } catch(error) {
+
         console.log(error)
       }
     }
