@@ -333,3 +333,7 @@ Infinity min
 Jul 26 10:53:17 magic-money-tree app/web.1 7/26/2021, 6:53:16 PM - Transaction - Selling 3.185032 RUNE @ 4.335 ($13.80711372) [Timed out - loss]
 Target price: 4.400160999999999 ... Bought at 6:41 PM - Yet to profit
 Infinity min
+
+
+
+

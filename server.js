@@ -344,13 +344,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         console.log('Stop Loss Price: ' + wallet.stopLossPrice)
         await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
       } 
-      else 
+      // else 
 
-      if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
+      // if (currentMarket.currentPrice !== undefined && currentMarket.shape < 0) { // || currentMarket.trend === 'down' || currentMarket.ema1 < currentMarket.ema233 || currentMarket.pointLow < currentMarket.pointHigh)) {
           
-        console.log('Market Shape:  ' + currentMarket.shape)
-        await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
-      }
+      //   console.log('Market Shape:  ' + currentMarket.shape)
+      //   await liveSellOrder(wallet, currentMarket, 'Bad market', goodMarketNames, currentMarket.currentPrice)  
+      // }
 
       } catch(error) {
         console.log(error)
