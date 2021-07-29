@@ -237,10 +237,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
       currentMarket = currentMarketArray[0]
     }
-
+    
+    await displayMarkets(viableMarkets)
     let bulls = getBulls(viableMarkets)
-    await displayMarkets(bulls)
-
     console.log('\n')
     let bestMarket = bulls[0]
     let bullNames = []
@@ -637,7 +636,7 @@ async function fetchOneHistory(symbolName) {
 
   try {
     
-    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1h`, { timeout: 10000 })
+    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
     return history.data
 
   } catch (error) {
@@ -706,8 +705,6 @@ async function sortByArc(markets) {
     markets[i].shape = 0
     markets[i].pointHigh = 0
     markets[i].pointLow = 0
-    let weighting = 1
-    let changes = []
 
     for (let t = 1; t < m-1; t++) {
 
@@ -715,35 +712,46 @@ async function sortByArc(markets) {
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
 
-      if (thisPeriod['close'] > thisPeriod['open']) {
+      // if (thisPeriod['close'] > thisPeriod['open']) {
 
-        markets[i].shape += weighting
+      //   markets[i].shape += 1
       
-      } else if (thisPeriod['close'] < thisPeriod['open']) {
+      // } else if (thisPeriod['close'] < thisPeriod['open']) {
 
-        markets[i].shape -= weighting
+      //   markets[i].shape -= 1
 
+      // }
+
+      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) {
+         
+        if (thisPeriod['low'] > markets[i].history[markets[i].pointLow]['low']) {
+
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].history[markets[i].pointLow]['low']) / thisPeriod['low'])
+
+        } else if (thisPeriod['low'] < markets[i].history[markets[i].pointLow]['low']) {
+
+          markets[i].trend = 'down'
+          markets[i].pointLow = t
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['low'] - thisPeriod['low']) / markets[i].history[markets[i].pointLow]['low'])
+        }
       }
-      changes.push((thisPeriod['close'] - thisPeriod['open'])/thisPeriod['open'])
+
+      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) {
+        
+        if (thisPeriod['high'] > markets[i].history[markets[i].pointHigh]['high']) {
+
+          markets[i].trend = 'up'
+          markets[i].pointHigh = t
+          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].history[markets[i].pointHigh]['high']) / thisPeriod['high'])
+
+        } else if (thisPeriod['high'] < markets[i].history[markets[i].pointHigh]['high']) {
+
+          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['high'] - thisPeriod['high']) / markets[i].history[markets[i].pointHigh]['high'])
+        }
+      }
     }
-    markets[i].averageChange = getAverage(changes) // mean
-    // markets[i].averageChange = changes[Math.floor(changes.length/2)] // median
   }
-  return markets.sort((a, b) => b.averageChange - a.averageChange)
-}
-
-
-
-function getAverage(array) {
-
-  let total = 0
-
-  array.forEach(value => {
-
-    total += value
-  })
-
-  return total / array.length
+  return markets.sort((a, b) => b.shape - a.shape)
 }
 
 
@@ -811,7 +819,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... ${market.shape} ... ${market.averageChange} ... trending ${market.trend} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
+    console.log(`${market.name} ... ${market.shape} ... trending ${market.trend} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
 
   })
   console.log('\n\n')
@@ -822,16 +830,13 @@ function displayMarkets(markets) {
 function getBulls(markets) {
 
   let bulls = markets.filter(market => 
-
-    market.history.length >= 500
-    // &&
-    // market.shape > 0 
-    // && 
-    // market.trend === 'up'
-    // && 
+    market.shape > 0 
+    && 
+    market.trend === 'up'
+    && 
     // market.pointLow > market.pointHigh
     // &&
-    // market.ema1 > market.ema233
+    market.ema1 > market.ema233
   )
   return bulls
 }
@@ -934,7 +939,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         let baseVolumeToTrade = baseVolume * (1 - fee)
         let assetVolumeToBuy = baseVolumeToTrade / currentPrice
 
-        // response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
+        response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
         console.log(response)
 
         if (response !== undefined) {
@@ -1046,7 +1051,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     let asset = market.name.substring(0, slash)
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]['quantity']
-    // let response = await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
+    let response = await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
     console.log(response)
 
     tradeReport = `Target price: ${wallet.targetPrice}\nHigh Price: ${wallet.highPrice}\nBought Price: ${wallet.boughtPrice}\nStop Loss Price: ${wallet.stopLossPrice}\nLow Price: ${wallet.lowPrice}\n${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\nHigh Price: ${wallet.highPrice} ... Low Price: ${wallet.lowPrice}\n`
