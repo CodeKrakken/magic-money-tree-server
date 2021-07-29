@@ -371,17 +371,26 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
 async function switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency) {
 
-  wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
-  console.log('Wallet:')
-  console.log(wallet)
-  if (wallet.currencies[activeCurrency]['quantity'] > 10) {
+  try {
 
-    // Double check market quality in case sell order has been long - but only prospective market for speed
-    await liveBuyOrder(wallet, market, goodMarketNames, currentMarket)
+    wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+    activeCurrency = await getActiveCurrency(wallet)
+    console.log('Wallet:')
+    console.log(wallet)
 
-  } else {
+    if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
-    switchMarket(wallet, market, goodMarketNames, currentMarket)
+      // Double check market quality in case sell order has been long - but only prospective market for speed
+      await liveBuyOrder(wallet, market, goodMarketNames, currentMarket)
+
+    } else {
+
+      switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
+    }  
+    
+  } catch (error) {
+
+    console.log(error.message)
   }
 }
 
