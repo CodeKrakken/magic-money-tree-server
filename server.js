@@ -387,7 +387,7 @@ async function switchMarket(wallet, market, goodMarketNames, currentMarket, acti
 
       switchMarket(wallet, market, goodMarketNames, currentMarket, activeCurrency)
     }  
-    
+
   } catch (error) {
 
     console.log(error.message)
