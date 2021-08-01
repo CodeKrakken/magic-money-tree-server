@@ -1008,3 +1008,48 @@ Running at 7/29/2021, 15:49:39
 
 Running at 7/29/2021, 15:53:36
 
+
+ ---------- 
+
+
+Running at 8/1/2021, 14:28:18
+
+
+ ---------- 
+
+
+Running at 8/1/2021, 14:29:40
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/1/2021, 14:31:23 - Transaction - Selling 0.996003 PERP @ 14.433 ($14.375311299) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/1/2021, 14:44:27
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/1/2021, 14:46:22 - Transaction - Selling 52.947 LTO @ 0.26787 ($14.18291289) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/1/2021, 14:55:32
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/1/2021, 14:57:18 - Transaction - Selling 52.1948 LTO @ 0.27492 ($14.349394416) [Price information undefined]
+High Price: undefined ... Low Price: undefined

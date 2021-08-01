@@ -8,17 +8,13 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 8001;
 
-// const username = process.env.MONGODB_USERNAME
-// const password = process.env.MONGODB_PASSWORD
-// const { MongoClient } = require('mongodb');
-// const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-// const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const username = process.env.MONGODB_USERNAME
+const password = process.env.MONGODB_PASSWORD
+let collection
 
-// let db
-// let collection
-// const dbName = "magic-money-tree";
-
-
+const { MongoClient } = require('mongodb');
+const uri = `mongodb+srv://CodeKrakken:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 // Setup
@@ -71,7 +67,7 @@ const timeOut = 150 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minute
 async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-  // await setupDB();
+  await setupDB();
   // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
@@ -104,12 +100,15 @@ function record(report) {
 
 async function setupDB() {
 
+  
+
   try {
 
-    console.log("Setting up database\n");
-    await mongo.connect()
-    db = mongo.db(dbName);
-    collection = db.collection("symbols")
+    await mongo.connect(err => {
+    collection = mongo.db("test").collection("devices");
+    // perform actions on the collection object
+    // mongo.close();
+  });
   
   } catch(error) {
 
@@ -444,7 +443,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
-        // await dbInsert('highPrice', wallet.highPrice)
+        await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
         // wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
@@ -501,8 +500,9 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
 
 async function dbInsert(key, value) {
+  let data = { key: value }
   console.log(`Adding to database\n`)
-  const query = { key: value };
+  const query = { key: key };
   const options = {
     upsert: true,
   };
@@ -954,10 +954,10 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           process.env.BOUGHT_PRICE = wallet.boughtPrice
           process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
           process.env.HIGH_PRICE = wallet.highPrice
-          // await dbInsert('targetPrice', wallet.targetPrice)
-          // await dbInsert('boughtPrice', wallet.boughtPrice)
-          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-          // await dbInsert('highPrice', wallet.highPrice)
+          await dbInsert('targetPrice', wallet.targetPrice)
+          await dbInsert('boughtPrice', wallet.boughtPrice)
+          await dbInsert('stopLossPrice', wallet.stopLossPrice)
+          await dbInsert('highPrice', wallet.highPrice)
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
