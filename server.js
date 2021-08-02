@@ -8,15 +8,16 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 8001;
 
-// const username = process.env.MONGODB_USERNAME
-// const password = process.env.MONGODB_PASSWORD
-// const { MongoClient } = require('mongodb');
-// const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-// const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const username = process.env.MONGODB_USERNAME
+const password = process.env.MONGODB_PASSWORD
+const { MongoClient } = require('mongodb');
+const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+console.log(uri)
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// let db
-// let collection
-// const dbName = "magic-money-tree";
+let db
+let collection
+const dbName = "magic-money-tree";
 
 
 
@@ -71,7 +72,7 @@ const timeOut = 150 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minute
 async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
-  // await setupDB();
+  await setupDB();
   // let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
@@ -190,7 +191,9 @@ async function fetchMarkets() {
 async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
-    
+    let bumwag = await collection.find().toArray();
+    if (bumwag !== undefined) { console.log(bumwag) }
+
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
@@ -954,10 +957,10 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           process.env.BOUGHT_PRICE = wallet.boughtPrice
           process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
           process.env.HIGH_PRICE = wallet.highPrice
-          // await dbInsert('targetPrice', wallet.targetPrice)
-          // await dbInsert('boughtPrice', wallet.boughtPrice)
-          // await dbInsert('stopLossPrice', wallet.stopLossPrice)
-          // await dbInsert('highPrice', wallet.highPrice)
+          await dbInsert('targetPrice', wallet.targetPrice)
+          await dbInsert('boughtPrice', wallet.boughtPrice)
+          await dbInsert('stopLossPrice', wallet.stopLossPrice)
+          await dbInsert('highPrice', wallet.highPrice)
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
