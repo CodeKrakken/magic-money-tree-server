@@ -178,9 +178,6 @@ async function fetchMarkets() {
 async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
-    let data = await collection.find().toArray();
-    console.log('Database data')
-    if (data !== undefined) { console.log(data) }
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
@@ -194,7 +191,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     } else {
 
       currentMarket = { name: `${activeCurrency}/USDT` }
-      if (wallet.targetPrice === undefined && data.length > 0) {
+
+      if (wallet.targetPrice === undefined) {
+      
+        let data = await collection.find().toArray();
         wallet.targetPrice = data[0].targetPrice
       }
     }
