@@ -11,7 +11,7 @@ const port = process.env.PORT || 8001;
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
-const uri = `mongodb+srv://CodeKrakken:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${username}:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let db
