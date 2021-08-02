@@ -20,6 +20,9 @@ let collection
 const dbName = "magic-money-tree";
 
 
+const { MongoClient } = require('mongodb');
+const uri = `mongodb+srv://CodeKrakken:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 // Setup
@@ -105,12 +108,15 @@ function record(report) {
 
 async function setupDB() {
 
+  
+
   try {
 
-    console.log("Setting up database\n");
-    await mongo.connect()
-    db = mongo.db(dbName);
-    collection = db.collection("symbols")
+    await mongo.connect(err => {
+    collection = mongo.db("test").collection("devices");
+    // perform actions on the collection object
+    // mongo.close();
+  });
   
   } catch(error) {
 
@@ -447,7 +453,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
-        // await dbInsert('highPrice', wallet.highPrice)
+        await dbInsert('highPrice', wallet.highPrice)
         process.env.HIGH_PRICE = currentPrice
         // wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
@@ -504,8 +510,9 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
 
 async function dbInsert(key, value) {
+  let data = { key: value }
   console.log(`Adding to database\n`)
-  const query = { key: value };
+  const query = { key: key };
   const options = {
     upsert: true,
   };
