@@ -11,19 +11,12 @@ const port = process.env.PORT || 8001;
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const { MongoClient } = require('mongodb');
-const uri = `mongodb+srv://${username}:${password}@price-history.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-console.log(uri)
+const uri = `mongodb+srv://CodeKrakken:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let db
 let collection
 const dbName = "magic-money-tree";
-
-
-const { MongoClient } = require('mongodb');
-const uri = `mongodb+srv://CodeKrakken:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
 
 // Setup
 
@@ -107,22 +100,10 @@ function record(report) {
 
 
 async function setupDB() {
-
-  
-
-  try {
-
-    await mongo.connect(err => {
-    collection = mongo.db("test").collection("devices");
-    // perform actions on the collection object
-    // mongo.close();
-  });
-  
-  } catch(error) {
-
-    console.log(error.message)
-
-  }
+  await mongo.connect()
+  db = mongo.db(dbName);
+  collection = db.collection("price-data")
+  console.log("Database setup complete")
 }
 
 
@@ -197,15 +178,26 @@ async function fetchMarkets() {
 async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
-    let bumwag = await collection.find().toArray();
-    if (bumwag !== undefined) { console.log(bumwag) }
-
+    let data = await collection.find().toArray();
+    console.log('Database data')
+    if (data !== undefined) { console.log(data) }
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
 
-    if (activeCurrency !== 'USDT') { currentMarket = { name: `${activeCurrency}/USDT` } }
+    if (activeCurrency === 'USDT') { 
+
+      currentMarket = undefined
+      wallet.targetPrice = undefined
+
+    } else {
+
+      currentMarket = { name: `${activeCurrency}/USDT` }
+      if (wallet.targetPrice === undefined && data.length > 0) {
+        wallet.targetPrice = data[0].targetPrice
+      }
+    }
 
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
@@ -301,8 +293,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       // console.log(wallet.stopLossPrice)
       // console.log('currentMarket.currentPrice')
       // console.log(currentMarket.currentPrice)
-      let currentTime = Date.now()
-      console.log(`Time now: ${currentTime}`)
   
       if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
@@ -346,11 +336,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       //   await liveSellOrder(wallet, currentMarket, 'Below stop loss', goodMarketNames, currentMarket.currentPrice)
       // } else
 
-      if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined || wallet.highPrice === undefined) && activeCurrency !== 'USDT') {
+      if (wallet.targetPrice === undefined && activeCurrency !== 'USDT') {
 
-        console.log('High Price: ' + wallet.highPrice)
         console.log('Target Price:  ' + wallet.targetPrice)
-        console.log('Stop Loss Price: ' + wallet.stopLossPrice)
         await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
       } 
       // else 
@@ -453,7 +441,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
       if (currentPrice > wallet.highPrice) { 
       
         wallet.highPrice = currentPrice
-        await dbInsert('highPrice', wallet.highPrice)
+        // await dbInsert({'highPrice': wallet.highPrice})
         process.env.HIGH_PRICE = currentPrice
         // wallet.stopLossPrice = wallet.highPrice * stopLossThreshold
         // await dbInsert('stopLossPrice', wallet.stopLossPrice)
@@ -509,14 +497,14 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
 
 
-async function dbInsert(key, value) {
-  let data = { key: value }
+async function dbInsert(data) {
   console.log(`Adding to database\n`)
-  const query = { key: key };
+  const query = { key: data.key };
   const options = {
     upsert: true,
   };
   const result = await collection.replaceOne(query, data, options);
+  console.log(result)
 }
 
 
@@ -870,59 +858,61 @@ async function fetchPrice(marketName) {
 
 
 
-async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket) {
+// async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket) {
   
-  try {
+//   try {
 
-    let slash = market.name.indexOf('/')
-    let asset = market.name.substring(0, slash)
-    let base = market.name.substring(slash+1)
-    let response = await fetchPrice(market.name)
+//     let slash = market.name.indexOf('/')
+//     let asset = market.name.substring(0, slash)
+//     let base = market.name.substring(slash+1)
+//     let response = await fetchPrice(market.name)
 
-    if (response === 'No response') {
+//     if (response === 'No response') {
 
-      console.log(`No response - starting new tick`)
-      tick(wallet, goodMarketNames, currentMarket)
+//       console.log(`No response - starting new tick`)
+//       tick(wallet, goodMarketNames, currentMarket)
 
-    } else {
+//     } else {
 
-      let currentPrice = response
-      let baseVolume = wallet.currencies[base]['quantity']
-      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = { 'quantity': 0 } }
-      let volumeToTrade = baseVolume * (1 - fee)
-      wallet.currencies[base]['quantity'] -= volumeToTrade
-      wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
-      let targetVolume = baseVolume * (1 + (2 * fee))
-      wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
-      wallet.boughtPrice = currentPrice
-      wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
-      wallet.highPrice = currentPrice
-      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
-      process.env.BOUGHT_PRICE = currentPrice
-      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
-      process.env.HIGH_PRICE = currentPrice
-      await dbInsert('targetPrice', wallet.targetPrice)
-      await dbInsert('boughtPrice', wallet.boughtPrice)
-      await dbInsert('stopLossPrice', wallet.stopLossPrice)
-      await dbInsert('highPrice', wallet.highPrice)
+//       let currentPrice = response
+//       let baseVolume = wallet.currencies[base]['quantity']
+//       if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = { 'quantity': 0 } }
+//       let volumeToTrade = baseVolume * (1 - fee)
+//       wallet.currencies[base]['quantity'] -= volumeToTrade
+//       wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
+//       let targetVolume = baseVolume * (1 + (2 * fee))
+//       wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
+//       wallet.boughtPrice = currentPrice
+//       wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
+//       wallet.highPrice = currentPrice
+//       process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
+//       process.env.BOUGHT_PRICE = currentPrice
+//       process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
+//       process.env.HIGH_PRICE = currentPrice
+//       await dbInsert({'targetPrice': wallet.targetPrice})
+//       await dbInsert({'boughtPrice': wallet.boughtPrice})
+//       await dbInsert({'stopLossPrice': wallet.stopLossPrice})
+//       await dbInsert({'highPrice': wallet.highPrice})
 
-      wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Transaction - Bought ${wallet.currencies[asset]['quantity']} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
-      await record(tradeReport)
-      tradeReport = ''
+
+
+//       wallet.boughtTime = Date.now()
+//       let tradeReport = `${timeNow()} - Transaction - Bought ${wallet.currencies[asset]['quantity']} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+//       await record(tradeReport)
+//       tradeReport = ''
       
-      return {
-        'market': market, 
-        'wallet': wallet
-      }
-    }
+//       return {
+//         'market': market, 
+//         'wallet': wallet
+//       }
+//     }
 
-  } catch (error) {
+//   } catch (error) {
     
-    console.log(error.message)
+//     console.log(error.message)
 
-  }
-}
+//   }
+// }
 
 
 
@@ -964,10 +954,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           process.env.BOUGHT_PRICE = wallet.boughtPrice
           process.env.STOP_LOSS_PRICE = wallet.stopLossPrice
           process.env.HIGH_PRICE = wallet.highPrice
-          await dbInsert('targetPrice', wallet.targetPrice)
-          await dbInsert('boughtPrice', wallet.boughtPrice)
-          await dbInsert('stopLossPrice', wallet.stopLossPrice)
-          await dbInsert('highPrice', wallet.highPrice)
+          await dbInsert({'targetPrice': wallet.targetPrice})
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`

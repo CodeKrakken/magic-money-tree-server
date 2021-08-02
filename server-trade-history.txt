@@ -1053,3 +1053,294 @@ Stop Loss Price: undefined
 Low Price: undefined
 8/1/2021, 14:57:18 - Transaction - Selling 52.1948 LTO @ 0.27492 ($14.349394416) [Price information undefined]
 High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:25:52
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:28:31
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:42:19
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:43:39
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:44:16
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:44:48
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:44:58
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:45:38
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:47:04
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:47:45
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 10:48:56
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 12:24:03
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 12:37:36
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 12:42:29
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 12:44:10 - Transaction - Selling 51.5433 LTO @ 0.27625 ($14.238836625000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/2/2021, 12:53:18
+
+8/2/2021, 12:54:55 - Transaction - Bought 2.43756 KAVA @ 5.7728 ($14.085632)
+Wave Shape: 5252284220986.093  Target Price - 5.7901184
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 13:05:46
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 13:07:20 - Transaction - Selling 2.43756 KAVA @ 5.75 ($14.01597) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/2/2021, 13:23:30
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 13:25:15 - Transaction - Selling 0.02495502 BCH @ 557.8 ($13.919910156) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: 6.280785999999999
+High Price: 11.682
+Bought Price: 6.262
+Stop Loss Price: 4.88436
+Low Price: 1.15187
+8/2/2021, 13:38:35 - Transaction - Selling 2.21778 RUNE @ 6.345 ($14.0718141) [Target price reached - switching market]
+High Price: 11.682 ... Low Price: 1.15187
+
+ ---------- 
+
+
+Running at 8/2/2021, 13:40:44
+
+8/2/2021, 13:45:51 - Transaction - Bought 0.0251748 BCH @ 557.63 ($14.052275999999999)
+Wave Shape: 3201556436579.981  Target Price - 559.3028899999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 14:34:41
+
+8/2/2021, 14:36:19 - Transaction - Bought 0.12987 MLN @ 105.16 ($13.6708)
+Wave Shape: 10638654627944.393  Target Price - 105.47547999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 15:01:16
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 15:02:57 - Transaction - Selling 0.12987 MLN @ 106.14 ($13.784401800000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 15:06:18 - Transaction - Bought 0.11988 MLN @ 105.47 ($12.6564)
+Wave Shape: 12252452965104.373  Target Price - 105.78640999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 15:08:22
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 15:10:05 - Transaction - Selling 0.12975 MLN @ 104.97 ($13.6198575) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 15:13:24 - Transaction - Bought 0.11988 MLN @ 104.11 ($12.4932)
+Wave Shape: 12403454982797.756  Target Price - 104.42232999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 15:16:22
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 15:18:05 - Transaction - Selling 0.12963 MLN @ 103.34 ($13.3959642) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 15:21:28 - Transaction - Bought 0.11988 MLN @ 103.76 ($12.4512)
+Wave Shape: 12293109679299.447  Target Price - 104.07127999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 15:29:17
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 15:30:58 - Transaction - Selling 0.12951 MLN @ 106.36 ($13.774683599999998) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 15:34:18 - Transaction - Bought 0.11988 MLN @ 106.5 ($12.78)
+Wave Shape: 13260741416696.56  Target Price - 106.81949999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 15:41:29
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 15:43:06 - Transaction - Selling 0.12939 MLN @ 107.06 ($13.8524934) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 15:44:43 - Transaction - Bought 0.11988 MLN @ 106.75 ($12.809999999999999)
+Wave Shape: 13236337485726.904  Target Price - 107.07024999999999
+
+Target price: 107.07024999999999
+High Price: 109.17
+Bought Price: 106.75
+Stop Loss Price: 83.265
+Low Price: 11.736
+8/2/2021, 16:26:01 - Transaction - Selling 0.12927 MLN @ 107.58 ($13.906866599999999) [Target price reached - switching market]
+High Price: 109.17 ... Low Price: 11.736
+8/2/2021, 16:26:08 - Transaction - Bought 1.8981 RUNE @ 7.04 ($13.376)
+Wave Shape: 7074408695991.269  Target Price - 7.061119999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 18:28:22
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 18:30:24 - Transaction - Selling 1.89888 RUNE @ 6.971 ($13.23709248) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 18:32:10 - Transaction - Bought 1.890108 RUNE @ 6.985 ($13.21562)
+Wave Shape: 13631632975776.812  Target Price - 7.005954999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 18:44:15
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 18:44:53
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 18:46:56
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/2/2021, 18:48:46 - Transaction - Selling 1.890988 RUNE @ 7.027 ($13.287972675999999) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/2/2021, 18:50:34 - Transaction - Bought 1.887111 RUNE @ 7.027 ($13.274003)
+Wave Shape: 12830021486712.322  Target Price - 7.048080999999999
+
+
+ ---------- 
+
+
+Running at 8/2/2021, 18:51:17
+
