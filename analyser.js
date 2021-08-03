@@ -92,7 +92,7 @@ async function run() {
 
 function record(report) {
 
-  fs.appendFile(`server-trade-history.txt`, report, function(err) {
+  fs.appendFile(`market-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
 
@@ -615,7 +615,7 @@ async function fetchAllHistory(marketNames, currentMarketName) {
           'name': marketName
   
         }
-  
+
         symbolObject = await annotateData(symbolObject)
         await returnArray.push(symbolObject)
 
@@ -637,7 +637,7 @@ async function fetchOneHistory(symbolName) {
 
   try {
     
-    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1h`, { timeout: 10000 })
+    let history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
     return history.data
 
   } catch (error) {
@@ -686,6 +686,7 @@ async function annotateData(data) {
   
     }
   
+    console.log(outputObject)
     return outputObject
 
   } catch(error) {
@@ -708,6 +709,10 @@ async function sortByArc(markets) {
     markets[i].pointLow = 0
     let weighting = 1
     let changes = []
+    markets[i].totalChange = markets[i].history[m - 1]['close'] - markets[i].history[0]['close']
+    let straightLineIncrement = markets[i].totalChange / m
+    markets[i].bigDrop = 1
+    let straightLine = markets[i].history[0]['close']
 
     for (let t = 1; t < m-1; t++) {
 
@@ -725,11 +730,18 @@ async function sortByArc(markets) {
 
       }
       changes.push((thisPeriod['close'] - thisPeriod['open'])/thisPeriod['open'])
+
+      straightLine += straightLineIncrement
+
+      if (thisPeriod['low'] < straightLine && thisPeriod['low'] / straightLine < markets[i].bigDrop) {
+
+        markets[i].bigDrop = thisPeriod['low'] / straightLine
+      }
     }
-    markets[i].averageChange = getAverage(changes) // mean
-    // markets[i].averageChange = changes[Math.floor(changes.length/2)] // median
+    // markets[i].averageChange = getAverage(changes) // mean
+    markets[i].averageChange = changes[Math.floor(changes.length/2)] // median
   }
-  return markets.sort((a, b) => b.averageChange - a.averageChange)
+  return markets.sort((a, b) => (b.bigDrop * b.totalChange * b.averageChange) - (a.bigDrop * a.totalChange * a.averageChange))
 }
 
 
@@ -811,7 +823,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... ${market.shape} ... ${market.averageChange} ... trending ${market.trend} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
+    console.log(`${market.name} ... AvCh: ${market.averageChange} * ToCh: ${market.totalChange} * MxDr: ${market.bigDrop} = ${market.averageChange * market.totalChange * market.bigDrop}`)
 
   })
   console.log('\n\n')
