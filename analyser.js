@@ -63,8 +63,6 @@ const binance = new ccxt.binance({
 const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78 // 0.78442806076854334227
-const minimumBuy = 10
-const timeOut = 150 * 60 * 1000 // (desired minutes) * seconds * ms === 8 minutes
 
 // Functions
 
@@ -72,7 +70,7 @@ async function run() {
 
   await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n\n`)
   // await setupDB();
-  // let wallet = simulatedWallet()
+  let wallet = simulatedWallet()
   let allMarkets = await fetchMarkets()
   let goodMarketNames = Object.keys(allMarkets).filter(marketName => goodMarketName(marketName, allMarkets))
 
@@ -191,7 +189,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
     
-    wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+    // wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
@@ -376,8 +374,8 @@ async function switchMarket(wallet, market, goodMarketNames, currentMarket, acti
 
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
     activeCurrency = await getActiveCurrency(wallet)
-    console.log('Wallet:')
-    console.log(wallet)
+    // console.log('Wallet:')
+    // console.log(wallet)
 
     if (wallet.currencies[activeCurrency]['quantity'] > 10) {
 
@@ -523,6 +521,7 @@ function goodMarketName(marketName, markets) {
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
   && !marketName.includes('BNB')
+  // && marketName === 'PERP/USDT'
 
 }
 
@@ -685,8 +684,6 @@ async function annotateData(data) {
       'name': data.name
   
     }
-  
-    console.log(outputObject)
     return outputObject
 
   } catch(error) {
@@ -710,8 +707,10 @@ async function sortByArc(markets) {
     let weighting = 1
     let changes = []
     markets[i].totalChange = markets[i].history[m - 1]['close'] - markets[i].history[0]['close']
+    markets[i].percentageChange = markets[i].totalChange / markets[i].history[0]['close'] * 100
     let straightLineIncrement = markets[i].totalChange / m
     markets[i].bigDrop = 1
+    markets[i].bigRise = 1
     let straightLine = markets[i].history[0]['close']
 
     for (let t = 1; t < m-1; t++) {
@@ -732,16 +731,23 @@ async function sortByArc(markets) {
       changes.push((thisPeriod['close'] - thisPeriod['open'])/thisPeriod['open'])
 
       straightLine += straightLineIncrement
+      markets[i].history[t].straightLine = straightLine
 
       if (thisPeriod['low'] < straightLine && thisPeriod['low'] / straightLine < markets[i].bigDrop) {
 
         markets[i].bigDrop = thisPeriod['low'] / straightLine
       }
+
+      if (thisPeriod['high'] > straightLine && thisPeriod['high'] / straightLine > markets[i].bigRise) {
+
+        markets[i].bigRise = thisPeriod['high'] / straightLine
+      }
     }
     // markets[i].averageChange = getAverage(changes) // mean
     markets[i].averageChange = changes[Math.floor(changes.length/2)] // median
   }
-  return markets.sort((a, b) => (b.bigDrop * b.totalChange * b.averageChange) - (a.bigDrop * a.totalChange * a.averageChange))
+  // markets = markets.filter(market => market.totalChange > 0  )
+  return markets.sort((a, b) => ((b.percentageChange * b.bigDrop / b.bigRise) - (a.percentageChange * a.bigDrop / a.bigRise)))
 }
 
 
@@ -823,7 +829,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... AvCh: ${market.averageChange} * ToCh: ${market.totalChange} * MxDr: ${market.bigDrop} = ${market.averageChange * market.totalChange * market.bigDrop}`)
+    console.log(`${market.name} ... %ch: ${market.percentageChange} * drop: ${market.bigDrop} / rise: ${market.bigRise} = ${market.percentageChange * market.bigDrop}`)
 
   })
   console.log('\n\n')
@@ -947,7 +953,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
         let assetVolumeToBuy = baseVolumeToTrade / currentPrice
 
         // response = await binance.createLimitBuyOrder(market.name, assetVolumeToBuy, currentPrice)
-        console.log(response)
+        // console.log(response)
 
         if (response !== undefined) {
 
@@ -1059,7 +1065,7 @@ async function liveSellOrder(wallet, market, sellType, goodMarketNames, currentP
     let base = market.name.substring(slash + 1)
     let assetVolume = wallet.currencies[asset]['quantity']
     // let response = await binance.createLimitSellOrder(market.name, assetVolume, currentPrice)
-    console.log(response)
+    // console.log(response)
 
     tradeReport = `Target price: ${wallet.targetPrice}\nHigh Price: ${wallet.highPrice}\nBought Price: ${wallet.boughtPrice}\nStop Loss Price: ${wallet.stopLossPrice}\nLow Price: ${wallet.lowPrice}\n${timeNow()} - Transaction - Selling ${assetVolume} ${asset} @ ${market.currentPrice} ($${assetVolume * market.currentPrice}) [${sellType}]\nHigh Price: ${wallet.highPrice} ... Low Price: ${wallet.lowPrice}\n`
     wallet.targetPrice = undefined

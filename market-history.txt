@@ -70,3 +70,302 @@ Running at 8/3/2021, 18:11:03
 
 Running at 8/3/2021, 19:20:54
 
+
+ ---------- 
+
+
+Running at 8/4/2021, 10:02:46
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 10:45:47
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 10:46:15
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 10:46:52
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 10:47:48
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 11:15:44
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 11:42:40
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:44:15 - Transaction - Selling 0.11916 MLN @ 100.8 ($12.011328) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:46:04 - Transaction - Selling 0.11916 MLN @ 100.97 ($12.0315852) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:47:53 - Transaction - Selling 0.11916 MLN @ 100.83 ($12.0149028) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:49:40 - Transaction - Selling 0.11916 MLN @ 101.33 ($12.0744828) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:51:23 - Transaction - Selling 0.11916 MLN @ 101.13 ($12.0506508) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:53:05 - Transaction - Selling 0.11916 MLN @ 101.33 ($12.0744828) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:54:50 - Transaction - Selling 0.11916 MLN @ 101.42 ($12.085207200000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:56:32 - Transaction - Selling 0.11916 MLN @ 100.31 ($11.9529396) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 11:58:53 - Transaction - Selling 0.11916 MLN @ 100.25 ($11.94579) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:01:50 - Transaction - Selling 0.11916 MLN @ 100.49 ($11.974388399999999) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:03:42 - Transaction - Selling 0.11916 MLN @ 100.51 ($11.976771600000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:05:22 - Transaction - Selling 0.11916 MLN @ 100.6 ($11.987496) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:07:12 - Transaction - Selling 0.11916 MLN @ 101.01 ($12.036351600000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/4/2021, 12:11:36
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:13:20 - Transaction - Selling 0.11916 MLN @ 100.54 ($11.9803464) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/4/2021, 12:13:52
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:15:32 - Transaction - Selling 0.11916 MLN @ 100.74 ($12.004178399999999) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:17:26 - Transaction - Selling 0.11916 MLN @ 100.37 ($11.9600892) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:20:20 - Transaction - Selling 0.11916 MLN @ 100.41 ($11.9648556) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:22:33 - Transaction - Selling 0.11916 MLN @ 100.29 ($11.950556400000002) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:24:36 - Transaction - Selling 0.11916 MLN @ 100.36 ($11.9588976) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:26:36 - Transaction - Selling 0.11916 MLN @ 100.5 ($11.97558) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:28:46 - Transaction - Selling 0.11916 MLN @ 100.15 ($11.933874000000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:30:56 - Transaction - Selling 0.11916 MLN @ 100.5 ($11.97558) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:32:48 - Transaction - Selling 0.11916 MLN @ 100.57 ($11.9839212) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:35:31 - Transaction - Selling 0.11916 MLN @ 100.45 ($11.969622000000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:38:38 - Transaction - Selling 0.11916 MLN @ 100.64 ($11.9922624) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:41:27 - Transaction - Selling 0.11916 MLN @ 100.76 ($12.006561600000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:43:11 - Transaction - Selling 0.11916 MLN @ 100.96 ($12.0303936) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:45:13 - Transaction - Selling 0.11916 MLN @ 101 ($12.03516) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:47:58 - Transaction - Selling 0.11916 MLN @ 100.99 ($12.0339684) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:50:24 - Transaction - Selling 0.11916 MLN @ 100.75 ($12.005370000000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:53:15 - Transaction - Selling 0.11916 MLN @ 100.16 ($11.9350656) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:55:34 - Transaction - Selling 0.11916 MLN @ 100.34 ($11.956514400000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:57:54 - Transaction - Selling 0.11916 MLN @ 100.39 ($11.962472400000001) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 12:59:48 - Transaction - Selling 0.11916 MLN @ 100.33 ($11.9553228) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 13:02:06 - Transaction - Selling 0.11916 MLN @ 100.46 ($11.9708136) [Price information undefined]
+High Price: undefined ... Low Price: undefined
