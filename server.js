@@ -846,7 +846,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
           let lastBuy = response
           wallet.targetPrice = lastBuy.price * (1 + (3 * fee))
-          wallet.stopLossPrice = Math.floor(market.bigDrop) * lastBuy.price
+          wallet.stopLossPrice = Math.floor(market.bigDrop) * market.history[market.history.length-1].straightLine
           await dbInsert({'targetPrice': wallet.targetPrice})
           await dbInsert({'stopLossPrice': wallet.stopLossPrice})
           wallet.boughtTime = lastBuy.timestamp
