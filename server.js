@@ -236,7 +236,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
       currentMarket = currentMarketArray[0]
-      let newStopLoss = market.bigDrop * market.history[market.history.length-1].straightLine
+      let newStopLoss = currentMarket.bigDrop * currentMarket.history[currentMarket.history.length-1].straightLine
       
       if (newStopLoss > wallet.stopLossPrice) {
 
