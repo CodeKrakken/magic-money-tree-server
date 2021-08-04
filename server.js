@@ -236,6 +236,12 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
       currentMarket = currentMarketArray[0]
+      let newStopLoss = market.bigDrop * market.history[market.history.length-1].straightLine
+      
+      if (newStopLoss > wallet.stopLossPrice) {
+
+        wallet.stopLossPrice = newStopLoss
+      }
     }
     
     await displayMarkets(viableMarkets)
@@ -376,6 +382,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
       tick(wallet, goodMarketNames, currentMarket)
     
     }
+    
   }
 
   let dollarTotal = 0
