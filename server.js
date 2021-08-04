@@ -849,7 +849,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
           await dbInsert({'targetPrice': wallet.targetPrice, 'stopLossPrice': wallet.stopLossPrice})
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
-          let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+          let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}  Stop Loss - ${wallet.stopLossPrice}\n\n`
           wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
           await record(tradeReport)
           tradeReport = ''
