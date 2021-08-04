@@ -241,6 +241,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       if (newStopLoss > wallet.stopLossPrice) {
 
         wallet.stopLossPrice = newStopLoss
+        await dbInsert({'targetPrice': wallet.targetPrice, 'stopLossPrice': wallet.stopLossPrice})
+
       }
     }
     
