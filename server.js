@@ -176,6 +176,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
+    console.log(wallet)
     console.log('\n\n----------\n\n')
     console.log(`Tick at ${timeNow()}\n`)
     let activeCurrency = await getActiveCurrency(wallet)
@@ -188,15 +189,13 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     } else {
 
       currentMarket = { name: `${activeCurrency}/USDT` }
+      let data = await collection.find().toArray();
 
-      if (wallet.targetPrice === undefined) {
-      
-        let data = await collection.find().toArray();
+      if (wallet.targetPrice === undefined && data[0] !== undefined) {
         wallet.targetPrice = data[0].targetPrice
       }
-      if (wallet.stopLossPrice === undefined) {
-      
-        let data = await collection.find().toArray();
+
+      if (wallet.stopLossPrice === undefined && data[0] !== undefined) {
         wallet.stopLossPrice = data[0].stopLossPrice
       }
     }
@@ -409,6 +408,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
 
       console.log('\n')
       console.log(`Target Price - ${wallet.targetPrice}`)
+      console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
       console.log('\n')
     }
   }
@@ -632,11 +632,9 @@ async function sortByArc(markets) {
     markets[i].bigRise = 1
     let straightLine = markets[i].history[0]['close']
 
-    for (let t = 1; t < m-1; t++) {
+    for (let t = 0; t < m; t++) {
 
-      let lastPeriod = markets[i].history[t-1]
       let thisPeriod = markets[i].history[t]
-      let nextPeriod = markets[i].history[t+1]
 
       straightLine += straightLineIncrement
       markets[i].history[t].straightLine = straightLine
@@ -847,9 +845,8 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
           let lastBuy = response
           wallet.targetPrice = lastBuy.price * (1 + (3 * fee))
-          wallet.stopLossPrice = Math.floor(market.bigDrop) * market.history[market.history.length-1].straightLine
-          await dbInsert({'targetPrice': wallet.targetPrice})
-          await dbInsert({'stopLossPrice': wallet.stopLossPrice})
+          wallet.stopLossPrice = market.bigDrop * market.history[market.history.length-1].straightLine
+          await dbInsert({'targetPrice': wallet.targetPrice, 'stopLossPrice': wallet.stopLossPrice})
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`

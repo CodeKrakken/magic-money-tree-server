@@ -1344,3 +1344,121 @@ Wave Shape: 12830021486712.322  Target Price - 7.048080999999999
 
 Running at 8/2/2021, 18:51:17
 
+
+ ---------- 
+
+
+Running at 8/4/2021, 14:49:24
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: NaN
+Low Price: undefined
+8/4/2021, 14:51:04 - Transaction - Selling 0.45954 AXS @ 42.28 ($19.4293512) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+
+ ---------- 
+
+
+Running at 8/4/2021, 14:54:52
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 14:55:48
+
+8/4/2021, 14:57:25 - Transaction - Bought 3.11688 MASK @ 6.087 ($18.99144)
+Wave Shape: 9.339964662795824  Target Price - 6.105260999999999
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:02:05
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: NaN
+Low Price: undefined
+8/4/2021, 15:03:44 - Transaction - Selling 3.1237 MASK @ 6.08 ($18.992096) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/4/2021, 15:07:09 - Transaction - Bought 3.0969 MASK @ 6.11 ($18.941000000000003)
+Wave Shape: 9.505744607087165  Target Price - 6.12833
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:13:54
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: 5.98808242800365
+Low Price: undefined
+8/4/2021, 15:15:33 - Transaction - Selling 3.1006 MASK @ 6.095 ($18.898156999999998) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/4/2021, 15:17:24 - Transaction - Bought 3.0669299999999997 MASK @ 6.164 ($18.923479999999998)
+Wave Shape: 10.96244083160122  Target Price - 6.182491999999999
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:20:24
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:20:59
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:22:01
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:22:32
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:24:06
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:25:10
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:30:47
+
+Target price: undefined
+High Price: undefined
+Bought Price: undefined
+Stop Loss Price: undefined
+Low Price: undefined
+8/4/2021, 15:32:28 - Transaction - Selling 3.06753 MASK @ 6.167 ($18.91745751) [Price information undefined]
+High Price: undefined ... Low Price: undefined
+8/4/2021, 15:35:42 - Transaction - Bought 0.42957 AXS @ 43.12 ($18.5416)
+Wave Shape: 10.754262510161524  Target Price - 43.249359999999996
+
+
+ ---------- 
+
+
+Running at 8/4/2021, 15:36:36
+
