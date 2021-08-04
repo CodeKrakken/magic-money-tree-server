@@ -423,7 +423,8 @@ async function dbInsert(data) {
   const options = {
     upsert: true,
   };
-  await collection.replaceOne(query, data, options);
+  result = await collection.replaceOne(query, data, options);
+  return result
 }
 
 
