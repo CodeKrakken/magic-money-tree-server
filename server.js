@@ -194,6 +194,11 @@ async function tick(wallet, goodMarketNames, currentMarket) {
         let data = await collection.find().toArray();
         wallet.targetPrice = data[0].targetPrice
       }
+      if (wallet.stopLossPrice === undefined) {
+      
+        let data = await collection.find().toArray();
+        wallet.stopLossPrice = data[0].stopLossPrice
+      }
     }
 
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
@@ -271,11 +276,21 @@ async function tick(wallet, goodMarketNames, currentMarket) {
           await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
         } else
 
-        if (wallet.targetPrice === undefined && activeCurrency !== 'USDT') {
+        if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined) && activeCurrency !== 'USDT') {
 
           console.log('Target Price:  ' + wallet.targetPrice)
+          console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
+
           await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
-        } 
+        } else
+
+        if (currentMarket.currentPrice < wallet.stopLossPrice) {
+
+          console.log('Target Price:  ' + wallet.targetPrice)
+          console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
+
+          await liveSellOrder(wallet, currentMarket, 'Below Stop Loss', goodMarketNames, currentMarket.currentPrice)
+        }
 
       } catch(error) {
 
@@ -607,6 +622,14 @@ async function sortByArc(markets) {
     markets[i].shape = 0
     markets[i].pointHigh = 0
     markets[i].pointLow = 0
+    let weighting = 1
+    let changes = []
+    markets[i].totalChange = markets[i].history[m - 1]['close'] - markets[i].history[0]['close']
+    markets[i].percentageChange = markets[i].totalChange / markets[i].history[0]['close'] * 100
+    let straightLineIncrement = markets[i].totalChange / m
+    markets[i].bigDrop = 1
+    markets[i].bigRise = 1
+    let straightLine = markets[i].history[0]['close']
 
     for (let t = 1; t < m-1; t++) {
 
@@ -614,46 +637,22 @@ async function sortByArc(markets) {
       let thisPeriod = markets[i].history[t]
       let nextPeriod = markets[i].history[t+1]
 
-      // if (thisPeriod['close'] > thisPeriod['open']) {
+      straightLine += straightLineIncrement
+      markets[i].history[t].straightLine = straightLine
 
-      //   markets[i].shape += 1
-      
-      // } else if (thisPeriod['close'] < thisPeriod['open']) {
+      if (thisPeriod['low'] < straightLine && thisPeriod['low'] / straightLine < markets[i].bigDrop) {
 
-      //   markets[i].shape -= 1
-
-      // }
-
-      if (thisPeriod['low'] < lastPeriod['low'] && thisPeriod['low'] < nextPeriod['low']) {
-         
-        if (thisPeriod['low'] > markets[i].history[markets[i].pointLow]['low']) {
-
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['low'] - markets[i].history[markets[i].pointLow]['low']) / thisPeriod['low'])
-
-        } else if (thisPeriod['low'] < markets[i].history[markets[i].pointLow]['low']) {
-
-          markets[i].trend = 'down'
-          markets[i].pointLow = t
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointLow]['low'] - thisPeriod['low']) / markets[i].history[markets[i].pointLow]['low'])
-        }
+        markets[i].bigDrop = thisPeriod['low'] / straightLine
       }
 
-      if (thisPeriod['high'] > lastPeriod['high'] && thisPeriod['high'] > nextPeriod['high']) {
-        
-        if (thisPeriod['high'] > markets[i].history[markets[i].pointHigh]['high']) {
+      if (thisPeriod['high'] > straightLine && thisPeriod['high'] / straightLine > markets[i].bigRise) {
 
-          markets[i].trend = 'up'
-          markets[i].pointHigh = t
-          markets[i].shape += thisPeriod['endTime'] * ((thisPeriod['high'] - markets[i].history[markets[i].pointHigh]['high']) / thisPeriod['high'])
-
-        } else if (thisPeriod['high'] < markets[i].history[markets[i].pointHigh]['high']) {
-
-          markets[i].shape -= thisPeriod['endTime'] * ((markets[i].history[markets[i].pointHigh]['high'] - thisPeriod['high']) / markets[i].history[markets[i].pointHigh]['high'])
-        }
+        markets[i].bigRise = thisPeriod['high'] / straightLine
       }
     }
+    markets[i].shape = markets[i].percentageChange * markets[i].bigDrop / markets[i].bigRise
   }
-  return markets.sort((a, b) => b.shape - a.shape)
+  return markets.sort((a, b) => ((b.shape) - (a.shape)))
 }
 
 
@@ -721,7 +720,7 @@ function displayMarkets(markets) {
 
   markets.forEach(market => {
 
-    console.log(`${market.name} ... ${market.shape} ... trending ${market.trend} ... EMA1 - ${market.ema1} ... EMA233 - ${market.ema233}`)
+    console.log(`${market.name} ... %ch: ${market.percentageChange} * drop: ${market.bigDrop} / rise: ${market.bigRise} = ${market.shape}`)
 
   })
   console.log('\n\n')
@@ -733,10 +732,10 @@ function getBulls(markets) {
 
   let bulls = markets.filter(market => 
     market.shape > 0 
-    && 
-    market.trend === 'up'
-    && 
-    market.ema1 > market.ema233
+    // && 
+    // market.trend === 'up'
+    // && 
+    // market.ema1 > market.ema233
   )
   return bulls
 }
@@ -847,7 +846,9 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
           let lastBuy = response
           wallet.targetPrice = lastBuy.price * (1 + (3 * fee))
+          wallet.stopLossPrice = Math.floor(market.bigDrop) * lastBuy.price
           await dbInsert({'targetPrice': wallet.targetPrice})
+          await dbInsert({'stopLossPrice': wallet.stopLossPrice})
           wallet.boughtTime = lastBuy.timestamp
           let netAsset = lastBuy.amount * (1 - fee)
           let tradeReport = `${timeNow()} - Transaction - Bought ${netAsset} ${asset} @ ${lastBuy.price} ($${lastBuy.amount * lastBuy.price})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
