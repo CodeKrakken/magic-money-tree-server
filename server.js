@@ -639,6 +639,7 @@ async function sortByArc(markets) {
     markets[i].bigDrop = 1
     markets[i].bigRise = 1
     let straightLine = markets[i].history[0]['close']
+    markets[i].cumulativeVariance = 1
 
     for (let t = 0; t < m; t++) {
 
@@ -646,10 +647,13 @@ async function sortByArc(markets) {
 
       straightLine += straightLineIncrement
       markets[i].history[t].straightLine = straightLine
+      let priceArray = [straightLine, thisPeriod['low']].sort((a, b) => b - a)
+      markets[i].cumulativeVariance *= (priceArray[0] / priceArray[1])
 
       if (thisPeriod['low'] < straightLine && thisPeriod['low'] / straightLine < markets[i].bigDrop) {
 
         markets[i].bigDrop = thisPeriod['low'] / straightLine
+
       }
 
       if (thisPeriod['high'] > straightLine && thisPeriod['high'] / straightLine > markets[i].bigRise) {
