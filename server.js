@@ -237,8 +237,8 @@ async function tick(wallet, goodMarketNames, currentMarket) {
       let currentMarketArray = viableMarkets.filter(market => market.name === currentMarket.name)
       currentMarket = currentMarketArray[0]
       let newStopLoss = currentMarket.bigDrop * currentMarket.history[currentMarket.history.length-1].straightLine
-      
-      if (newStopLoss > wallet.stopLossPrice) {
+      currentMarket.currentPrice = await fetchPrice(currentMarket.name)
+      if (newStopLoss > wallet.stopLossPrice && currentMarket.currentPrice > wallet.targetPrice) {
 
         wallet.stopLossPrice = newStopLoss
         await dbInsert({'targetPrice': wallet.targetPrice, 'stopLossPrice': wallet.stopLossPrice})
@@ -270,7 +270,6 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     } else {
   
       try {
-        currentMarket.currentPrice = await fetchPrice(currentMarket.name)
     
         if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
