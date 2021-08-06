@@ -1486,3 +1486,43 @@ Running at 8/5/2021, 19:23:00
 
 Running at 8/5/2021, 19:26:34
 
+
+ ---------- 
+
+
+Running at 8/6/2021, 15:39:14
+
+
+ ---------- 
+
+
+Running at 8/6/2021, 15:39:27
+
+8/6/2021, 15:41:04 - Transaction - Bought 123.99099645030427 GXS @ 0.7888 ($97.804098)
+Wave Shape: 1.8115601533157725e+29  Target Price - 0.7911663999999998
+
+8/6/2021, 16:55:01 - Sold 123.99099645030427 GXS @ 0.7913 ($98.11396141563463) [Target price reached - switching market]
+
+8/6/2021, 16:55:02 - Transaction - Bought 345.9994049709003 FTM @ 0.283 ($97.91783160676478)
+Wave Shape: 475074288.2815761  Target Price - 0.28384899999999996
+
+8/6/2021, 17:01:15 - Sold 345.9994049709003 FTM @ 0.28487 ($98.56439960498194) [Target price reached - switching market]
+
+8/6/2021, 17:01:16 - Transaction - Bought 2.469804393144812 SOL @ 39.828 ($98.36736937017159)
+Wave Shape: 68649337018.39794  Target Price - 39.947483999999996
+
+8/6/2021, 17:08:34 - Sold 2.469804393144812 SOL @ 39.995 ($98.77961127672792) [Target price reached - switching market]
+
+8/6/2021, 17:08:36 - Transaction - Bought 1.9692798808187324 ICP @ 50.06 ($98.58215083378575)
+Wave Shape: 969530598026.1271  Target Price - 50.210179999999994
+
+8/6/2021, 18:35:12 - Sold 1.9692798808187324 ICP @ 51.14 ($100.70704374324164) [Target price reached - switching market]
+
+8/6/2021, 18:35:13 - Transaction - Bought 1029.139159971318 RVN @ 0.09766 ($100.5057303627989)
+Wave Shape: 130514672904175750000  Target Price - 0.09795297999999998
+
+8/6/2021, 19:40:19 - Sold 1029.139159971318 RVN @ 0.1052 ($108.25788123309691) [Target price reached - switching market]
+
+8/6/2021, 19:42:35 - Transaction - Bought 13004.510559522383 HOT @ 0.008308 ($108.04147372851195)
+Wave Shape: 1.2311565274964552e+35  Target Price - 0.008332923999999998
+
