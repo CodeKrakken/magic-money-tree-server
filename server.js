@@ -100,7 +100,7 @@ async function setupDB() {
   await mongo.connect()
   db = mongo.db(dbName);
   collection = db.collection("price-data")
-  console.log("Database setup complete")
+  // console.log("Database setup complete")
 }
 
 
@@ -176,9 +176,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
   try {
     wallet = await liveWallet(wallet, goodMarketNames, currentMarket)
-    console.log(wallet)
-    console.log('\n\n----------\n\n')
-    console.log(`Tick at ${timeNow()}\n`)
+    console.log(`\n\n----- Tick at ${timeNow()} -----\n\n`)
     let activeCurrency = await getActiveCurrency(wallet)
 
     if (activeCurrency === 'USDT') { 
@@ -208,7 +206,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
     
       viableMarketNames.push(currentMarket.name)
-      console.log('Current market not viable - manually added')
+      // console.log('Current market not viable - manually added')
     }
 
     let viableMarkets
@@ -245,9 +243,9 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
       }
     }
-    
-    await displayMarkets(viableMarkets)
+    await displayMarkets(viableMarkets, currentMarket)
     let bulls = getBulls(viableMarkets)
+
     console.log('\n')
     let bestMarket = bulls[0]
     let bullNames = []
@@ -257,7 +255,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
       if (bulls.length === 0) {
 
-        console.log('No bullish markets\n')
+        // console.log('No bullish markets\n')
       
       } else {
 
@@ -273,10 +271,10 @@ async function tick(wallet, goodMarketNames, currentMarket) {
     
         if (currentMarket.currentPrice !== undefined && currentMarket.name !== bestMarket.name && currentMarket.currentPrice > wallet.targetPrice ) { 
 
-          console.log('Current Price:  ' + currentMarket.currentPrice)
-          console.log('Target Price:   ' + wallet.targetPrice)
-          console.log('Current Market: ' + currentMarket.name)
-          console.log('Next market:    ' + bestMarket.name)
+          // console.log('Current Price:  ' + currentMarket.currentPrice)
+          // console.log('Target Price:   ' + wallet.targetPrice)
+          // console.log('Current Market: ' + currentMarket.name)
+          // console.log('Next market:    ' + bestMarket.name)
 
           await liveSellOrder(wallet, currentMarket, 'Target price reached - switching market', goodMarketNames, currentMarket.currentPrice)
           await switchMarket(wallet, bestMarket, goodMarketNames, currentMarket, activeCurrency)
@@ -284,16 +282,16 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
         if ((wallet.targetPrice === undefined || wallet.stopLossPrice === undefined) && activeCurrency !== 'USDT') {
 
-          console.log('Target Price:  ' + wallet.targetPrice)
-          console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
+          // console.log('Target Price:  ' + wallet.targetPrice)
+          // console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
 
           await liveSellOrder(wallet, currentMarket, 'Price information undefined', goodMarketNames, currentMarket.currentPrice)
         } else
 
         if (currentMarket.currentPrice < wallet.stopLossPrice) {
 
-          console.log('Target Price:  ' + wallet.targetPrice)
-          console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
+          // console.log('Target Price:  ' + wallet.targetPrice)
+          // console.log('Stop Loss Price:  ' + wallet.stopLossPrice)
 
           await liveSellOrder(wallet, currentMarket, 'Below Stop Loss', goodMarketNames, currentMarket.currentPrice)
         }
@@ -370,7 +368,7 @@ async function getActiveCurrency(wallet) {
 async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket) {
 
   let nonZeroWallet = Object.keys(wallet.currencies).filter(currency => wallet.currencies[currency]['quantity'] > 0)
-  console.log('Wallet')
+  // console.log('Wallet')
 
   if (activeCurrency !== 'USDT') {
 
@@ -379,7 +377,7 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
     
     if (currentPrice === 'No response') {
 
-      console.log('Currency information unavailable  - starting new tick')
+      // console.log('Currency information unavailable  - starting new tick')
       tick(wallet, goodMarketNames, currentMarket)
     
     }
@@ -410,13 +408,16 @@ async function refreshWallet(wallet, activeCurrency, goodMarketNames, currentMar
     }
 
     dollarTotal += dollarVolume
-    console.log(`${wallet.currencies[currency]['quantity']} ${currency} @ ${wallet.currencies[currency]['price']} = $${dollarVolume}`)
+
+    if (currency === activeCurrency) {
+
+      console.log(`${wallet.currencies[currency]['quantity']} ${currency} @ ${wallet.currencies[currency]['price']} = $${dollarVolume}`)
+    }
 
     if (currency === activeCurrency && currency !== 'USDT') {
 
       console.log('\n')
-      console.log(`Target Price - ${wallet.targetPrice}`)
-      console.log(`Stop Loss Price - ${wallet.stopLossPrice}`)
+      console.log(`Target Price - ${wallet.targetPrice} | Stop Loss Price - ${wallet.stopLossPrice}`)
       console.log('\n')
     }
   }
@@ -512,7 +513,7 @@ async function fetch24Hour(symbolName) {
 
 async function fetchAllHistory(marketNames, currentMarketName) {
 
-  console.log('Fetching history\n')
+  // console.log('Fetching history\n')
   let n = marketNames.length
   let returnArray = []
 
@@ -526,7 +527,7 @@ async function fetchAllHistory(marketNames, currentMarketName) {
 
       if (response === 'No response' && marketName === currentMarketName) { 
 
-        console.log(`No response for current market`)
+        // console.log(`No response for current market`)
         markets.push(`No response for current market`)
         return markets
 
@@ -668,7 +669,7 @@ async function addEMA(markets) {
 
   try {
 
-    console.log('Analysing markets\n\n')
+    // console.log('Analysing markets\n\n')
 
     let n = markets.length
 
@@ -723,13 +724,26 @@ function extractData(dataArray, key) {
 
 
 
-function displayMarkets(markets) {
+function displayMarkets(markets, currentMarket) {
 
-  markets.forEach(market => {
+  console.log(`1. ${markets[0].name} ... %ch: ${markets[0].percentageChange} * drop: ${markets[0].bigDrop} / rise: ${markets[0].bigRise} = ${markets[0].shape}`)
+  
+  if (markets[0].name !== currentMarket.name) {
+    
+    let prettyIndex
 
-    console.log(`${market.name} ... %ch: ${market.percentageChange} * drop: ${market.bigDrop} / rise: ${market.bigRise} = ${market.shape}`)
+    for (let i = 0; i < markets.length; i++) {
 
-  })
+      if (markets[i].name === currentMarket.name) {
+      
+        prettyIndex = i+1
+        i = markets.length
+      }
+    }
+
+    console.log(`${prettyIndex}. ${currentMarket.name} ... %ch: ${currentMarket.percentageChange} * drop: ${currentMarket.bigDrop} / rise: ${currentMarket.bigRise} = ${currentMarket.shape}`)
+  }
+
   console.log('\n\n')
 }
 
@@ -837,7 +851,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
 
       if (response === 'No response') {
 
-        console.log(`No response - starting new tick`)
+        // console.log(`No response - starting new tick`)
         tick(wallet, goodMarketNames, currentMarket)
 
       } else {
@@ -870,7 +884,7 @@ async function liveBuyOrder(wallet, market, goodMarketNames, currentMarket) {
       }
     } else {
 
-      console.log('Potential market no longer viable')
+      // console.log('Potential market no longer viable')
     }
   } catch (error) {
     

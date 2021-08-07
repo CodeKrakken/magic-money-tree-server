@@ -112,8 +112,8 @@ function simulatedWallet() {
   
     currencies: {
       'USDT': {
-        'quantity': 98,
-        'dollarValue': 98
+        'quantity': 100,
+        'dollarValue': 100
       }
     }
   }
