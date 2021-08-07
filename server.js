@@ -200,7 +200,7 @@ async function tick(wallet, goodMarketNames, currentMarket) {
 
     await refreshWallet(wallet, activeCurrency, goodMarketNames, currentMarket)
     console.log('\n')
-    console.log(`Fetching overview`)
+    // console.log(`Fetching overview`)
     let viableMarketNames = await getViableMarketNames(goodMarketNames)
     
     if (currentMarket !== undefined && !viableMarketNames.includes(currentMarket.name)) {
