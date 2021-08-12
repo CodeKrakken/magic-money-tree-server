@@ -728,7 +728,7 @@ function displayMarkets(markets, currentMarket) {
 
   console.log(`1. ${markets[0].name} ... %ch: ${markets[0].percentageChange} * drop: ${markets[0].bigDrop} / rise: ${markets[0].bigRise} = ${markets[0].shape}`)
   
-  if (markets[0].name !== currentMarket.name) {
+  if (currentMarket !== undefined && markets[0].name !== currentMarket.name) {
     
     let prettyIndex
 
