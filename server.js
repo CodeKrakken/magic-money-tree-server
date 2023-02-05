@@ -12,7 +12,7 @@ let db
 let collection
 const dbName = "magic-money-tree";
 
-const minimumDollarVolume = 28000000
+const minimumDollarVolume = 1000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 
@@ -99,7 +99,7 @@ function isGoodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
-  // && marketName === 'GBP/USDT'
+  && marketName === 'GBP/USDT'
   // && !marketName.includes('BNB')
 
 }
@@ -126,6 +126,8 @@ async function tick(wallet, goodMarketNames, currentMarket=null) {
       wallet.data = { targetPrice: null }
 
       const response = getTargetMarket(viableMarkets)
+
+      console.log(response)
       console.log(`\n${response !== 'No bullish markets' ? 'Target market - ' : ''}${response}`)
 
       // if (response !== 'No bullish markets' && wallet.currencies[activeCurrency].quantity > 10) {
@@ -426,8 +428,8 @@ function getTargetMarket(markets) {
     // && 
     // market.trend === 'up'
     // && 
-    market.ema1 > market.ema233
-  ).sort((a, b) => a.ema1/a.ema233 - b.ema1/b.ema233)
+    market.emas.minutes.ema13 > market.emas.minutes.ema233
+  ).sort((a, b) => a.emas.minutes.ema13/a.emas.minutes.ema233 - b.emas.minutes.ema13/b.emas.minutes.ema233)
 
   return bulls.length ? bulls[0] : 'No bullish markets'
 }
@@ -473,9 +475,8 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames) {
       const currentPrice = response
       const baseVolume = wallet.currencies[base].quantity
       if (!wallet.currencies[asset]) wallet.currencies[asset] = { quantity: 0 }
-      const volumeToTrade = baseVolume * (1 - fee)
-      wallet.currencies[base].quantity -= volumeToTrade
-      wallet.currencies[asset].quantity += volumeToTrade * (1 - fee) / currentPrice
+      wallet.currencies[base].quantity = 0
+      wallet.currencies[asset].quantity += baseVolume * (1 - fee) / currentPrice
       const targetVolume = baseVolume * (1 + (2 * fee))
       wallet.data.targetPrice = targetVolume / wallet.currencies[asset].quantity
       wallet.data.boughtPrice = currentPrice
