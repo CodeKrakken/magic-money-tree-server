@@ -1,18 +1,20 @@
+require('dotenv').config();
 const fs = require('fs');
 const ccxt = require('ccxt');
 const axios = require('axios')
+
 const { MongoClient } = require('mongodb');
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const uri = `mongodb+srv://${username}:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
 let db
 let collection
 const dbName = "magic-money-tree";
 
-
-const minimumDollarVolume = 1000000
+const minimumDollarVolume = 28000000
+const fee = 0.001
+const stopLossThreshold = 0.78
 
 const binance = new ccxt.binance({
 
@@ -27,6 +29,7 @@ async function run() {
   try {
     
     await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n`)
+    await setupDB();
     const wallet = simulatedWallet()
     const allMarkets = await fetchMarkets()
     const goodMarketNames = Object.keys(allMarkets).filter(marketName => isGoodMarketName(marketName, allMarkets))
@@ -45,13 +48,9 @@ async function run() {
 }
 
 function record(report) {
-
   fs.appendFile(`server-trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
-
-  console.log(report)
-
 }
 
 function timeNow() {
@@ -59,6 +58,14 @@ function timeNow() {
   const currentTime = Date.now()
   const prettyTime = new Date(currentTime).toLocaleString()
   return prettyTime
+}
+
+async function setupDB() {
+  console.log('\nSetting up database ...')
+  await mongo.connect()
+  db = mongo.db(dbName);
+  collection = db.collection("price-data")
+  console.log("Database setup complete")
 }
 
 function simulatedWallet() {
@@ -92,7 +99,7 @@ function isGoodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
-  && marketName === 'GBP/USDT'
+  // && marketName === 'GBP/USDT'
   // && !marketName.includes('BNB')
 
 }
@@ -101,7 +108,6 @@ async function tick(wallet, goodMarketNames, currentMarket=null) {
 
   try {
     console.log(`\n\n----- Tick at ${timeNow()} -----\n\n`)
-    console.log(wallet)
     await refreshWallet(wallet)
     displayWallet(wallet)
     let activeCurrency = await getActiveCurrency(wallet)
@@ -117,21 +123,20 @@ async function tick(wallet, goodMarketNames, currentMarket=null) {
     if (activeCurrency === 'USDT') {
 
       currentMarket = null
-      wallet.targetPrice = null
+      wallet.data = { targetPrice: null }
 
       const response = getTargetMarket(viableMarkets)
-      console.log(`${response !== 'No bullish markets' ? 'Target market - ' : ''}${response}`)
+      console.log(`\n${response !== 'No bullish markets' ? 'Target market - ' : ''}${response}`)
 
-      if (response !== 'No bullish markets' && wallet.currencies[activeCurrency].quantity > 10) {
-        await simulatedBuyOrder(wallet, targetMarket, goodMarketNames, currentMarket)
-      }
+      // if (response !== 'No bullish markets' && wallet.currencies[activeCurrency].quantity > 10) {
+        const targetMarket = response
+        await simulatedBuyOrder(wallet, targetMarket, goodMarketNames)
+      // }
     }
   } catch (error) {
     console.log(error)
   }
-
   tick(wallet, goodMarketNames, currentMarket)
-
 }
 
 async function refreshWallet(wallet) {
@@ -143,9 +148,7 @@ async function refreshWallet(wallet) {
     wallet.currencies[currency].dollarPrice = currency === 'USDT' ? 1 : await fetchPrice(`${currency}USDT`)
     wallet.currencies[currency].dollarValue = wallet.currencies[currency].quantity * wallet.currencies[currency].dollarPrice
   }
-
   return wallet
-  
 }
 
 
@@ -154,6 +157,8 @@ async function fetchPrice(marketName) {
   try {
 
     const symbolName = marketName.replace('/', '')
+    console.log(`Fetching price for ${symbolName}`)
+
     const rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
     const price = parseFloat(rawPrice.data.price)
     return price
@@ -452,67 +457,52 @@ async function getActiveCurrency(wallet) {
   return sorted.pop()
 }
 
-async function simulatedBuyOrder(wallet, market, goodMarketNames, currentMarket) {
+async function simulatedBuyOrder(wallet, market, goodMarketNames) {
   try {
-
-    let slash = market.name.indexOf('/')
-    let asset = market.name.substring(0, slash)
-    let base = market.name.substring(slash+1)
-    let response = await fetchPrice(market.name)
+    const asset = market.name.split('/')[0]
+    const base  = market.name.split('/')[1]
+    const response = await fetchPrice(`${asset}${base}`)
 
     if (response === 'No response') {
 
-      console.log(`No response - starting new tick`)
-      tick(wallet, goodMarketNames, currentMarket)
+      console.log(`\nNo response - starting new tick`)
+      tick(wallet, goodMarketNames)
 
     } else {
 
-      let currentPrice = response
-      let baseVolume = wallet.currencies[base]['quantity']
-      if (wallet.currencies[asset] === undefined) { wallet.currencies[asset] = { 'quantity': 0 } }
-      let volumeToTrade = baseVolume * (1 - fee)
-      wallet.currencies[base]['quantity'] -= volumeToTrade
-      wallet.currencies[asset]['quantity'] += volumeToTrade * (1 - fee) / currentPrice
-      let targetVolume = baseVolume * (1 + (2 * fee))
-      wallet.targetPrice = targetVolume / wallet.currencies[asset]['quantity']
-      wallet.boughtPrice = currentPrice
-      wallet.stopLossPrice = wallet.boughtPrice * stopLossThreshold
-      wallet.highPrice = currentPrice
-      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset]['quantity']
+      const currentPrice = response
+      const baseVolume = wallet.currencies[base].quantity
+      if (!wallet.currencies[asset]) wallet.currencies[asset] = { quantity: 0 }
+      const volumeToTrade = baseVolume * (1 - fee)
+      wallet.currencies[base].quantity -= volumeToTrade
+      wallet.currencies[asset].quantity += volumeToTrade * (1 - fee) / currentPrice
+      const targetVolume = baseVolume * (1 + (2 * fee))
+      wallet.data.targetPrice = targetVolume / wallet.currencies[asset].quantity
+      wallet.data.boughtPrice = currentPrice
+      wallet.data.stopLossPrice = wallet.data.boughtPrice * stopLossThreshold
+      wallet.data.highPrice = currentPrice
+      process.env.TARGET_PRICE = targetVolume / wallet.currencies[asset].quantity
       process.env.BOUGHT_PRICE = currentPrice
-      process.env.STOP_LOSS_PRICE = wallet.boughtPrice * stopLossThreshold
+      process.env.STOP_LOSS_PRICE = wallet.data.boughtPrice * stopLossThreshold
       process.env.HIGH_PRICE = currentPrice
-      await dbInsert({'targetPrice': wallet.targetPrice})
-      await dbInsert({'boughtPrice': wallet.boughtPrice})
-      await dbInsert({'stopLossPrice': wallet.stopLossPrice})
-      await dbInsert({'highPrice': wallet.highPrice})
-
-
-
-      wallet.boughtTime = Date.now()
-      let tradeReport = `${timeNow()} - Transaction - Bought ${wallet.currencies[asset]['quantity']} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nWave Shape: ${market.shape}  Target Price - ${wallet.targetPrice}\n\n`
+      await dbInsert({targetPrice: wallet.data.targetPrice})
+      await dbInsert({boughtPrice: wallet.data.boughtPrice})
+      await dbInsert({stopLossPrice: wallet.data.stopLossPrice})
+      await dbInsert({highPrice: wallet.data.highPrice})
+      wallet.data.boughtTime = Date.now()
+      const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.currencies[asset].quantity} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})\nTarget Price - ${wallet.data.targetPrice}\n\n`
+      console.log(tradeReport)
       await record(tradeReport)
-      tradeReport = ''
-      
-      return {
-        'market': market, 
-        'wallet': wallet
-      }
     }
-
   } catch (error) {
-    
     console.log(error.message)
-
   }
 }
 
 async function dbInsert(data) {
 
-  const query = { key: data.key };
-  const options = {
-    upsert: true,
-  };
+  const query   = { key: data.key };
+  const options = { upsert: true };
   result = await collection.replaceOne(query, data, options);
   return result
 }
