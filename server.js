@@ -111,6 +111,8 @@ async function tick(wallet, goodMarketNames, currentMarket=null) {
     await refreshWallet(wallet)
     displayWallet(wallet)
     let activeCurrency = await getActiveCurrency(wallet)
+
+
     const viableMarketNames = await getViableMarketNames(goodMarketNames)
     console.log('\nViable Markets\n')
     viableMarketNames.map(name => console.log(name))
@@ -130,10 +132,60 @@ async function tick(wallet, goodMarketNames, currentMarket=null) {
       console.log(response)
       console.log(`\n${response !== 'No bullish markets' ? 'Target market - ' : ''}${response}`)
 
-      // if (response !== 'No bullish markets' && wallet.currencies[activeCurrency].quantity > 10) {
+      if (response !== 'No bullish markets' && wallet.currencies[activeCurrency].quantity > 10) {
         const targetMarket = response
         await simulatedBuyOrder(wallet, targetMarket, goodMarketNames)
-      // }
+      }
+    } else {
+
+      currentMarket.name = `${activeCurrency}/USDT`
+
+      if (!wallet.data.targetPrice || !wallet.data.stopLossPrice) {
+        const data = wallet.data ?? await collection.find().toArray();
+
+        if (!wallet.data.targetPrice && data[0]) {
+          wallet.data.targetPrice = data[0].targetPrice
+        }
+
+        if (!wallet.data.stopLossPrice && data[0]) {
+          wallet.data.stopLossPrice = data[0].stopLossPrice
+        }
+      }
+      
+      try {
+    
+        if (!currentMarket.currentPrice && currentMarket.name !== targetMarket.name && currentMarket.currentPrice > wallet.data.targetPrice ) { 
+
+          console.log('Current Price:  ' + currentMarket.currentPrice)
+          console.log('Target Price:   ' + wallet.data.targetPrice)
+          console.log('Current Market: ' + currentMarket.name)
+          console.log('Next market:    ' + targetMarket.name)
+
+          await simulatedSellOrder(wallet, currentMarket, 'Target price reached - switching market')
+          await switchMarket(wallet, targetMarket, goodMarketNames, currentMarket)
+        } else
+
+        if ((!wallet.targetPrice || !wallet.stopLossPrice) && activeCurrency !== 'USDT') {
+
+          console.log('Target Price:  ' + wallet.data.targetPrice)
+          console.log('Stop Loss Price:  ' + wallet.data.stopLossPrice)
+
+          await simulatedSellOrder(wallet, currentMarket, 'Price information undefined')
+        
+        } else
+
+        if (currentMarket.currentPrice < wallet.data.stopLossPrice) {
+
+          console.log('Target Price:  ' + wallet.data.targetPrice)
+          console.log('Stop Loss Price:  ' + wallet.data.stopLossPrice)
+
+          await simulatedSellOrder(wallet, currentMarket, 'Below Stop Loss')
+        }
+
+      } catch(error) {
+
+        console.log(error)
+      }
     }
   } catch (error) {
     console.log(error)
@@ -506,6 +558,48 @@ async function dbInsert(data) {
   const options = { upsert: true };
   result = await collection.replaceOne(query, data, options);
   return result
+}
+
+async function simulatedSellOrder(wallet, market, sellType) {
+
+  try {
+    
+    const asset = market.name.split('/')[0]
+    const base  = market.name.split('/')[1]
+    const assetVolume = wallet.currencies[asset].quantity
+    if (!wallet.currencies[base]) wallet.currencies[base] = { quantity: 0 }
+    wallet.currencies[base].quantity += assetVolume * (1 - fee) * market.currentPrice
+    wallet.currencies[asset].quantity -= assetVolume
+    wallet.data.targetPrice = undefined
+
+    record(`${timeNow()} - Sold ${assetVolume} ${asset} @ ${market.currentPrice} ($${wallet.currencies[base].quantity}) [${sellType}]\n\n`)
+
+  } catch (error) {
+    
+    console.log(error.message)
+
+  }
+}
+
+async function switchMarket(wallet, market, goodMarketNames, currentMarket) {
+
+  try {
+
+    activeCurrency = await getActiveCurrency(wallet)
+
+    if (wallet.currencies[activeCurrency]['quantity'] > 10) {
+
+      await liveBuyOrder(wallet, market, goodMarketNames, currentMarket)
+
+    } else {
+
+      switchMarket(wallet, market, goodMarketNames, currentMarket)
+    }  
+
+  } catch (error) {
+
+    console.log(error.message)
+  }
 }
 
 run()
