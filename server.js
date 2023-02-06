@@ -30,22 +30,17 @@ async function run() {
     
     await record(`\n ---------- \n\n\nRunning at ${timeNow()}\n`)
     await setupDB();
+    
     const wallet = simulatedWallet()
-    const allMarkets = await fetchMarkets()
-    const goodMarketNames = Object.keys(allMarkets).filter(marketName => isGoodMarketName(marketName, allMarkets))
-    console.log('\nValid Markets\n')
-
-    goodMarketNames.map((name, i) => console.log(`${i+1}/${goodMarketNames.length} - ${name}`))
-
-    if (goodMarketNames.length) {
-      tick(wallet, goodMarketNames)
+    
+    const viableMarketNames = await fetchMarkets(wallet)
+    
+    if (viableMarketNames.length) {
+      tick(wallet, viableMarketNames)
     }
-
   } catch (error) {
     console.log(error.message)
   }
-
-
 }
 
 function record(report) {
@@ -66,7 +61,14 @@ async function setupDB() {
   await mongo.connect()
   db = mongo.db(dbName);
   collection = db.collection("price-data")
+  // console.log(collection.find())
+  await wipeDatabase()
   console.log("Database setup complete")
+
+}
+
+async function wipeDatabase() {
+  await collection.deleteMany({})
 }
 
 function simulatedWallet() {
@@ -82,13 +84,30 @@ function simulatedWallet() {
   }
 }
 
-async function fetchMarkets() {
+async function fetchMarkets(wallet) {
   try {
     const markets = await binance.load_markets()
-    return markets
+    const viableMarketNames = await analyseMarkets(markets, wallet)
+
+    return viableMarketNames
   } catch (error) {
     console.log(error.message)
   }
+}
+
+async function analyseMarkets(allMarkets, wallet) {
+  const goodMarketNames = Object.keys(allMarkets).filter(marketName => isGoodMarketName(marketName, allMarkets))
+    
+  console.log('\nValid Markets\n')
+  goodMarketNames.map((name, i) => console.log(`${i+1}/${goodMarketNames.length} - ${name}`))
+  
+  const viableMarketNames = await getViableMarketNames(goodMarketNames, wallet)
+  
+  console.log('\nViable Markets\n')
+  viableMarketNames.map((name, i) => console.log(`${i+1}/${viableMarketNames.length} - ${name}`))
+
+  return viableMarketNames
+
 }
 
 function isGoodMarketName(marketName, markets) {
@@ -105,28 +124,23 @@ function isGoodMarketName(marketName, markets) {
 
 }
 
-async function tick(wallet, goodMarketNames) {
+async function tick(wallet, viableMarketNames) {
 
   try {
     console.log(`\n\n----- Tick at ${timeNow()} -----\n\n`)
     await refreshWallet(wallet)
     displayWallet(wallet)
     let baseCoin = await getBaseCoin(wallet)
-    const viableMarketNames = await getViableMarketNames(goodMarketNames, wallet)
-    console.log('\nViable Markets\n')
-    viableMarketNames.map((name, i) => console.log(`${i+1}/${viableMarketNames.length} - ${name}`))
+    
     let viableMarkets = await fetchAllHistory(viableMarketNames)
     viableMarkets = await addEMA(viableMarkets)
     await displayMarkets(viableMarkets)
-    
-    // TRADE
-
-    await trade(viableMarkets, baseCoin, wallet, goodMarketNames)
+    await trade(viableMarkets, baseCoin, wallet)
 
   } catch (error) {
     console.log(error)
   }
-  tick(wallet, goodMarketNames)
+  tick(wallet, viableMarketNames)
 }
 
 async function refreshWallet(wallet) {
@@ -193,17 +207,12 @@ async function getViableMarketNames(marketNames, wallet) {
 
     const response    = await checkVolume(symbolName)
 
-    if (!response.includes("Insufficient") && response !== "No response" || marketName === wallet.data.currentMarket) {
+    if (!response.includes("Insufficient") && response !== "No response." || marketName === wallet.data.currentMarket) {
       viableMarketNames.push(marketName)
+      console.log('Market included.')
     }
 
-    if (response.includes("Insufficient") || response === "No response") console.log(261 + response)
-  }
-
-  if (wallet.data.currentMarket && !viableMarketNames.includes(wallet.data.currentMarket.name)) {
-    
-    viableMarketNames.push(wallet.data.currentMarket.name)
-    console.log('Current market not viable - manually added')
+    if (response.includes("Insufficient") || response === "No response.") console.log(261 + response)
   }
 
   return viableMarketNames
@@ -220,7 +229,7 @@ async function checkVolume(symbolName) {
   
   } else {
 
-    return "No response"
+    return "No response."
   }
 }
 
@@ -251,7 +260,7 @@ async function fetchAllHistory(marketNames) {
       console.log(`Fetching history for ${i+1}/${marketNames.length} - ${marketName} ...`)
       const response = await fetchSingleHistory(symbolName)
 
-      if (response !== 'No response') {
+      if (response !== 'No response.') {
 
         const symbolObject = await annotateData({
           name      : marketName,
@@ -288,7 +297,7 @@ async function fetchSingleHistory(symbolName, i, j) {
 
   } catch (error) {
     
-    return 'No response'
+    return 'No response.'
 
   }
 }
@@ -408,12 +417,12 @@ function extractData(dataArray, key) {
 
 function displayMarkets(markets) {
   console.log('\nMarkets\n')
-  markets.map((market, i) => {console.log(`${i}/${markets.length} - ${market.name}`)})
+  markets.map((market, i) => {console.log(`${i+1}/${markets.length} - ${market.name}`)})
 }
 
 // TRADE FUNCTIONS
 
-async function trade(viableMarkets, baseCoin, wallet, goodMarketNames) {
+async function trade(viableMarkets, baseCoin, wallet) {
 
   const targetMarket = getTargetMarket(viableMarkets)
     
@@ -427,7 +436,8 @@ async function trade(viableMarkets, baseCoin, wallet, goodMarketNames) {
     console.log(`\n${targetMarket === 'No bullish markets' ? targetMarket : `Target market - ${targetMarket.name}`} 132\n`)
 
     if (targetMarket !== 'No bullish markets' && wallet.coins[baseCoin].volume > 10) {
-      await simulatedBuyOrder(wallet, targetMarket, goodMarketNames)
+      const viableMarketNames = Object.keys(viableMarkets).map(market => market.name)
+      await simulatedBuyOrder(wallet, targetMarket, viableMarketNames)
     }
   } else {
 
@@ -457,7 +467,7 @@ async function trade(viableMarkets, baseCoin, wallet, goodMarketNames) {
         console.log('Next market:    ' + targetMarket.name)
 
         await simulatedSellOrder(wallet, 'Target price reached - switching market')
-        await switchMarket(wallet, targetMarket, goodMarketNames)
+        await switchMarket(wallet, targetMarket, viableMarketNames)
       } else
 
       if ((!wallet.data.targetPrice || !wallet.data.stopLossPrice) && baseCoin !== 'USDT') {
@@ -522,16 +532,16 @@ async function getBaseCoin(wallet) {
   return sorted.pop()
 }
 
-async function simulatedBuyOrder(wallet, market, goodMarketNames) {
+async function simulatedBuyOrder(wallet, market, viableMarketNames) {
   try {
     const asset = market.name.split('/')[0]
     const base  = market.name.split('/')[1]
     const response = await fetchPrice(`${asset}${base}`)
 
-    if (response === 'No response') {
+    if (response === 'No response.') {
 
-      console.log(`\nNo response - starting new tick`)
-      tick(wallet, goodMarketNames)
+      console.log(`\nNo response - starting new tick.`)
+      tick(wallet, viableMarketNames)
 
     } else {
 
@@ -560,10 +570,12 @@ async function simulatedBuyOrder(wallet, market, goodMarketNames) {
 }
 
 async function dbInsert(data) {
+  const key = Object.keys(data)[0]
+  const result = await collection.updateOne({key: key}, {$set: {data}});
 
-  const query   = { key: data.key };
-  const options = { upsert: true };
-  result = await collection.replaceOne(query, data, options);
+  // const query   = { key: key };
+  // const options = { upsert: true };
+  // result = await collection.replaceOne(query, data, options);
   return result
 }
 
@@ -588,7 +600,7 @@ async function simulatedSellOrder(wallet, market, sellType) {
   }
 }
 
-async function switchMarket(wallet, targetMarket, goodMarketNames) {
+async function switchMarket(wallet, targetMarket, viableMarketNames) {
 
   try {
 
@@ -596,11 +608,11 @@ async function switchMarket(wallet, targetMarket, goodMarketNames) {
 
     if (wallet.coins[baseCoin].volume > 10) {
 
-      await liveBuyOrder(wallet, targetMarket, goodMarketNames)
+      await liveBuyOrder(wallet, targetMarket, viableMarketNames)
 
     } else {
 
-      switchMarket(wallet, targetMarket, goodMarketNames)
+      switchMarket(wallet, targetMarket, viableMarketNames)
     }  
 
   } catch (error) {
