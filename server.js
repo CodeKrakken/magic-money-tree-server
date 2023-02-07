@@ -62,7 +62,7 @@ async function setupDB() {
   db = mongo.db(dbName);
   collection = db.collection("price-data")
   await wipeDatabase()
-  await dbInsert({test: 'successful'})
+  await dbInsert({sessionStart: timeNow()})
   console.log("Database setup complete")
 }
 
@@ -519,10 +519,12 @@ async function simulatedBuyOrder(wallet, market) {
       wallet.data.purchasePrice = currentPrice
       wallet.data.stopLossPrice = wallet.data.purchasePrice * stopLossThreshold
       wallet.data.highPrice = currentPrice
-      await dbInsert({targetPrice: wallet.data.targetPrice})
-      await dbInsert({purchasePrice: wallet.data.purchasePrice})
-      await dbInsert({stopLossPrice: wallet.data.stopLossPrice})
-      await dbInsert({highPrice: wallet.data.highPrice})
+      await dbInsert({
+        targetPrice   : wallet.data.targetPrice,
+        purchasePrice : wallet.data.purchasePrice,
+        stopLossPrice : wallet.data.stopLossPrice,
+        highPrice     : wallet.data.highPrice
+      })
       const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})`
       console.log(tradeReport)
       await record(tradeReport)
@@ -553,6 +555,7 @@ async function simulatedSellOrder(wallet, sellType) {
     const currentPrice = await fetchPrice(wallet.data.currentMarket.name)
     wallet.coins[base].volume += assetVolume * (1 - fee) * currentPrice
     wallet.coins[asset].volume -= assetVolume
+    await dbInsert({})
     wallet.data.targetPrice = undefined
 
     record(`${timeNow()} - Sold ${assetVolume} ${asset} @ ${currentPrice} ($${wallet.coins[base].volume}) [${sellType}]`)
