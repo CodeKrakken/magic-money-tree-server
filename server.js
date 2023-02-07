@@ -28,7 +28,7 @@ async function run() {
 
   try {
     
-    await record(`---------- Running at ${timeNow()} ----------\n`)
+    await record(`---------- Running at ${timeNow()} ----------`)
     await setupDB();
 
     const viableMarketNames = await fetchMarkets()
@@ -43,6 +43,7 @@ async function run() {
 }
 
 function record(report) {
+  report = report.concat('\n')
   fs.appendFile(`server-trade-history.txt`, report, function(err) {
     if (err) return console.log(err);
   })
@@ -61,6 +62,7 @@ async function setupDB() {
   db = mongo.db(dbName);
   collection = db.collection("price-data")
   await wipeDatabase()
+  await dbInsert({test: 'successful'})
   console.log("Database setup complete")
 }
 
@@ -147,6 +149,10 @@ async function refreshWallet(wallet) {
   if (wallet.data.baseCoin === 'USDT') {
     wallet.data.currentMarket = null
     wallet.data.targetPrice = null
+    wallet.data.highPrice = null
+    wallet.data.purchasePrice = null
+    wallet.data.stopLossPrice = null
+
   } else {
     wallet.data.currentMarket ? 
     wallet.data.currentMarket.name = `${wallet.data.baseCoin}/USDT` : 
@@ -225,7 +231,7 @@ async function getViableMarketNames(marketNames) {
       console.log('Market included.')
     }
 
-    if (response.includes("Insufficient") || response === "No response.") console.log(261 + response)
+    if (response.includes("Insufficient") || response === "No response.") console.log(response)
   }
 
   return viableMarketNames
@@ -281,7 +287,7 @@ async function fetchAllHistory(marketNames) {
 
         returnArray.push(symbolObject)
       } else { 
-        console.log(325 + response)
+        console.log(response)
       }
     } catch (error) {
       console.log(error.message)
@@ -445,12 +451,12 @@ async function trade(viableMarkets, wallet) {
       
       try {
         if (wallet.data.currentMarket.name !== targetMarket.name) { 
-
           await simulatedSellOrder(wallet, 'Switching market')
+          await simulatedBuyOrder(wallet, targetMarket)
 
           // REFACTOR FROM HERE
 
-          await switchMarket(wallet, targetMarket)
+          // await switchMarket(wallet, targetMarket)
         } else
 
         if ((!wallet.data.targetPrice || !wallet.data.stopLossPrice) && wallet.data.baseCoin !== 'USDT') {
@@ -517,8 +523,8 @@ async function simulatedBuyOrder(wallet, market) {
       await dbInsert({purchasePrice: wallet.data.purchasePrice})
       await dbInsert({stopLossPrice: wallet.data.stopLossPrice})
       await dbInsert({highPrice: wallet.data.highPrice})
-      const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})Target Price - ${wallet.data.targetPrice}`
-      console.log(551 + tradeReport)
+      const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})`
+      console.log(tradeReport)
       await record(tradeReport)
     }
   } catch (error) {
@@ -527,29 +533,29 @@ async function simulatedBuyOrder(wallet, market) {
 }
 
 async function dbInsert(data) {
-  const key = Object.keys(data)[0]
-  const result = await collection.updateOne({key: key}, {$set: {data}});
 
-  // const query   = { key: key };
-  // const options = { upsert: true };
-  // result = await collection.replaceOne(query, data, options);
+  const query = { key: data.key };
+  const options = {
+    upsert: true,
+  };
+  result = await collection.replaceOne(query, data, options);
   return result
 }
 
 async function simulatedSellOrder(wallet, sellType) {
 
   try {
-    
     const asset = wallet.data.currentMarket.name.split('/')[0]
     const base  = wallet.data.currentMarket.name.split('/')[1]
     const assetVolume = wallet.coins[asset].volume
     
     if (!wallet.coins[base]) wallet.coins[base] = { volume: 0 }
-    wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.data.currentMarket.currentPrice
+    const currentPrice = await fetchPrice(wallet.data.currentMarket.name)
+    wallet.coins[base].volume += assetVolume * (1 - fee) * currentPrice
     wallet.coins[asset].volume -= assetVolume
     wallet.data.targetPrice = undefined
 
-    record(`${timeNow()} - Sold ${assetVolume} ${asset} @ ${wallet.data.currentMarket.currentPrice} ($${wallet.coins[base].volume}) [${sellType}]`)
+    record(`${timeNow()} - Sold ${assetVolume} ${asset} @ ${currentPrice} ($${wallet.coins[base].volume}) [${sellType}]`)
 
   } catch (error) {
     
@@ -563,7 +569,6 @@ async function switchMarket(wallet, targetMarket) {
   try {
 
     if (wallet.coins[wallet.data.baseCoin].volume > 10) {
-      await simulatedBuyOrder(wallet, market)
 
       // await liveBuyOrder(wallet, targetMarket, viableMarketNames)
 
