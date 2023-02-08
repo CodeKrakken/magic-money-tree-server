@@ -31,7 +31,7 @@ async function run() {
       tick(wallet, viableMarketNames)
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
@@ -71,7 +71,7 @@ async function fetchMarkets() {
     const viableMarketNames = await analyseMarkets(markets)
     return viableMarketNames
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
@@ -143,6 +143,8 @@ async function tick(wallet, viableMarketNames) {
     displayWallet(wallet)
     let viableMarkets = await fetchAllHistory(viableMarketNames)
     viableMarkets = await addEMA(viableMarkets)
+    viableMarkets = await sortByArc(viableMarkets)
+    await displayMarkets(viableMarkets)
     await trade(viableMarkets, wallet)
   } catch (error) {
     console.log(error)
@@ -167,7 +169,10 @@ async function refreshWallet(wallet) {
     wallet.data.currentMarket = {}
     wallet.data.prices = {}
   } else {
-    wallet.data.currentMarket = { name: `${wallet.data.baseCoin}/USDT` }
+    wallet.data.currentMarket = { 
+      name: `${wallet.data.baseCoin}/USDT`,
+      currentPrice: wallet.coins[wallet.data.baseCoin].dollarPrice
+    }
     
     if (!Object.keys(wallet.data.prices).length) {
       const data = await collection.find().toArray();
@@ -186,7 +191,7 @@ async function fetchPrice(marketName) {
     const price = parseFloat(rawPrice.data.price)
     return price
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
@@ -237,7 +242,7 @@ async function fetchAllHistory(marketNames) {
         console.log(response)
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error)
     }
   }
   return returnArray
@@ -296,7 +301,7 @@ async function annotateData(data) {
     }
   
   } catch(error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
@@ -327,7 +332,7 @@ async function addEMA(markets) {
     })
     return markets
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
@@ -356,6 +361,42 @@ function extractData(dataArray, key) {
   return outputArray
 }
 
+async function sortByArc(markets) {
+
+  markets.map(market => {
+    const m = market.histories.minutes.length
+    market.totalChange = market.histories.minutes[m - 1].close - market.histories.minutes[0].close
+    market.percentageChange = market.totalChange / market.histories.minutes[0].close * 100
+    let straightLineIncrement = market.totalChange / m
+    market.bigDrop = 1
+    market.bigRise = 1
+    let straightLine = market.histories.minutes[0].close
+
+    market.histories.minutes.map(thisPeriod => {
+      straightLine += straightLineIncrement
+
+      if (thisPeriod.low < straightLine && thisPeriod.low / straightLine < market.bigDrop) {
+        market.bigDrop = thisPeriod.low / straightLine
+      }
+
+      if (thisPeriod.high > straightLine && thisPeriod.high / straightLine > market.bigRise) {
+        market.bigRise = thisPeriod.high / straightLine
+      }
+    })
+
+    market.shape = market.percentageChange * market.bigDrop / market.bigRise
+  })
+
+  return markets.sort((a, b) => ((b.shape) - (a.shape)))
+}
+
+function displayMarkets(markets) {
+  markets.map(market => {
+    console.log(`${market.name} ... %ch: ${market.percentageChange} * drop: ${market.bigDrop} / rise: ${market.bigRise} = ${market.shape}`)
+  })
+}
+
+
 // TRADE FUNCTIONS
 
 async function trade(viableMarkets, wallet) {
@@ -373,17 +414,20 @@ async function trade(viableMarkets, wallet) {
       }
     } 
   } else {
+    console.log(viableMarkets)
+    console.log(wallet)
+    const market = viableMarkets.filter(market => market.name === wallet.data.currentMarket.name)[0]
   
     try {
       if (targetMarket === 'No bullish markets') {
         console.log(targetMarket)
-        await simulatedSellOrder(wallet, 'Current market bearish')
+        await simulatedSellOrder(wallet, 'Current market bearish', market)
       } else if (targetMarket.name !== wallet.data.currentMarket.name) { 
-        await simulatedSellOrder(wallet, 'Better market found')
+        await simulatedSellOrder(wallet, 'Better market found', market)
       } else if ((!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) && wallet.data.baseCoin !== 'USDT') {
-        await simulatedSellOrder(wallet, 'Price information undefined')
+        await simulatedSellOrder(wallet, 'Price information undefined', market)
       } else if (wallet.data.currentMarket.currentPrice < wallet.data.prices.stopLossPrice) {
-        await simulatedSellOrder(wallet, 'Below Stop Loss')
+        await simulatedSellOrder(wallet, 'Below Stop Loss', market)
       }
     } catch(error) {
       console.log(error)
@@ -391,17 +435,12 @@ async function trade(viableMarkets, wallet) {
   }
 }
 
-
 function getTargetMarket(markets) {
-
   const bulls = markets.filter(market => 
-    // market.shape > 0 
-    // && 
-    // market.trend === 'up'
-    // && 
+    market.shape > 0 
+    && 
     market.emas.minutes.ema1 > market.emas.minutes.ema13
-  ).sort((a, b) => a.emas.minutes.ema1/a.emas.minutes.ema13 - b.emas.minutes.ema1/b.emas.minutes.ema13)
-
+  )
   return bulls.length ? bulls[0] : 'No bullish markets'
 }
 
@@ -430,16 +469,16 @@ async function simulatedBuyOrder(wallet, market) {
 
       wallet.data.currentMarket = market
       await dbOverwrite(wallet.data.prices)
-      const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})`
+      const tradeReport = `${timeNow()} - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)}) [${market.shape}]`
       console.log(tradeReport)
       await record(tradeReport)
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
-async function simulatedSellOrder(wallet, sellType) {
+async function simulatedSellOrder(wallet, sellType, market) {
   try {
     const asset = wallet.data.currentMarket.name.split('/')[0]
     const base  = wallet.data.currentMarket.name.split('/')[1]
@@ -447,10 +486,12 @@ async function simulatedSellOrder(wallet, sellType) {
     wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.coins[asset].dollarPrice
     wallet.data.prices = {}
     await dbOverwrite(wallet.data.prices)
-    record(`${timeNow()} - Transaction - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) [${sellType}]`)
+    const tradeReport = `${timeNow()} - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) [${market.shape}] [${sellType}]`
+    console.log(tradeReport)
+    record(tradeReport)
     delete wallet.coins[asset]
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
   }
 }
 
