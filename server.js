@@ -156,7 +156,6 @@ async function refreshWallet(wallet) {
   for (let i = 0; i < n; i ++) {
     const coin = Object.keys(wallet.coins)[i]
     wallet.coins[coin].dollarPrice = coin === 'USDT' ? 1 : await fetchPrice(`${coin}USDT`)
-    console.log(159)
     wallet.coins[coin].dollarValue = wallet.coins[coin].volume * wallet.coins[coin].dollarPrice
   }
 
@@ -193,10 +192,8 @@ async function fetchPrice(marketName) {
 
 function displayWallet(wallet) {
   console.log('Wallet')
-  console.log(196)
 
   Object.keys(wallet.coins).filter(coin => wallet.coins[coin].volume).map(name => {
-    console.log(199)
     console.log(`${wallet.coins[name].volume} ${name} @ ${wallet.coins[name].dollarPrice} = $${wallet.coins[name].dollarValue}`)
   })
   console.log(`Total = $${getDollarTotal(wallet)}`)
@@ -370,7 +367,6 @@ async function trade(viableMarkets, wallet) {
     if (targetMarket === 'No bullish markets') {
       console.log(targetMarket)
     } else {
-      console.log(375)
 
       if (wallet.coins[wallet.data.baseCoin].volume > 10) {
         await simulatedBuyOrder(wallet, targetMarket)
@@ -417,16 +413,13 @@ async function simulatedBuyOrder(wallet, market) {
 
     if (response !== 'No response.') {
       const currentPrice = response
-      console.log(422)
 
       const baseVolume = wallet.coins[base].volume
       if (!wallet.coins[asset]) wallet.coins[asset] = { volume: 0 }
       wallet.coins[base].volume = 0
-      console.log(427)
 
       wallet.coins[asset].volume += baseVolume * (1 - fee) / currentPrice
       const targetVolume = baseVolume * (1 + (2 * fee))
-      console.log(429)
 
       wallet.data.prices = {
         targetPrice   : targetVolume / wallet.coins[asset].volume,
@@ -437,7 +430,6 @@ async function simulatedBuyOrder(wallet, market) {
 
       wallet.data.currentMarket = market
       await dbOverwrite(wallet.data.prices)
-      console.log(440)
       const tradeReport = `${timeNow()} - Transaction - Bought ${wallet.coins[asset].volume} ${asset} @ ${currentPrice} ($${baseVolume * (1 - fee)})`
       console.log(tradeReport)
       await record(tradeReport)
@@ -451,13 +443,10 @@ async function simulatedSellOrder(wallet, sellType) {
   try {
     const asset = wallet.data.currentMarket.name.split('/')[0]
     const base  = wallet.data.currentMarket.name.split('/')[1]
-    console.log(454)
     const assetVolume = wallet.coins[asset].volume
-    console.log(456)
     wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.coins[asset].dollarPrice
     wallet.data.prices = {}
     await dbOverwrite(wallet.data.prices)
-    console.log(461)
     record(`${timeNow()} - Transaction - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) [${sellType}]`)
     delete wallet.coins[asset]
   } catch (error) {
