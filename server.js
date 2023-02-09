@@ -11,7 +11,7 @@ const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: 
 let db
 let collection
 const dbName = "magic-money-tree";
-const minimumDollarVolume = 28000000
+const minimumDollarVolume = 1000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 
@@ -90,7 +90,7 @@ function isGoodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
-  // && marketName === 'GBP/USDT'
+  && marketName === 'GBP/USDT'
   // && !marketName.includes('BNB')
 }
 
@@ -317,38 +317,45 @@ async function addEMARatio(markets) {
   try {
     markets.map(market => {
       market.emas = {
+        // months: {
+        //   ema1  : ema(market.histories.months,  1,  'close'),
+        //   ema8  : ema(market.histories.months,  8,  'close'),
+        //   ema21 : ema(market.histories.months, 21,  'close'),
+        // },
+        // weeks: {
+        //   ema1  : ema(market.histories.weeks,  1,  'close'),
+        //   ema8  : ema(market.histories.weeks,  8,  'close'),
+        //   ema21 : ema(market.histories.weeks, 21,  'close'),
+        // },
+
         minutes: {
           ema1  : ema(market.histories.minutes,  1, 'close'),
           ema8  : ema(market.histories.minutes,  8, 'close'),
           ema21 : ema(market.histories.minutes, 21, 'close'),
         },
+
         hours: {
-          ema1  : ema(market.histories.hours,  1,  'close'),
-          ema8  : ema(market.histories.hours,  8,  'close'),
-          ema21 : ema(market.histories.hours, 21,  'close'),
+          ema1  : ema(market.histories.hours,  1, 'close'),
+          ema8  : ema(market.histories.hours,  8, 'close'),
+          ema21 : ema(market.histories.hours, 21, 'close'),
         }, 
+        
         days: {
-          ema1  : ema(market.histories.days,  1,  'close'),
+          ema1  : ema(market.histories.days,  1,  'close'),    
           ema8  : ema(market.histories.days,  8,  'close'),
           ema21 : ema(market.histories.days, 21,  'close'),
         },
-        weeks: {
-          ema1  : ema(market.histories.weeks,  1,  'close'),
-          ema8  : ema(market.histories.weeks,  8,  'close'),
-          ema21 : ema(market.histories.weeks, 21,  'close'),
-        },
-        months: {
-          ema1  : ema(market.histories.months,  1,  'close'),
-          ema8  : ema(market.histories.months,  8,  'close'),
-          ema21 : ema(market.histories.months, 21,  'close'),
-        },
+        
       }
+
+      console.log(market.emas)
       let ratios = []
 
       Object.values(market.emas).map(periods => {
-        ratios.push((periods.ema1/periods.ema8)/(periods.ema8/periods.ema21))
+        ratios.push(periods.ema1/periods.ema8)/(periods.ema8/periods.ema21)
       })
-      market.emaRatio = (ratios[0]/ratios[1])/(ratios[1]/ratios[2])
+      console.log(ratios)
+      market.emaRatio = ratios.reduce((a,b) => a+b)/3
     })
     return markets
   } catch (error) {
