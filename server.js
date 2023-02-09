@@ -142,10 +142,12 @@ async function tick(wallet, viableMarketNames) {
     console.log(`----- Tick at ${timeNow()} -----`)
     await refreshWallet(wallet)
     displayWallet(wallet)
-    let viableMarkets = await fetchAllHistory(viableMarketNames, wallet)
-    viableMarkets = await addEMARatio(viableMarkets)
-    viableMarkets = await addShape(viableMarkets)
-    await trade(viableMarkets, wallet)
+    let markets = await fetchAllHistory(viableMarketNames, wallet)
+    markets = await addEMARatio(markets)
+    markets = await addShape(markets)
+    markets = sortMarkets(markets)
+    await displayMarkets(markets)
+    await trade(markets, wallet)
   } catch (error) {
     console.log(error)
   }
@@ -252,11 +254,15 @@ async function fetchSingleHistory(symbolName) {
     let minuteHistory = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
     let hourHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1h`, { timeout: 10000 })
     let dayHistory    = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1d`, { timeout: 10000 })
-    
+    let weekHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1w`, { timeout: 10000 })
+    let monthHistory  = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1M`, { timeout: 10000 })
+
     return {
       minutes : minuteHistory.data, 
       hours   : hourHistory.data, 
-      days    : dayHistory.data
+      days    : dayHistory.data,
+      weeks   : weekHistory.data,
+      months  : monthHistory.data,
     }
   } catch (error) {
     return 'No response.'
@@ -295,8 +301,8 @@ async function annotateData(data) {
     })
 
     return {
-      name: data.name,
-      histories: histories
+      name      : data.name,
+      histories : histories
     }
   
   } catch(error) {
@@ -325,6 +331,16 @@ async function addEMARatio(markets) {
           ema1  : ema(market.histories.days,  1,  'close'),
           ema8  : ema(market.histories.days,  8,  'close'),
           ema21 : ema(market.histories.days, 21,  'close'),
+        },
+        weeks: {
+          ema1  : ema(market.histories.weeks,  1,  'close'),
+          ema8  : ema(market.histories.weeks,  8,  'close'),
+          ema21 : ema(market.histories.weeks, 21,  'close'),
+        },
+        months: {
+          ema1  : ema(market.histories.months,  1,  'close'),
+          ema8  : ema(market.histories.months,  8,  'close'),
+          ema21 : ema(market.histories.months, 21,  'close'),
         },
       }
       let ratios = []
@@ -403,27 +419,28 @@ function displayMarkets(markets) {
 
 // TRADE FUNCTIONS
 
-async function trade(viableMarkets, wallet) {
-  const targetMarket = getTargetMarket(viableMarkets)
-  await displayMarkets(viableMarkets)
+async function trade(markets, wallet) {
+  
+  const targetMarket = markets[0].strength > 0 ? markets[0] : null
 
   if (wallet.data.baseCoin === 'USDT') {   
 
-    if (targetMarket === 'No bullish markets') {
-      console.log(targetMarket)
+    if (!targetMarket) {
+      console.log('No bullish markets')
     } else if (wallet.coins[wallet.data.baseCoin].volume > 10) {
       await simulatedBuyOrder(wallet, targetMarket)
     } 
   } else {
     try {
-      if (targetMarket === 'No bullish markets') {
+      const currentMarket = markets.filter(market => market.name === wallet.data.currentMarket.name)[0]
 
-        console.log(targetMarket)
+      if (!targetMarket) {
+
+        console.log('No bullish markets')
         await simulatedSellOrder(wallet, 'Current market bearish', currentMarket)
 
       } else {
 
-        const currentMarket = viableMarkets.filter(market => market.name === wallet.data.currentMarket.name)[0]
 
         if (!currentMarket) {
           await simulatedSellOrder(wallet, 'No response for current market', wallet.data.currentMarket)
@@ -443,14 +460,14 @@ async function trade(viableMarkets, wallet) {
   }
 }
 
-function getTargetMarket(markets) {
+function sortMarkets(markets) {
 
-  let targetMarkets = markets.map(market => {
+  markets = markets.map(market => {
     market.strength = market.emaRatio * market.shape
     return market
   })
-  targetMarkets.sort((a,b) => b.strength - a.strength)
-  return targetMarkets.filter(market => market.shape > 0).length ? markets[0] : 'No bullish markets'  
+  markets = markets.sort((a,b) => b.strength - a.strength)
+  return markets
 }
 
 async function simulatedBuyOrder(wallet, market) {
@@ -487,11 +504,15 @@ async function simulatedBuyOrder(wallet, market) {
 }
 
 async function simulatedSellOrder(wallet, sellType, market) {
-  console.log(wallet)
-  console.log(market)
+
   try {
     const asset = wallet.data.currentMarket.name.split('/')[0]
     const base  = wallet.data.currentMarket.name.split('/')[1]
+    console.log(wallet)
+    console.log(wallet.coins)
+    console.log(asset)
+    console.log(wallet.coins[asset])
+    console.log(wallet.coins[asset].volume)
     const assetVolume = wallet.coins[asset].volume
     wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.coins[asset].dollarPrice
     wallet.data.prices = {}
