@@ -142,7 +142,7 @@ async function tick(wallet, viableMarketNames) {
     console.log(`----- Tick at ${timeNow()} -----`)
     await refreshWallet(wallet)
     displayWallet(wallet)
-    let viableMarkets = await fetchAllHistory(viableMarketNames)
+    let viableMarkets = await fetchAllHistory(viableMarketNames, wallet)
     viableMarkets = await addEMARatio(viableMarkets)
     viableMarkets = await addShape(viableMarkets)
     await trade(viableMarkets, wallet)
@@ -221,7 +221,7 @@ function getDollarTotal(wallet) {
   return total
 }
 
-async function fetchAllHistory(marketNames) {
+async function fetchAllHistory(marketNames, wallet) {
   const n = marketNames.length
   const returnArray = []
 
@@ -230,16 +230,15 @@ async function fetchAllHistory(marketNames) {
       console.log(`Fetching history for ${i+1}/${marketNames.length} - ${marketNames[i]} ...`)
       const response = await fetchSingleHistory(marketNames[i].replace('/', ''))
 
-      if (response !== 'No response.') {
-
+      if (response === 'No response.') {
+        console.log(response)
+      } else { 
         const symbolObject = await annotateData({
           name      : marketNames[i],
           histories : response
         })
 
         returnArray.push(symbolObject)
-      } else { 
-        console.log(response)
       }
     } catch (error) {
       console.log(error)
@@ -392,7 +391,7 @@ async function addShape(markets) {
     market.shape = market.percentageChange * market.bigDrop / market.bigRise
   })
 
-  return markets.sort((a, b) => ((b.shape) - (a.shape)))
+  return markets
 }
 
 function displayMarkets(markets) {
@@ -405,35 +404,34 @@ function displayMarkets(markets) {
 // TRADE FUNCTIONS
 
 async function trade(viableMarkets, wallet) {
-
   const targetMarket = getTargetMarket(viableMarkets)
   await displayMarkets(viableMarkets)
-
 
   if (wallet.data.baseCoin === 'USDT') {   
 
     if (targetMarket === 'No bullish markets') {
       console.log(targetMarket)
-    } else {
-
-      if (wallet.coins[wallet.data.baseCoin].volume > 10) {
-        await simulatedBuyOrder(wallet, targetMarket)
-      }
+    } else if (wallet.coins[wallet.data.baseCoin].volume > 10) {
+      await simulatedBuyOrder(wallet, targetMarket)
     } 
   } else {
     try {
       if (targetMarket === 'No bullish markets') {
 
         console.log(targetMarket)
-        await simulatedSellOrder(wallet, 'Current market bearish', market)
+        await simulatedSellOrder(wallet, 'Current market bearish', currentMarket)
 
       } else {
 
         const currentMarket = viableMarkets.filter(market => market.name === wallet.data.currentMarket.name)[0]
 
+        if (!currentMarket) {
+          await simulatedSellOrder(wallet, 'No response for current market', wallet.data.currentMarket)
+        }
+
         if (targetMarket.name !== wallet.data.currentMarket.name) { 
           await simulatedSellOrder(wallet, 'Better market found', currentMarket)
-        } else if ((!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) && wallet.data.baseCoin !== 'USDT') {
+        } else if (!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) {
           await simulatedSellOrder(wallet, 'Price information undefined', currentMarket)
         } else if (wallet.data.currentMarket.currentPrice < wallet.data.prices.stopLossPrice) {
           await simulatedSellOrder(wallet, 'Below Stop Loss', currentMarket)
@@ -446,18 +444,13 @@ async function trade(viableMarkets, wallet) {
 }
 
 function getTargetMarket(markets) {
-  markets = markets.filter(market => market.shape > 0)
 
-  if (markets.length) {
-    markets.map(market => {
-      console.log(market)
-      market.strength = market.emaRatio * market.shape
-    })
-    return markets.sort((a,b) => b.strength - a.strength)[0]
-  } else {
-    return 'No bullish markets'
-  }
-  
+  let targetMarkets = markets.map(market => {
+    market.strength = market.emaRatio * market.shape
+    return market
+  })
+  targetMarkets.sort((a,b) => b.strength - a.strength)
+  return targetMarkets.filter(market => market.shape > 0).length ? markets[0] : 'No bullish markets'  
 }
 
 async function simulatedBuyOrder(wallet, market) {
@@ -468,7 +461,6 @@ async function simulatedBuyOrder(wallet, market) {
 
     if (response !== 'No response.') {
       const currentPrice = response
-
       const baseVolume = wallet.coins[base].volume
       if (!wallet.coins[asset]) wallet.coins[asset] = { volume: 0 }
       wallet.coins[base].volume = 0
@@ -495,6 +487,8 @@ async function simulatedBuyOrder(wallet, market) {
 }
 
 async function simulatedSellOrder(wallet, sellType, market) {
+  console.log(wallet)
+  console.log(market)
   try {
     const asset = wallet.data.currentMarket.name.split('/')[0]
     const base  = wallet.data.currentMarket.name.split('/')[1]
@@ -502,7 +496,7 @@ async function simulatedSellOrder(wallet, sellType, market) {
     wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.coins[asset].dollarPrice
     wallet.data.prices = {}
     await dbOverwrite(wallet.data.prices)
-    const tradeReport = `${timeNow()} - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) [${market.shape}] [${sellType}]`
+    const tradeReport = `${timeNow()} - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) ${market.shape ? `[${market.shape}]` : ''} [${sellType}]`
     console.log(tradeReport)
     record(tradeReport)
     delete wallet.coins[asset]
