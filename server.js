@@ -3,6 +3,7 @@ const fs = require('fs');
 const ccxt = require('ccxt');
 const axios = require('axios')
 const { MongoClient } = require('mongodb');
+const e = require('cors');
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const uri = `mongodb+srv://${username}:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -142,9 +143,8 @@ async function tick(wallet, viableMarketNames) {
     await refreshWallet(wallet)
     displayWallet(wallet)
     let viableMarkets = await fetchAllHistory(viableMarketNames)
-    viableMarkets = await addEMA(viableMarkets)
-    viableMarkets = await sortByArc(viableMarkets)
-    await displayMarkets(viableMarkets)
+    viableMarkets = await addEMARatio(viableMarkets)
+    viableMarkets = await addShape(viableMarkets)
     await trade(viableMarkets, wallet)
   } catch (error) {
     console.log(error)
@@ -305,30 +305,35 @@ async function annotateData(data) {
   }
 }
 
-async function addEMA(markets) {
+async function addEMARatio(markets) {
+
+  // THINK HARD ABOUT THE MATHS TOMORROW
+
   try {
     markets.map(market => {
       market.emas = {
-        days: {
-          ema13   : ema(market.histories.days,  13,  'close'),
-          ema34   : ema(market.histories.days,  34,  'close'),
-          ema89   : ema(market.histories.days,  89,  'close'),
-          ema233  : ema(market.histories.days, 233,  'close')
-        }, 
-        hours: {
-          ema13   : ema(market.histories.hours,  13,  'close'),
-          ema34   : ema(market.histories.hours,  34,  'close'),
-          ema89   : ema(market.histories.hours,  89,  'close'),
-          ema233  : ema(market.histories.hours, 233,  'close')
-        }, 
         minutes: {
-          ema1    : ema(market.histories.minutes,   1, 'close'),
-          ema13   : ema(market.histories.minutes,   13, 'close'),
-          ema34   : ema(market.histories.minutes,   34, 'close'),
-          ema89   : ema(market.histories.minutes,   89, 'close'),
-          ema233  : ema(market.histories.minutes,  233, 'close')
-        }
+          ema1  : ema(market.histories.minutes,  1, 'close'),
+          ema8  : ema(market.histories.minutes,  8, 'close'),
+          ema21 : ema(market.histories.minutes, 21, 'close'),
+        },
+        hours: {
+          ema1  : ema(market.histories.hours,  1,  'close'),
+          ema8  : ema(market.histories.hours,  8,  'close'),
+          ema21 : ema(market.histories.hours, 21,  'close'),
+        }, 
+        days: {
+          ema1  : ema(market.histories.days,  1,  'close'),
+          ema8  : ema(market.histories.days,  8,  'close'),
+          ema21 : ema(market.histories.days, 21,  'close'),
+        },
       }
+      let ratios = []
+
+      Object.values(market.emas).map(periods => {
+        ratios.push((periods.ema1/periods.ema8)/(periods.ema8/periods.ema21))
+      })
+      market.emaRatio = (ratios[0]/ratios[1])/(ratios[1]/ratios[2])
     })
     return markets
   } catch (error) {
@@ -361,7 +366,7 @@ function extractData(dataArray, key) {
   return outputArray
 }
 
-async function sortByArc(markets) {
+async function addShape(markets) {
 
   markets.map(market => {
     const m = market.histories.minutes.length
@@ -392,7 +397,7 @@ async function sortByArc(markets) {
 
 function displayMarkets(markets) {
   markets.map(market => {
-    console.log(`${market.name} ... %ch: ${market.percentageChange} * drop: ${market.bigDrop} / rise: ${market.bigRise} = ${market.shape}`)
+    console.log(`${market.name} ... shape ${market.shape} * ema ratio ${market.emaRatio} = strength ${market.strength}`)
   })
 }
 
@@ -402,6 +407,8 @@ function displayMarkets(markets) {
 async function trade(viableMarkets, wallet) {
 
   const targetMarket = getTargetMarket(viableMarkets)
+  await displayMarkets(viableMarkets)
+
 
   if (wallet.data.baseCoin === 'USDT') {   
 
@@ -414,20 +421,23 @@ async function trade(viableMarkets, wallet) {
       }
     } 
   } else {
-    console.log(viableMarkets)
-    console.log(wallet)
-    const market = viableMarkets.filter(market => market.name === wallet.data.currentMarket.name)[0]
-  
     try {
       if (targetMarket === 'No bullish markets') {
+
         console.log(targetMarket)
         await simulatedSellOrder(wallet, 'Current market bearish', market)
-      } else if (targetMarket.name !== wallet.data.currentMarket.name) { 
-        await simulatedSellOrder(wallet, 'Better market found', market)
-      } else if ((!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) && wallet.data.baseCoin !== 'USDT') {
-        await simulatedSellOrder(wallet, 'Price information undefined', market)
-      } else if (wallet.data.currentMarket.currentPrice < wallet.data.prices.stopLossPrice) {
-        await simulatedSellOrder(wallet, 'Below Stop Loss', market)
+
+      } else {
+
+        const currentMarket = viableMarkets.filter(market => market.name === wallet.data.currentMarket.name)[0]
+
+        if (targetMarket.name !== wallet.data.currentMarket.name) { 
+          await simulatedSellOrder(wallet, 'Better market found', currentMarket)
+        } else if ((!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) && wallet.data.baseCoin !== 'USDT') {
+          await simulatedSellOrder(wallet, 'Price information undefined', currentMarket)
+        } else if (wallet.data.currentMarket.currentPrice < wallet.data.prices.stopLossPrice) {
+          await simulatedSellOrder(wallet, 'Below Stop Loss', currentMarket)
+        }
       }
     } catch(error) {
       console.log(error)
@@ -436,12 +446,18 @@ async function trade(viableMarkets, wallet) {
 }
 
 function getTargetMarket(markets) {
-  const bulls = markets.filter(market => 
-    market.shape > 0 
-    && 
-    market.emas.minutes.ema1 > market.emas.minutes.ema13
-  )
-  return bulls.length ? bulls[0] : 'No bullish markets'
+  markets = markets.filter(market => market.shape > 0)
+
+  if (markets.length) {
+    markets.map(market => {
+      console.log(market)
+      market.strength = market.emaRatio * market.shape
+    })
+    return markets.sort((a,b) => b.strength - a.strength)[0]
+  } else {
+    return 'No bullish markets'
+  }
+  
 }
 
 async function simulatedBuyOrder(wallet, market) {
