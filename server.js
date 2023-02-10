@@ -317,20 +317,15 @@ async function addEmaRatio(markets) {
     markets.map(market => {
       market.emas = {}
 
-      periods.map(period => {
+      const periodRatioEmas = periods.map(period => {
         market.emas[period] = spans.map(span => 
           ema(market.histories[period], span,  'average')
         )
-      })
-      
-      console.log(market)
-
-      const periodRatioEmas = Object.keys(market.emas).map(period => {
         const ratios = ratioArray(market.emas[period])
         const ratioEma = ema(ratios)
         return ratioEma
       })
-
+      
       console.log(periodRatioEmas)
 
       market.emaRatio = ema(periodRatioEmas)
