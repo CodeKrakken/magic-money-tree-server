@@ -311,22 +311,52 @@ async function addEmaRatio(markets) {
   // THINK HARD ABOUT THE MATHS TOMORROW
 
   try {
-    const periods = ['days', 'hours', 'minutes']
-    const emas = [21, 8, 1]
+    // const periods = ['days', 'hours', 'minutes']
     
     markets.map(market => {
-      market.emas = {}
+      // market.emas = {}
 
-      periods.map(period => {
-        market.emas[period] = [
-          ema(market.histories[period], 21,  'average'), 
-          ema(market.histories[period],  8,  'average'),
-          ema(market.histories[period],  1,  'average'),   
-        ]
-      })
-      
+      // periods.map(period => {
+      //   market.emas[period] = [
+      //     ema(market.histories[period], 21,  'average'), 
+      //     ema(market.histories[period],  8,  'average'),
+      //     ema(market.histories[period],  1,  'average'),   
+      //   ]
+      // })
+      market.emas = {
+        // months: [
+        //   ema(market.histories.months, 21,  'average'), 
+        //   ema(market.histories.months,  8,  'average'),
+        //   ema(market.histories.months,  1,  'average'),   
+        // ],
+        // weeks: [
+        //   ema(market.histories.weeks, 21,  'average'), 
+        //   ema(market.histories.weeks,  8,  'average'),
+        //   ema(market.histories.weeks,  1,  'average'),   
+        // ],
+        days: [
+          ema(market.histories.days, 21,  'average'), 
+          ema(market.histories.days,  8,  'average'),
+          ema(market.histories.days,  1,  'average'),   
+        ],
+        hours: [
+          ema(market.histories.hours, 21, 'average'),
+          ema(market.histories.hours,  8, 'average'),
+          ema(market.histories.hours,  1, 'average'),
+        ], 
+        minutes: [
+          ema(market.histories.minutes, 21, 'average'),
+          ema(market.histories.minutes,  8, 'average'),
+          ema(market.histories.minutes,  1, 'average'),
+        ],
+      }
+
       console.log(market)
 
+      // const monthsRatios = ratioArray(market.emas.months)
+      // const monthsEma = ema(monthsRatios)
+      // const weeksRatios = ratioArray(market.emas.weeks)
+      // const weeksEma = ema(weeksRatios)
       const daysRatios = ratioArray(market.emas.days)
       console.log('daysRatios')
       console.log(daysRatios)
