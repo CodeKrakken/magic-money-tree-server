@@ -4,6 +4,7 @@ const ccxt = require('ccxt');
 const axios = require('axios')
 const { MongoClient } = require('mongodb');
 const e = require('cors');
+const { clear } = require('console');
 const username = process.env.MONGODB_USERNAME
 const password = process.env.MONGODB_PASSWORD
 const uri = `mongodb+srv://${username}:${password}@cluster0.ra0fk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -143,7 +144,7 @@ async function tick(wallet, viableMarketNames) {
     await refreshWallet(wallet)
     displayWallet(wallet)
     let markets = await fetchAllHistory(viableMarketNames, wallet)
-    markets = await addEMARatio(markets)
+    markets = await addEmaRatio(markets)
     markets = await addShape(markets)
     markets = sortMarkets(markets)
     await displayMarkets(markets)
@@ -192,7 +193,7 @@ async function fetchPrice(marketName) {
     const rawPrice = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbolName}`) 
     const price = parseFloat(rawPrice.data.price)
     return price
-  } catch (error) {
+  } catch (error) {clear
     console.log(error)
   }
 }
@@ -278,22 +279,17 @@ async function annotateData(data) {
 
       data.histories[periods].map(period => {
   
-        const average = (
-          parseFloat(period[1]) +
-          parseFloat(period[2]) +
-          parseFloat(period[3]) +
-          parseFloat(period[4])
-        )/4
-  
+        const average = period.slice(1, 5).reduce((a,b)=>parseFloat(a)+parseFloat(b))/4
+
         history.push(
           {
-            'startTime': period[0],
-            'open'     : parseFloat(period[1]),
-            'high'     : parseFloat(period[2]),
-            'low'      : parseFloat(period[3]),
-            'close'    : parseFloat(period[4]),
-            'endTime'  : period[6],
-            'average'  : average
+            startTime : period[0],
+            open      : parseFloat(period[1]),
+            high      : parseFloat(period[2]),
+            low       : parseFloat(period[3]),
+            close     : parseFloat(period[4]),
+            endTime   : period[6],
+            average   : average
           }
         )
       })
@@ -310,52 +306,53 @@ async function annotateData(data) {
   }
 }
 
-async function addEMARatio(markets) {
+async function addEmaRatio(markets) {
 
   // THINK HARD ABOUT THE MATHS TOMORROW
 
   try {
     markets.map(market => {
       market.emas = {
-        // months: {
-        //   ema1  : ema(market.histories.months,  1,  'close'),
-        //   ema8  : ema(market.histories.months,  8,  'close'),
-        //   ema21 : ema(market.histories.months, 21,  'close'),
-        // },
-        // weeks: {
-        //   ema1  : ema(market.histories.weeks,  1,  'close'),
-        //   ema8  : ema(market.histories.weeks,  8,  'close'),
-        //   ema21 : ema(market.histories.weeks, 21,  'close'),
-        // },
-
-        minutes: {
-          ema1  : ema(market.histories.minutes,  1, 'close'),
-          ema8  : ema(market.histories.minutes,  8, 'close'),
-          ema21 : ema(market.histories.minutes, 21, 'close'),
-        },
-
-        hours: {
-          ema1  : ema(market.histories.hours,  1, 'close'),
-          ema8  : ema(market.histories.hours,  8, 'close'),
-          ema21 : ema(market.histories.hours, 21, 'close'),
-        }, 
-        
-        days: {
-          ema1  : ema(market.histories.days,  1,  'close'),    
-          ema8  : ema(market.histories.days,  8,  'close'),
-          ema21 : ema(market.histories.days, 21,  'close'),
-        },
-        
+        months: [
+          ema(market.histories.months, 21,  'average'), 
+          ema(market.histories.months,  8,  'average'),
+          ema(market.histories.months,  1,  'average'),   
+        ],
+        weeks: [
+          ema(market.histories.weeks, 21,  'average'), 
+          ema(market.histories.weeks,  8,  'average'),
+          ema(market.histories.weeks,  1,  'average'),   
+        ],
+        days: [
+          ema(market.histories.days, 21,  'average'), 
+          ema(market.histories.days,  8,  'average'),
+          ema(market.histories.days,  1,  'average'),   
+        ],
+        hours: [
+          ema(market.histories.hours, 21, 'average'),
+          ema(market.histories.hours,  8, 'average'),
+          ema(market.histories.hours,  1, 'average'),
+        ], 
+        minutes: [
+          ema(market.histories.minutes, 21, 'average'),
+          ema(market.histories.minutes,  8, 'average'),
+          ema(market.histories.minutes,  1, 'average'),
+        ],
       }
 
-      console.log(market.emas)
-      let ratios = []
-
-      Object.values(market.emas).map(periods => {
-        ratios.push(periods.ema1/periods.ema8)/(periods.ema8/periods.ema21)
-      })
-      console.log(ratios)
-      market.emaRatio = ratios.reduce((a,b) => a+b)/3
+      const monthsRatios = ratioArray(market.emas.months)
+      const monthsEma = ema(monthsRatios)
+      const weeksRatios = ratioArray(market.emas.weeks)
+      const weeksEma = ema(weeksRatios)
+      const daysRatios = ratioArray(market.emas.days)
+      const daysEma = ema(daysRatios)
+      const hoursRatios = ratioArray(market.emas.hours)
+      const hoursEma = ema(hoursRatios)
+      const minutesRatios = ratioArray(market.emas.minutes)
+      const minutesEma = ema(minutesRatios)
+      
+      const periodRatioEmas = [monthsEma, weeksEma, daysEma, hoursEma, minutesEma]
+      market.emaRatio = ema(periodRatioEmas)
     })
     return markets
   } catch (error) {
@@ -363,8 +360,19 @@ async function addEMARatio(markets) {
   }
 }
 
-function ema(rawData, time, parameter) {
-  const data = extractData(rawData, parameter)
+function ratioArray(valueArray) {
+
+  const ratioArray = []
+  for (let i = 0; i < valueArray.length-1; i++) {
+    ratioArray.push(valueArray[i+1]/valueArray[i])
+  }
+  return valueArray
+}
+
+function ema(rawData, time=null, parameter=null) {
+
+  const data = +rawData[0] ? rawData : extractData(rawData, parameter)
+  time = time ?? data.length
   const k = 2/(time + 1)
   const emaData = []
   emaData[0] = data[0]
