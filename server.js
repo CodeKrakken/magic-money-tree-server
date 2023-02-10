@@ -15,6 +15,14 @@ const dbName = "magic-money-tree";
 const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
+const periods = {
+  months  : 'M', 
+  weeks   : 'w', 
+  days    : 'd', 
+  hours   : 'h', 
+  minutes : 'm',
+  seconds : 's'
+}
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
@@ -185,7 +193,6 @@ async function refreshWallet(wallet) {
   return wallet
 }
 
-
 async function fetchPrice(marketName) {
   try {
     const symbolName = marketName.replace('/', '')
@@ -252,19 +259,14 @@ async function fetchAllHistory(marketNames, wallet) {
 
 async function fetchSingleHistory(symbolName) {
   try {
-    let minuteHistory = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
-    let hourHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1h`, { timeout: 10000 })
-    let dayHistory    = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1d`, { timeout: 10000 })
-    let weekHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1w`, { timeout: 10000 })
-    let monthHistory  = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1M`, { timeout: 10000 })
+    const histories = {}
 
-    return {
-      minutes : minuteHistory.data, 
-      hours   : hourHistory.data, 
-      days    : dayHistory.data,
-      weeks   : weekHistory.data,
-      months  : monthHistory.data,
+    for (let i = 0; i < Object.keys(periods).length; i++) {
+      const period = Object.keys(periods)[i]
+      const history = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1${periods[period]}`, { timeout: 10000 })
+      histories[period] = history.data
     }
+    return histories
   } catch (error) {
     return 'No response.'
   }
@@ -309,11 +311,10 @@ async function annotateData(data) {
 async function addEmaRatio(markets) {
 
   try {
-    const periods = ['months', 'weeks', 'days', 'hours', 'minutes']
     const spans = [500, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2,1]
     
     markets.map(market => {
-      const periodRatioEmas = periods.map(period => {
+      const periodRatioEmas = Object.keys(periods).map(period => {
         const emas = spans.map(span => 
           ema(market.histories[period], span,  'average')
         )
