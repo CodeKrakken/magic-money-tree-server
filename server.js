@@ -12,7 +12,7 @@ const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: 
 let db
 let collection
 const dbName = "magic-money-tree";
-const minimumDollarVolume = 1000000
+const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 
@@ -91,7 +91,7 @@ function isGoodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
-  && marketName === 'GBP/USDT'
+  // && marketName === 'GBP/USDT'
   // && !marketName.includes('BNB')
 }
 
@@ -320,9 +320,6 @@ async function addEmaRatio(markets) {
         return ema(ratioArray(emas))
       })
 
-      console.log('periodRatioEmas')
-      console.log(periodRatioEmas)
-
       market.emaRatio = ema(periodRatioEmas)
     })
     return markets
@@ -401,7 +398,6 @@ function displayMarkets(markets) {
     console.log(`${market.name} ... shape ${market.shape} * ema ratio ${market.emaRatio} = strength ${market.strength}`)
   })
 }
-
 
 // TRADE FUNCTIONS
 
