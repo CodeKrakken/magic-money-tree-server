@@ -16,8 +16,8 @@ const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 const periods = {
-  months  : 'M', 
-  weeks   : 'w', 
+  // months  : 'M', 
+  // weeks   : 'w', 
   days    : 'd', 
   hours   : 'h', 
   minutes : 'm',
@@ -154,6 +154,7 @@ async function tick(wallet, viableMarketNames) {
     let markets = await fetchAllHistory(viableMarketNames, wallet)
     markets = await addEmaRatio(markets)
     markets = await addShape(markets)
+    markets = await filterMarkets(markets)
     markets = sortMarkets(markets)
     await displayMarkets(markets)
     await trade(markets, wallet)
@@ -427,9 +428,7 @@ async function trade(markets, wallet) {
 
         if (!currentMarket) {
           await simulatedSellOrder(wallet, 'No response for current market', wallet.data.currentMarket)
-        }
-
-        if (targetMarket.name !== wallet.data.currentMarket.name) { 
+        } else if (targetMarket.name !== wallet.data.currentMarket.name) { 
           await simulatedSellOrder(wallet, 'Better market found', currentMarket)
         } else if (!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) {
           await simulatedSellOrder(wallet, 'Price information undefined', currentMarket)
