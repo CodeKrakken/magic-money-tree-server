@@ -353,10 +353,6 @@ async function addEmaRatio(markets) {
 
       console.log(market)
 
-      // const monthsRatios = ratioArray(market.emas.months)
-      // const monthsEma = ema(monthsRatios)
-      // const weeksRatios = ratioArray(market.emas.weeks)
-      // const weeksEma = ema(weeksRatios)
       const daysRatios = ratioArray(market.emas.days)
       console.log('daysRatios')
       console.log(daysRatios)
@@ -377,12 +373,12 @@ async function addEmaRatio(markets) {
       console.log(minutesEma)
       
       const periodRatioEmas = [
-        // monthsEma, 
-        // weeksEma, 
         daysEma, 
         hoursEma, 
         minutesEma
       ]
+
+      console.log(periodRatioEmas)
 
       market.emaRatio = ema(periodRatioEmas)
 

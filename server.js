@@ -312,47 +312,26 @@ async function addEmaRatio(markets) {
 
   try {
     const periods = ['days', 'hours', 'minutes']
-    const emas = [21, 8, 1]
+    const spans = [21, 8, 1]
     
     markets.map(market => {
       market.emas = {}
 
       periods.map(period => {
-        market.emas[period] = [
-          ema(market.histories[period], 21,  'average'), 
-          ema(market.histories[period],  8,  'average'),
-          ema(market.histories[period],  1,  'average'),   
-        ]
+        market.emas[period] = spans.map(span => 
+          ema(market.histories[period], span,  'average')
+        )
       })
       
       console.log(market)
 
-      const daysRatios = ratioArray(market.emas.days)
-      console.log('daysRatios')
-      console.log(daysRatios)
-      const daysEma = ema(daysRatios)
-      console.log('daysEma')
-      console.log(daysEma)
-      const hoursRatios = ratioArray(market.emas.hours)
-      console.log('hoursRatios')
-      console.log(hoursRatios)
-      const hoursEma = ema(hoursRatios)
-      console.log('hoursEma')
-      console.log(hoursEma)
-      const minutesRatios = ratioArray(market.emas.minutes)
-      console.log('minutesRatios')
-      console.log(minutesRatios)
-      const minutesEma = ema(minutesRatios)
-      console.log('minutesEma')
-      console.log(minutesEma)
-      
-      const periodRatioEmas = [
-        // monthsEma, 
-        // weeksEma, 
-        daysEma, 
-        hoursEma, 
-        minutesEma
-      ]
+      const periodRatioEmas = Object.keys(market.emas).map(period => {
+        const ratios = ratioArray(market.emas[period])
+        const ratioEma = ema(ratios)
+        return ratioEma
+      })
+
+      console.log(periodRatioEmas)
 
       market.emaRatio = ema(periodRatioEmas)
 
