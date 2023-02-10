@@ -255,15 +255,15 @@ async function fetchSingleHistory(symbolName) {
     let minuteHistory = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1m`, { timeout: 10000 })
     let hourHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1h`, { timeout: 10000 })
     let dayHistory    = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1d`, { timeout: 10000 })
-    // let weekHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1w`, { timeout: 10000 })
-    // let monthHistory  = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1M`, { timeout: 10000 })
+    let weekHistory   = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1w`, { timeout: 10000 })
+    let monthHistory  = await axios.get(`https://api.binance.com/api/v1/klines?symbol=${symbolName}&interval=1M`, { timeout: 10000 })
 
     return {
       minutes : minuteHistory.data, 
       hours   : hourHistory.data, 
       days    : dayHistory.data,
-      // weeks   : weekHistory.data,
-      // months  : monthHistory.data,
+      weeks   : weekHistory.data,
+      months  : monthHistory.data,
     }
   } catch (error) {
     return 'No response.'
@@ -309,8 +309,8 @@ async function annotateData(data) {
 async function addEmaRatio(markets) {
 
   try {
-    const periods = ['days', 'hours', 'minutes']
-    const spans = [21, 8, 1]
+    const periods = ['months', 'weeks', 'days', 'hours', 'minutes']
+    const spans = [500, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2,1]
     
     markets.map(market => {
       const periodRatioEmas = periods.map(period => {
