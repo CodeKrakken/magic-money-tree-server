@@ -308,28 +308,22 @@ async function annotateData(data) {
 
 async function addEmaRatio(markets) {
 
-  // THINK HARD ABOUT THE MATHS TOMORROW
-
   try {
     const periods = ['days', 'hours', 'minutes']
     const spans = [21, 8, 1]
     
     markets.map(market => {
-      market.emas = {}
-
       const periodRatioEmas = periods.map(period => {
-        market.emas[period] = spans.map(span => 
+        const emas = spans.map(span => 
           ema(market.histories[period], span,  'average')
         )
-        const ratios = ratioArray(market.emas[period])
-        const ratioEma = ema(ratios)
-        return ratioEma
+        return ema(ratioArray(emas))
       })
-      
+
+      console.log('periodRatioEmas')
       console.log(periodRatioEmas)
 
       market.emaRatio = ema(periodRatioEmas)
-
     })
     return markets
   } catch (error) {
