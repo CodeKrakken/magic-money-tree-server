@@ -19,7 +19,7 @@ const stopLossThreshold = 0.78
 const periods = {
   // months  : 'M', 
   // weeks   : 'w', 
-  days    : 'd', 
+  // days    : 'd', 
   hours   : 'h', 
   minutes : 'm',
   seconds : 's'
