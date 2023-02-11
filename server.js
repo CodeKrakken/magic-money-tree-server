@@ -22,7 +22,7 @@ const periods = {
   // months  : 'M', 
   // weeks   : 'w', 
   // days    : 'd', 
-  hours   : 'h', 
+  // hours   : 'h', 
   minutes : 'm',
   seconds : 's'
 }
@@ -161,7 +161,7 @@ async function tick(wallet, viableMarketNames) {
     markets = await filterMarkets(markets)
     markets = sortMarkets(markets)
     await displayMarkets(markets)
-    await trade(markets, wallet)
+    if (markets.length) await trade(markets, wallet)
   } catch (error) {
     console.log(error)
   }
@@ -317,7 +317,7 @@ async function addEmaRatio(markets) {
 
   try {
     const spans = [
-      // 500, 377, 233, 144, 89, 55, 34, 
+      500, 377, 233, 144, 89, 55, 34, 
       21, 13, 8, 5, 3, 2, 1
     ]
     
@@ -397,7 +397,6 @@ async function addShape(markets) {
     })
     market.shape = ema(shapes)/100
   })
-    
 
   return markets
 }
@@ -407,6 +406,8 @@ function filterMarkets(markets) {
     market.shape > 0 
     && 
     market.emaRatio > 1
+    &&
+    ema(market.histories.minutes, 1, 'average') > ema(market.histories.minutes, 2, 'average')
     )
 }
 
@@ -439,16 +440,21 @@ async function trade(markets, wallet) {
         await simulatedSellOrder(wallet, 'Current market bearish', currentMarket)
 
       } else {
+        console.log(wallet)
+        console.log(currentMarket)
 
-
-        if (!currentMarket) {
-          await simulatedSellOrder(wallet, 'No response for current market', wallet.data.currentMarket)
-        } else if (targetMarket.name !== wallet.data.currentMarket.name) { 
-          await simulatedSellOrder(wallet, 'Better market found', currentMarket)
-        } else if (!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) {
+        if 
+        // (!currentMarket) {
+        //   await simulatedSellOrder(wallet, 'No response for current market', wallet.data.currentMarket)
+        // } else if (targetMarket.name !== wallet.data.currentMarket.name) { 
+        //   await simulatedSellOrder(wallet, 'Better market found', currentMarket)
+        // } else if 
+        (!wallet.data.prices.targetPrice || !wallet.data.prices.stopLossPrice) {
           await simulatedSellOrder(wallet, 'Price information undefined', currentMarket)
         } else if (wallet.data.currentMarket.currentPrice < wallet.data.prices.stopLossPrice) {
           await simulatedSellOrder(wallet, 'Below Stop Loss', currentMarket)
+        } else if (currentMarket && ema(currentMarket?.histories.minutes, 1, 'average') < ema(currentMarket.histories.minutes, 8, 'average')) {
+          await simulatedSellOrder(wallet, 'Dip', currentMarket)
         }
       }
     } catch(error) {
@@ -514,7 +520,7 @@ async function simulatedSellOrder(wallet, sellType, market) {
     wallet.coins[base].volume += assetVolume * (1 - fee) * wallet.coins[asset].dollarPrice
     wallet.data.prices = {}
     await dbOverwrite(wallet.data.prices)
-    const tradeReport = `${timeNow()} - Sold ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) ${market.shape ? `[${market.shape}]` : ''} [${sellType}]`
+    const tradeReport = `${timeNow()} - Sold   ${assetVolume} ${asset} @ ${wallet.coins[asset].dollarPrice} ($${wallet.coins[base].volume}) ${market.shape ? `[${market.shape}]` : ''} [${sellType}]`
     console.log(tradeReport)
     record(tradeReport)
     delete wallet.coins[asset]
