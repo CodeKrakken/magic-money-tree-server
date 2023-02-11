@@ -99,6 +99,7 @@ function isGoodMarketName(marketName, markets) {
   && !marketName.includes('BUSD')
   && !marketName.includes('TUSD')
   && !marketName.includes('USDC')
+  && !marketName.includes(':')
   // && marketName === 'GBP/USDT'
   // && !marketName.includes('BNB')
 }
