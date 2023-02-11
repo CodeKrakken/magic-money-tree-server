@@ -16,8 +16,8 @@ const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 const periods = {
-  // months  : 'M', 
-  // weeks   : 'w', 
+  months  : 'M', 
+  weeks   : 'w', 
   days    : 'd', 
   hours   : 'h', 
   minutes : 'm',
@@ -369,30 +369,38 @@ function extractData(dataArray, key) {
 async function addShape(markets) {
 
   markets.map(market => {
-    const m = market.histories.minutes.length
-    market.totalChange = market.histories.minutes[m - 1].close - market.histories.minutes[0].close
-    market.percentageChange = market.totalChange / market.histories.minutes[0].close * 100
-    let straightLineIncrement = market.totalChange / m
-    market.bigDrop = 1
-    market.bigRise = 1
-    let straightLine = market.histories.minutes[0].close
 
-    market.histories.minutes.map(thisPeriod => {
-      straightLine += straightLineIncrement
+    const shapes = Object.keys(periods).map(period => {
 
-      if (thisPeriod.low < straightLine && thisPeriod.low / straightLine < market.bigDrop) {
-        market.bigDrop = thisPeriod.low / straightLine
-      }
+      const m = market.histories[period].length
+      const totalChange = market.histories[period][m - 1].average - market.histories[period][0].average
+      const percentageChange = totalChange / market.histories[period][0].average * 100
+      let straightLineIncrement = totalChange / m
 
-      if (thisPeriod.high > straightLine && thisPeriod.high / straightLine > market.bigRise) {
-        market.bigRise = thisPeriod.high / straightLine
-      }
+      let deviations = []
+      let straightLine = market.histories[period][0].average
+  
+      market.histories[period].map(thisPeriod => {
+        straightLine += straightLineIncrement
+        deviations.push(thisPeriod.low < straightLine ? thisPeriod.low / straightLine : -(Math.abs(thisPeriod.high / straightLine)))
+      })
+  
+      const shape = percentageChange * ema(deviations)
+      return shape
     })
-
-    market.shape = market.percentageChange * market.bigDrop / market.bigRise
+    market.shape = ema(shapes)/100
   })
+    
 
   return markets
+}
+
+function filterMarkets(markets) {
+  return markets.filter(market => 
+    market.shape > 0 
+    && 
+    market.emaRatio > 1
+    )
 }
 
 function displayMarkets(markets) {
