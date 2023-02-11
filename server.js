@@ -12,6 +12,8 @@ const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: 
 let db
 let collection
 const dbName = "magic-money-tree";
+const express = require('express');
+const app = express();
 const port = process.env.PORT || 8000;
 const minimumDollarVolume = 28000000
 const fee = 0.001
@@ -520,5 +522,7 @@ async function simulatedSellOrder(wallet, sellType, market) {
     console.log(error)
   }
 }
+
+app.listen(port);
 
 run()
