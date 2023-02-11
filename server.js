@@ -16,8 +16,8 @@ const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
 const periods = {
-  months  : 'M', 
-  weeks   : 'w', 
+  // months  : 'M', 
+  // weeks   : 'w', 
   days    : 'd', 
   hours   : 'h', 
   minutes : 'm',
@@ -312,7 +312,10 @@ async function annotateData(data) {
 async function addEmaRatio(markets) {
 
   try {
-    const spans = [500, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2,1]
+    const spans = [
+      // 500, 377, 233, 144, 89, 55, 34, 
+      21, 13, 8, 5, 3, 2, 1
+    ]
     
     markets.map(market => {
       const periodRatioEmas = Object.keys(periods).map(period => {
