@@ -12,6 +12,7 @@ const mongo = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: 
 let db
 let collection
 const dbName = "magic-money-tree";
+const port = process.env.PORT || 8000;
 const minimumDollarVolume = 28000000
 const fee = 0.001
 const stopLossThreshold = 0.78
