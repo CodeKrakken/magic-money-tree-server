@@ -29,6 +29,7 @@ const periods = {
   seconds : 's'
 }
 
+const server = require('http').createServer();
 const io = require('socket.io')(server);
 
 // Send data to React app
