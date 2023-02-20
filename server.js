@@ -13,7 +13,9 @@ let db
 let collection
 const dbName = "magic-money-tree";
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 8000;
 const minimumDollarVolume = 28000000
 const fee = 0.001
@@ -26,6 +28,11 @@ const periods = {
   minutes : 'm',
   seconds : 's'
 }
+
+const io = require('socket.io')(server);
+
+// Send data to React app
+io.emit('data', { message: 'Hello from Node app!' });
 
 const binance = new ccxt.binance({
   apiKey: process.env.API_KEY,
